@@ -9,6 +9,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import net.fabricmc.loader.launch.knot.KnotClient;
+import xyz.ashleyz.JavaProcess;
 
 import java.io.*;
 import java.util.Scanner;
@@ -69,9 +70,9 @@ public class MainMenuScreenController {
         String username = "ToddHoward";
         String id = "7ae9007b9909de05ea58e94199a33b30c310c69c";
 
-        System.setProperty("java.library.path", Install.getNativesPath());
-        System.setProperty("org.lwjgl.librarypath", Install.getNativesPath());
-        KnotClient.main(new String[]{"--username", username, "--gameDir", Install.getMainPath()});
+        System.setProperty("java.class.path", Install.getClassPath());
+        System.setProperty("java.libs.path", Install.getNativesPath());
+        new JavaProcess(System.getProperty("java.home")).exec(KnotClient.class, "--username", username, "--gameDir", Install.getMainPath());
 
         if(null == null)
             return;

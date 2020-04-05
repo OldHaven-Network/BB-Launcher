@@ -39,7 +39,7 @@ public class Install {
     public static String getMainPath(){
         switch(getOS()){
             case "Windows":
-                return (System.getProperty("user.home") + "/AppData/Roaming/."+name+"/").replaceAll("\\\\", "/");
+                return (System.getProperty("user.home") + "/AppData/Roaming/."+name+"/").replaceAll("/", "\\\\");
             case "Mac OS":
                 return "~/Library/Application Support/"+name+"/";
             default:
@@ -56,12 +56,53 @@ public class Install {
         }
     }
 
+    private static String toString(String path, String[] atPaths, boolean addEnd, boolean addJar) {
+        StringBuilder builder = new StringBuilder();
+        for(int i=0;i < atPaths.length;i++) {
+            String p = path + atPaths[i];
+            builder.append(p);
+            if(addJar)
+                builder.append(".jar");
+            if(!addEnd) {
+                if (i != atPaths.length - 1) {
+                    builder.append(";");
+                }
+            } else
+                builder.append(";");
+        }
+        return builder.toString();
+    }
+
+    public static String getClassPath() {
+        String aV = "-7.3.1";
+        String[] fLibs = new String[]{
+            "fabric-loader", "asm"+aV, "asm-commons"+aV, "asm-analysis"+aV, "asm-tree"+aV, "asm-util"+aV,
+            "gson", "jimfs-1.1", "jsr305-3.0.2", "log4j-api", "log4j-core", "guava-28.2-jre",
+            "tiny-remapper-0.2.0.52", "tiny-mappings-parser-0.2.0.11", "sponge-mixin-0.8+build.18",
+            "log4j-core", "log4j-api", "fabric-loader-sat4j-2.3.5.4"
+        };
+        String[] libs = new String[]{
+            "lwjgl", "jinput", "lwjgl_util", "json", "minecraft",
+        };
+        String fLibsStr = toString(getFabricPath(), fLibs, true, true);
+        String libsStr = toString(getBinPath(), libs, false, true);
+        return fLibsStr + libsStr;
+    }
+
+    public static String getFabricPath(){
+        switch(getOS()){
+            case "Windows":
+                return getMainPath() + "bin\\fabric\\";
+            default:
+                return getMainPath() + "bin/fabric/";
+        }
+    }
     public static String getBinPath(){
         switch(getOS()){
             case "Windows":
                 return getMainPath() + "bin\\";
             case "Mac OS":
-                return getMainPath() + "/bin";
+                return getMainPath() + "/bin/";
             default:
                 return getMainPath() + "bin/";
         }
