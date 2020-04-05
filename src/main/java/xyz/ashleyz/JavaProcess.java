@@ -1,6 +1,7 @@
 package xyz.ashleyz;
 
 import cf.dejf.framework.Install;
+import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 
@@ -31,8 +32,21 @@ public final class JavaProcess {
         System.out.println(className);
         System.out.println(sb.toString());
 
+        FileInputStream inputStream = new FileInputStream(Install.getMainPath() + "currentuser.txt");
+        String username;
+        try {
+            username = IOUtils.toString(inputStream);
+        } finally {
+            inputStream.close();
+        }
+        String[] split = username.split("\n");
+        username = split[0];
+        System.out.println("FIND ME" + username);
+        username = username.replaceAll("[^_a-zA-Z0-9\\s]", "TEST");
+
+
 ProcessBuilder builder = new ProcessBuilder(javaBin, "-Xms"+"100M", "-Xms"+"2G",
-        "-Djava.library.path="+libsPath, "-cp", classpath, className, sb.toString());
+        "-Djava.library.path="+libsPath, "-cp", "\"" + classpath + "\"", className, "--gameDir", Install.getMainPath(), "--username", "username");
 
         builder.redirectErrorStream(true);
 

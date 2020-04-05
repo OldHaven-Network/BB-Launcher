@@ -7,6 +7,8 @@ import com.google.gson.GsonBuilder;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -15,6 +17,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -24,8 +28,10 @@ import net.chris54721.openmcauthenticator.exceptions.InvalidCredentialsException
 import net.chris54721.openmcauthenticator.exceptions.RequestException;
 import net.chris54721.openmcauthenticator.exceptions.UserMigratedException;
 import net.chris54721.openmcauthenticator.responses.AuthenticationResponse;
+import org.apache.commons.io.IOUtils;
 
 import java.io.*;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -48,6 +54,8 @@ public class LoginScreenController {
     public Label error_label;
     @FXML
     public CheckBox usemojangaccount_checkbox;
+    @FXML
+    public TextArea news_box;
 
     @FXML
     private void close(MouseEvent event){
@@ -115,8 +123,10 @@ public class LoginScreenController {
                     ex.printStackTrace();
                 }
                 try {
-                    PrintWriter usernameWriter = new PrintWriter(Install.getMainPath() + "currentuser.txt");
-                    usernameWriter.print(authResponse.getSelectedProfile().getName());
+                    File file = new File(Install.getMainPath() + "currentuser.txt");
+                    PrintWriter usernameWriter = new PrintWriter(file);
+                    usernameWriter.println(authResponse.getSelectedProfile().getName());
+                    usernameWriter.close();
                 } catch (Exception ex2) {
                     ex2.printStackTrace();
                 }
@@ -147,7 +157,40 @@ public class LoginScreenController {
 
     @FXML
     private void initialize() {
-        final KeyFrame kf1 = new KeyFrame(Duration.seconds(0.1), e -> login_button.requestFocus());
+        final KeyFrame kf1 = new KeyFrame(Duration.seconds(0.1), e ->
+        {
+            login_button.requestFocus();
+            news_box.skinProperty().addListener(new ChangeListener<Skin<?>>() {
+
+                @Override
+                public void changed(
+                        ObservableValue<? extends Skin<?>> ov, Skin<?> t, Skin<?> t1) {
+                    if (t1 != null && t1.getNode() instanceof Region) {
+                        Region r = (Region) t1.getNode();
+                        r.setBackground(Background.EMPTY);
+
+                        r.getChildrenUnmodifiable().stream().
+                                filter(n -> n instanceof Region).
+                                map(n -> (Region) n).
+                                forEach(n -> n.setBackground(Background.EMPTY));
+
+                        r.getChildrenUnmodifiable().stream().
+                                filter(n -> n instanceof Control).
+                                map(n -> (Control) n).
+                                forEach(c -> c.skinProperty().addListener(this)); // *
+                    }
+                }
+            });
+
+            String news = null;
+            try {
+                news = IOUtils.toString(new FileInputStream(Install.getMainPath() + "news.txt"));
+            } catch (IOException e2) {
+                e2.printStackTrace();
+            }
+            
+            news_box.setText(news);
+        });
         final Timeline timeline = new Timeline(kf1);
         Platform.runLater(timeline::play);
     }
