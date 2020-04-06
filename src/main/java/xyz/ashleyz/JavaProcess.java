@@ -4,6 +4,7 @@ import cf.dejf.framework.Install;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
+import java.util.Arrays;
 
 public final class JavaProcess {
     private String output = "";
@@ -13,7 +14,7 @@ public final class JavaProcess {
         this.javaHome = javaHome;
     }
 
-    public boolean exec(Class klass, String... args) throws IOException {
+    public boolean exec(Class klass) throws IOException {
         String javaBin = javaHome +
                 File.separator + "bin" +
                 File.separator + "java";
@@ -21,32 +22,15 @@ public final class JavaProcess {
         String libsPath = System.getProperty("java.libs.path");
         String className = klass.getCanonicalName();
 
-        StringBuilder sb = new StringBuilder();
-        for(int i=0;i < args.length;i++) {
-            sb.append(args[i]).append(" ");
-        }
-
-        System.out.println(javaBin);
+        /*System.out.println(javaBin);
         System.out.println(libsPath);
         System.out.println(classpath);
-        System.out.println(className);
-        System.out.println(sb.toString());
+        System.out.println(className);*/
 
-        FileInputStream inputStream = new FileInputStream(Install.getMainPath() + "currentuser.txt");
-        String username;
-        try {
-            username = IOUtils.toString(inputStream);
-        } finally {
-            inputStream.close();
-        }
-        String[] split = username.split("\n");
-        username = split[0];
-        System.out.println("FIND ME" + username);
-        username = username.replaceAll("[^_a-zA-Z0-9\\s]", "TEST");
+        String username = "";
 
-
-ProcessBuilder builder = new ProcessBuilder(javaBin, "-Xms"+"100M", "-Xms"+"2G",
-        "-Djava.library.path="+libsPath, "-cp", "\"" + classpath + "\"", className, "--gameDir", Install.getMainPath(), "--username", "username");
+        ProcessBuilder builder = new ProcessBuilder(javaBin, "-Xms"+"100M", "-Xms"+"2G",
+                "-Djava.library.path="+libsPath, "-cp", classpath, className, "--gameDir", Install.getMainPath(), "--username", username);
 
         builder.redirectErrorStream(true);
 
@@ -55,7 +39,7 @@ ProcessBuilder builder = new ProcessBuilder(javaBin, "-Xms"+"100M", "-Xms"+"2G",
         return process.isAlive();
     }
 
-    private class Logger extends Thread {
+    private static class Logger extends Thread {
         private Process process;
         Logger(Process process) {
             this.process = process;

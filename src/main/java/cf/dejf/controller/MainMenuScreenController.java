@@ -1,11 +1,16 @@
 package cf.dejf.controller;
 
 import cf.dejf.framework.Install;
+import cf.dejf.utility.UserInfo;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import net.fabricmc.loader.launch.knot.KnotClient;
@@ -15,28 +20,20 @@ import java.io.*;
 import java.util.Scanner;
 
 public class MainMenuScreenController {
-
     double offset_x;
     double offset_y;
 
-    @FXML
-    private Button launch_button;
+    @FXML private Label username;
+    @FXML private Button launch_button;
+    @FXML private Label close_button;
 
     @FXML
-    private Label close_button;
-
-    @FXML
-    private void close(MouseEvent event){
-        System.exit(0);
-    }
-
-    @FXML
-    private void closeButtonMouseover(MouseEvent event){
-        if(event.getEventType().getName() == "MOUSE_ENTERED") {
-            close_button.setTextFill(Color.web("#646464", 1));
-        } else if(event.getEventType().getName() == "MOUSE_EXITED") {
-            close_button.setTextFill(Color.web("#FFFFFF", 1));
-        }
+    private void initialize(){
+        username.setText("Username: " + UserInfo.getUsername());
+        username.setMaxWidth(Double.MAX_VALUE);
+        AnchorPane.setLeftAnchor(username, 0.0);
+        AnchorPane.setRightAnchor(username, 0.0);
+        username.setAlignment(Pos.CENTER);
     }
 
     @FXML
@@ -55,8 +52,29 @@ public class MainMenuScreenController {
     }
 
     @FXML
-    private void handleLaunch() throws IOException, InterruptedException {
+    private void press_logoutButton() {
+        Install.setCurrentUser(null);
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/LoginScreen.fxml"));
+            Stage primaryStage = (Stage) username.getScene().getWindow();
+            Scene scene = new Scene(root);
+            primaryStage.setScene(scene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
+    @FXML
+    private void closeButtonMouseover(MouseEvent event){
+        if(event.getEventType().getName().equals("MOUSE_ENTERED")) {
+            close_button.setTextFill(Color.web("#646464", 1));
+        } else if(event.getEventType().getName().equals("MOUSE_EXITED")) {
+            close_button.setTextFill(Color.web("#FFFFFF", 1));
+        }
+    }
+
+    @FXML
+    private void handleLaunch() throws IOException, InterruptedException {
         StringBuilder libraryBuilder = new StringBuilder();
         String[] libraries = new String[]{"minecraft.jar", "jinput.jar", "lwjgl.jar", "lwjgl_util.jar", "json.jar"};
         for(String libraryAppend : libraries) {
@@ -65,55 +83,13 @@ public class MainMenuScreenController {
             else
                 libraryBuilder.append(Install.getBinPath()).append(libraryAppend).append(":");
         }
-        String libraryFinal = libraryBuilder.toString();
-
-        String username = "ToddHoward";
-        String id = "7ae9007b9909de05ea58e94199a33b30c310c69c";
 
         System.setProperty("java.class.path", Install.getClassPath());
         System.setProperty("java.libs.path", Install.getNativesPath());
-        new JavaProcess(System.getProperty("java.home")).exec(KnotClient.class, "--username", username, "--gameDir", Install.getMainPath());
-
-        if(null == null)
-            return;
-        ProcessBuilder launch = new ProcessBuilder(
-                "java", "-Xms256M", "-Xmx1G",
-                "-Djava.library.path=" + Install.getNativesPath(), "-cp", "\"" + libraryFinal + "\"", "net.minecraft.client.Minecraft",
-                username, id);
-        launch.directory(new File(Install.getBinPath()));
-        Process process = launch.start();
-        System.out.println(launch.command());
-        Scanner s = new Scanner(process.getInputStream());
-        StringBuilder text = new StringBuilder();
-        while (s.hasNextLine()) {
-            text.append(s.nextLine());
-            text.append("\n");
-        }
-        s.close();
-        int result = process.waitFor();
-        System.out.printf( "Process exited with result %d and output %s%n", result, text );
-
-        /*
-        System.out.println(launch.command().toString());
-        launch.directory(new File(Objects.requireNonNull(Install.getBinPath())));
-        System.out.println((new File(Objects.requireNonNull(Install.getBinPath()))).getAbsolutePath());
-        try {
-            Process process = launch.start();
-            InputStream in = process.getInputStream();
-            for (int i = 0; i < in.available(); i++) {
-                System.out.println("" + in.read());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-         */
-
-        Runtime rt = Runtime.getRuntime();
-        String[] fuck = {"java", "-Xmx 1G", "-Djava.library.path=" + Install.getNativesPath(), "-cp " + "\"" + libraryFinal + "\"", "net.minecraft.client.Minecraft", username, id};
-        rt.exec(fuck);
+        new JavaProcess(System.getProperty("java.home")).exec(KnotClient.class);
     }
 
-    private void initialize(){
-
+    @FXML private void close(MouseEvent event){
+        System.exit(0);
     }
 }

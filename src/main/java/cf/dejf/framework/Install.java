@@ -202,4 +202,20 @@ public class Install {
         System.out.println(" ");
         return success;
     }
+
+    public static void setCurrentUser(String s) {
+        File file = new File(getMainPath() + "currentuser.txt");
+        if(s == null) {
+            if(file.exists())
+                file.delete();
+            return;
+        }
+        try {
+            PrintWriter usernameWriter = new PrintWriter(file);
+            usernameWriter.println(s);
+            usernameWriter.close();
+        } catch (Exception ex2) {
+            ex2.printStackTrace();
+        }
+    }
 }

@@ -1,20 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.Hyperlink?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.text.Text?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="394.0" prefWidth="700.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cf.dejf.controller.LoginScreenController">
+<AnchorPane prefHeight="394.0" prefWidth="700.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cf.dejf.controller.LoginScreenController">
    <children>
       <ImageView fitHeight="395.0" fitWidth="700.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -30,8 +22,8 @@
             <CheckBox id="rememberaccount_checkbox" fx:id="rememberaccount_checkbox" layoutX="63.0" layoutY="219.0" mnemonicParsing="false" style="-fx-font-family: Open Sans;" text="Remember my account" />
             <Text layoutX="93.0" layoutY="49.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: Open Sans; -fx-font-weight: bold; -fx-font-size: 32;" text="Login" />
             <PasswordField id="password_input" fx:id="password_input" layoutX="31.0" layoutY="129.0" prefHeight="26.0" prefWidth="208.0" promptText="Password" />
-            <Label id="error_label" fx:id="error_label" alignment="CENTER" layoutX="119.0" layoutY="193.0" nodeOrientation="LEFT_TO_RIGHT" textFill="RED" />
-            <CheckBox id="usemojangaccount_checkbox" fx:id="usemojangaccount_checkbox" layoutX="63.0" layoutY="195.0" mnemonicParsing="false" selected="true" text="Use Mojang account" />
+            <Label id="error_label" fx:id="error_label" alignment="CENTER" layoutX="119.0" layoutY="9.0" nodeOrientation="LEFT_TO_RIGHT" textFill="RED" />
+            <CheckBox id="usemojangaccount_checkbox" fx:id="usemojangaccount_checkbox" layoutX="63.0" layoutY="195.0" mnemonicParsing="false" onAction="#useMojangAccCheckBox" selected="true" text="Use Mojang account" />
          </children>
       </AnchorPane>
       <AnchorPane id="news_pane" fx:id="news_pane" layoutX="34.0" layoutY="38.0" prefHeight="324.0" prefWidth="346.0" style="-fx-background-color: rgba(0,0,0,0.5);">

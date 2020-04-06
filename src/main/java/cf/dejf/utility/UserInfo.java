@@ -2,28 +2,27 @@ package cf.dejf.utility;
 
 public class UserInfo {
 
-    private String username;
-    private String accessToken;
-    private String clientToken;
+    private static String username = "";
+    private static String accessToken = null;
+    private static String clientToken = null;
 
-    public UserInfo() {
+    private UserInfo() {}
+
+    public static void setUserInfo(String name, String token, String clToken) {
+        username = name;
+        accessToken = token;
+        clientToken = clToken;
     }
 
-    public UserInfo(String username, String accessToken, String clientToken) {
-        this.username = username;
-        this.accessToken = accessToken;
-        this.clientToken = clientToken;
-    }
-
-    public String getAccessToken() {
+    public static String getAccessToken() {
         return accessToken;
     }
 
-    public String getClientToken() {
+    public static String getClientToken() {
         return clientToken;
     }
 
-    public String getUsername() {
+    public static String getUsername() {
         return username;
     }
 }

@@ -4,6 +4,7 @@ import cf.dejf.utility.UserInfo;
 import cf.dejf.framework.Install;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -31,31 +32,125 @@ import net.chris54721.openmcauthenticator.responses.AuthenticationResponse;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
-import java.net.URI;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.*;
 
 
 public class LoginScreenController {
+    @FXML private Button login_button;
+    @FXML private Label close_button;
+    @FXML private Hyperlink noaccount_link;
+    @FXML public Stage primaryStage;
+    @FXML public TextField username_input;
+    @FXML public PasswordField password_input;
+    @FXML public Label error_label;
+    @FXML public CheckBox usemojangaccount_checkbox;
+    @FXML public TextArea news_box;
 
     @FXML
-    private Button login_button;
+    private void useMojangAccCheckBox() {
+        boolean b = usemojangaccount_checkbox.isSelected();
+        password_input.setVisible(b);
+        username_input.setPromptText(b ? "Username / E-mail" : "Username");
+    }
+
     @FXML
-    private Label close_button;
-    @FXML
-    private Hyperlink noaccount_link;
-    @FXML
-    public Stage primaryStage;
-    @FXML
-    public TextField username_input;
-    @FXML
-    public PasswordField password_input;
-    @FXML
-    public Label error_label;
-    @FXML
-    public CheckBox usemojangaccount_checkbox;
-    @FXML
-    public TextArea news_box;
+    private void initialize() {
+        final KeyFrame kf1 = new KeyFrame(Duration.seconds(0.1), e -> {
+            login_button.requestFocus();
+            news_box.skinProperty().addListener(new ChangeListener<Skin<?>>() {
+
+                @Override
+                public void changed(
+                        ObservableValue<? extends Skin<?>> ov, Skin<?> t, Skin<?> t1) {
+                    if (t1 != null && t1.getNode() instanceof Region) {
+                        Region r = (Region) t1.getNode();
+                        r.setBackground(Background.EMPTY);
+
+                        r.getChildrenUnmodifiable().stream().
+                                filter(n -> n instanceof Region).
+                                map(n -> (Region) n).
+                                forEach(n -> n.setBackground(Background.EMPTY));
+
+                        r.getChildrenUnmodifiable().stream().
+                                filter(n -> n instanceof Control).
+                                map(n -> (Control) n).
+                                forEach(c -> c.skinProperty().addListener(this)); // *
+                    }
+                }
+            });
+
+            String username = null;
+            if(new File(Install.getMainPath() + "currentuser.txt").exists()) {
+                try {
+                    FileInputStream fstream = new FileInputStream(Install.getMainPath() + "currentuser.txt");
+                    BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
+
+                    username = br.readLine();
+
+                    br.close();
+                    fstream.close();
+                    String[] split = username.split("\n");
+                    username = split[0];
+                    username = username.replaceAll("[^a-zA-Z0-9_?\\s]", "");
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+
+                if (username != null) {
+                    Gson gson = new GsonBuilder().create();
+                    Type type = new TypeToken<Map<String, List<String>>>() {
+                    }.getType();
+                    StringBuilder json = null;
+                    try {
+                        FileInputStream fstream = new FileInputStream(Install.getMainPath() + "players.json");
+                        BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
+                        json = new StringBuilder();
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                            json.append(line);
+                        }
+                        br.close();
+                        fstream.close();
+                    } catch (IOException ignored) {
+                    }
+
+                    if (json != null) {
+                        boolean validated = false;
+                        Map<String, LinkedList<String>> map = gson.fromJson(json.toString(), type);
+                        if (map.containsKey(username)) {
+                            List<String> list = map.get(username);
+                            String acToken = list.get(0);
+                            String clToken = list.get(1);
+                            try {
+                                validated = OpenMCAuthenticator.validate(acToken, clToken);
+                            } catch (AuthenticationUnavailableException | RequestException ex) {
+                                showAndAlignLoginError("INVALID TOKEN OR CLIENT TOKEN");
+                            }
+                            if (validated) {
+                                UserInfo.setUserInfo(username, acToken, clToken);
+                                changeScene();
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+
+            String news = null;
+            try {
+                news = IOUtils.toString(new FileInputStream(Install.getMainPath() + "news.txt"));
+            } catch (IOException e2) {
+                e2.printStackTrace();
+            }
+
+            news_box.setText(news);
+        });
+        final Timeline timeline = new Timeline(kf1);
+        Platform.runLater(timeline::play);
+    }
 
     @FXML
     private void close(MouseEvent event){
@@ -64,17 +159,17 @@ public class LoginScreenController {
 
     @FXML
     private void closeButtonMouseover(MouseEvent event) {
-        if(event.getEventType().getName() == "MOUSE_ENTERED") {
+        if(event.getEventType().getName().equals("MOUSE_ENTERED")) {
             close_button.setTextFill(Color.web("#646464", 1));
-        } else if(event.getEventType().getName() == "MOUSE_EXITED") {
+        } else if(event.getEventType().getName().equals("MOUSE_EXITED")) {
             close_button.setTextFill(Color.web("#FFFFFF", 1));
         }
     }
 
     @FXML
-    private void changeScene(String newScene) {
+    private void changeScene() {
         try{
-            Parent root = FXMLLoader.load(getClass().getResource(newScene));
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/MainMenuScreen.fxml"));
             Stage primaryStage = (Stage) login_button.getScene().getWindow();
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
@@ -105,31 +200,35 @@ public class LoginScreenController {
     @FXML
     private void handleLogin() {
         String username = username_input.getText();
+        username = username == null ? "" : username;
         String password = password_input.getText();
-        if((username == null || username.isEmpty() || password == null || password.isEmpty()) && !usemojangaccount_checkbox.isSelected()){
-            showAndAlignLoginError("Missing username/password!");
-            // For testing, if you do not input your credentials, you will reach the main menu.
-            changeScene("/fxml/MainMenuScreen.fxml");
+        password = password == null ? "" : password;
+        if(!usemojangaccount_checkbox.isSelected() && !username.isEmpty()){
+            //showAndAlignLoginError("Missing username/password!");
+            UserInfo.setUserInfo(username, null, null);
+            changeScene();
         } else if(usemojangaccount_checkbox.isSelected()){
             try {
                 AuthenticationResponse authResponse = OpenMCAuthenticator.authenticate(username, password);
                 try {
-                    UserInfo userInfo = new UserInfo(authResponse.getSelectedProfile().getName(), authResponse.getAccessToken(), authResponse.getClientToken());
+                    UserInfo.setUserInfo(authResponse.getSelectedProfile().getName(),
+                            authResponse.getAccessToken(), authResponse.getClientToken());
                     Gson gson = new GsonBuilder().setPrettyPrinting().create();
                     Writer writer = Files.newBufferedWriter(Paths.get(Install.getMainPath() + "players.json"));
-                    gson.toJson(userInfo, writer);
+
+                    Map<String, LinkedList<String>> map = new LinkedHashMap<>();
+                    LinkedList<String> list = new LinkedList<>();
+                    list.add(UserInfo.getAccessToken());
+                    list.add(UserInfo.getClientToken());
+                    map.put(UserInfo.getUsername(), list);
+
+                    gson.toJson(map, writer);
                     writer.close();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+                    changeScene();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                try {
-                    File file = new File(Install.getMainPath() + "currentuser.txt");
-                    PrintWriter usernameWriter = new PrintWriter(file);
-                    usernameWriter.println(authResponse.getSelectedProfile().getName());
-                    usernameWriter.close();
-                } catch (Exception ex2) {
-                    ex2.printStackTrace();
-                }
+                Install.setCurrentUser(authResponse.getSelectedProfile().getName());
             } catch (AuthenticationUnavailableException | RequestException e) {
                 if(e instanceof InvalidCredentialsException) {
                     showAndAlignLoginError("Invalid credentials!");
@@ -151,48 +250,5 @@ public class LoginScreenController {
                 ex.printStackTrace();
             }
         }
-
-
     }
-
-    @FXML
-    private void initialize() {
-        final KeyFrame kf1 = new KeyFrame(Duration.seconds(0.1), e ->
-        {
-            login_button.requestFocus();
-            news_box.skinProperty().addListener(new ChangeListener<Skin<?>>() {
-
-                @Override
-                public void changed(
-                        ObservableValue<? extends Skin<?>> ov, Skin<?> t, Skin<?> t1) {
-                    if (t1 != null && t1.getNode() instanceof Region) {
-                        Region r = (Region) t1.getNode();
-                        r.setBackground(Background.EMPTY);
-
-                        r.getChildrenUnmodifiable().stream().
-                                filter(n -> n instanceof Region).
-                                map(n -> (Region) n).
-                                forEach(n -> n.setBackground(Background.EMPTY));
-
-                        r.getChildrenUnmodifiable().stream().
-                                filter(n -> n instanceof Control).
-                                map(n -> (Control) n).
-                                forEach(c -> c.skinProperty().addListener(this)); // *
-                    }
-                }
-            });
-
-            String news = null;
-            try {
-                news = IOUtils.toString(new FileInputStream(Install.getMainPath() + "news.txt"));
-            } catch (IOException e2) {
-                e2.printStackTrace();
-            }
-            
-            news_box.setText(news);
-        });
-        final Timeline timeline = new Timeline(kf1);
-        Platform.runLater(timeline::play);
-    }
-
 }
