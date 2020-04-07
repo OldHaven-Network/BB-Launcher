@@ -60,27 +60,17 @@ public class LoginScreenController {
     private void initialize() {
         final KeyFrame kf1 = new KeyFrame(Duration.seconds(0.1), e -> {
             login_button.requestFocus();
-            news_box.skinProperty().addListener(new ChangeListener<Skin<?>>() {
 
-                @Override
-                public void changed(
-                        ObservableValue<? extends Skin<?>> ov, Skin<?> t, Skin<?> t1) {
-                    if (t1 != null && t1.getNode() instanceof Region) {
-                        Region r = (Region) t1.getNode();
-                        r.setBackground(Background.EMPTY);
+            String news = null;
+            try {
+                news = IOUtils.toString(new FileInputStream(Install.getMainPath() + "news.txt"));
+            } catch (IOException e2) {
+                e2.printStackTrace();
+            }
 
-                        r.getChildrenUnmodifiable().stream().
-                                filter(n -> n instanceof Region).
-                                map(n -> (Region) n).
-                                forEach(n -> n.setBackground(Background.EMPTY));
-
-                        r.getChildrenUnmodifiable().stream().
-                                filter(n -> n instanceof Control).
-                                map(n -> (Control) n).
-                                forEach(c -> c.skinProperty().addListener(this)); // *
-                    }
-                }
-            });
+            news_box.setText(news);
+            news_box.requestFocus();
+            login_button.requestFocus();
 
             String username = null;
             if(new File(Install.getMainPath() + "currentuser.txt").exists()) {
@@ -138,15 +128,6 @@ public class LoginScreenController {
                     }
                 }
             }
-
-            String news = null;
-            try {
-                news = IOUtils.toString(new FileInputStream(Install.getMainPath() + "news.txt"));
-            } catch (IOException e2) {
-                e2.printStackTrace();
-            }
-
-            news_box.setText(news);
         });
         final Timeline timeline = new Timeline(kf1);
         Platform.runLater(timeline::play);

@@ -1,5 +1,7 @@
 package cf.dejf.utility;
 
+import xyz.ashleyz.JavaProcess;
+
 public class UserInfo {
 
     private static String username = "";

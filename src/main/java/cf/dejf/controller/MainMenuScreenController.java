@@ -26,6 +26,7 @@ public class MainMenuScreenController {
     @FXML private Label username;
     @FXML private Button launch_button;
     @FXML private Label close_button;
+    @FXML private Label main_button, settings_button, processinfo_button;
 
     @FXML
     private void initialize(){
@@ -51,6 +52,8 @@ public class MainMenuScreenController {
         });
     }
 
+
+
     @FXML
     private void press_logoutButton() {
         Install.setCurrentUser(null);
@@ -74,6 +77,33 @@ public class MainMenuScreenController {
     }
 
     @FXML
+    private void mainButtonMouseover(MouseEvent event){
+        if(event.getEventType().getName().equals("MOUSE_ENTERED")) {
+            main_button.setTextFill(Color.web("#646464", 1));
+        } else if(event.getEventType().getName().equals("MOUSE_EXITED")) {
+            main_button.setTextFill(Color.web("#000000", 1));
+        }
+    }
+
+    @FXML
+    private void settingsButtonMouseover(MouseEvent event){
+        if(event.getEventType().getName().equals("MOUSE_ENTERED")) {
+            settings_button.setTextFill(Color.web("#646464", 1));
+        } else if(event.getEventType().getName().equals("MOUSE_EXITED")) {
+            settings_button.setTextFill(Color.web("#000000", 1));
+        }
+    }
+
+    @FXML
+    private void processInfoButtonMouseover(MouseEvent event){
+        if(event.getEventType().getName().equals("MOUSE_ENTERED")) {
+            processinfo_button.setTextFill(Color.web("#646464", 1));
+        } else if(event.getEventType().getName().equals("MOUSE_EXITED")) {
+            processinfo_button.setTextFill(Color.web("#000000", 1));
+        }
+    }
+
+    @FXML
     private void handleLaunch() throws IOException, InterruptedException {
         StringBuilder libraryBuilder = new StringBuilder();
         String[] libraries = new String[]{"minecraft.jar", "jinput.jar", "lwjgl.jar", "lwjgl_util.jar", "json.jar"};
@@ -92,4 +122,27 @@ public class MainMenuScreenController {
     @FXML private void close(MouseEvent event){
         System.exit(0);
     }
+
+    private void changeScene(String sceneResource) {
+        try{
+            Parent root = FXMLLoader.load(getClass().getResource(sceneResource));
+            Stage primaryStage = (Stage) close_button.getScene().getWindow();
+            Scene scene = new Scene(root);
+            primaryStage.setScene(scene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void clickSettingsButton() {
+        changeScene("/fxml/SettingsScreen.fxml");
+    }
+
+    @FXML
+    private void clickProcessInfoButton() {
+        changeScene("/fxml/ProcessInfoScreen.fxml");
+    }
+
+
 }

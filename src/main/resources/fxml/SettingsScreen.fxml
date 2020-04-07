@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Line?>
+
+<AnchorPane onMouseMoved="#movableWindow" prefHeight="394.0" prefWidth="700.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cf.dejf.controller.SettingsScreenController">
+   <children>
+      <ImageView fitHeight="395.0" fitWidth="700.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/blur.png" />
+         </image>
+      </ImageView>
+      <AnchorPane layoutX="34.0" layoutY="38.0" prefHeight="324.0" prefWidth="635.0" style="-fx-background-color: rgba(0,0,0,0.5); -fx-border-style: dashed;">
+         <children>
+            <Pane prefHeight="50.0" prefWidth="635.0" style="-fx-background-color: #FFFFFF;">
+               <children>
+                  <Label id="main_button" fx:id="main_button" layoutX="27.0" layoutY="10.0" onMouseClicked="#clickMainButton" onMouseEntered="#mainButtonMouseover" onMouseExited="#mainButtonMouseover" style="-fx-font-family: Open Sans; -fx-font-weight: bold; -fx-font-size: 20;" text="MAIN" />
+                  <Label fx:id="settings_button" layoutX="117.0" layoutY="10.0" onMouseEntered="#settingsButtonMouseover" onMouseExited="#settingsButtonMouseover" style="-fx-font-family: Open Sans; -fx-font-weight: bold; -fx-font-size: 20;" text="SETTINGS" />
+                  <Line endX="-372.138671875" layoutX="582.0" layoutY="40.0" startX="-465.0" strokeWidth="2.0" />
+                  <Label fx:id="processinfo_button" layoutX="481.0" layoutY="10.0" onMouseClicked="#clickProcessInfoButton" onMouseEntered="#processInfoButtonMouseover" onMouseExited="#processInfoButtonMouseover" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-font-family: Open Sans;" text="PROCESS INFO" />
+               </children>
+            </Pane>
+            <ListView id="modview" fx:id="modview" layoutX="14.0" layoutY="62.0" prefHeight="253.0" prefWidth="414.0" />
+         </children>
+      </AnchorPane>
+      <Label id="close_button" fx:id="close_button" layoutX="678.0" layoutY="4.0" onMouseClicked="#close" onMouseEntered="#closeButtonMouseover" onMouseExited="#closeButtonMouseover" style="-fx-font-weight: bold; -fx-font-size: 16;" text="✕" textFill="WHITE" />
+   </children>
+</AnchorPane>

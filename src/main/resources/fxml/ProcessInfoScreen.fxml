@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Line?>
+
+<AnchorPane onMouseMoved="#movableWindow" prefHeight="394.0" prefWidth="700.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cf.dejf.controller.ProcessInfoScreenController">
+   <children>
+      <ImageView fitHeight="395.0" fitWidth="700.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/blur.png" />
+         </image>
+      </ImageView>
+      <AnchorPane layoutX="34.0" layoutY="38.0" prefHeight="324.0" prefWidth="635.0" style="-fx-background-color: rgba(0,0,0,0.5); -fx-border-style: dashed;">
+         <children>
+            <Pane prefHeight="50.0" prefWidth="635.0" style="-fx-background-color: #FFFFFF;">
+               <children>
+                  <Label id="main_button" fx:id="main_button" layoutX="27.0" layoutY="10.0" onMouseClicked="#clickMainButton" onMouseEntered="#mainButtonMouseover" onMouseExited="#mainButtonMouseover" style="-fx-font-family: Open Sans; -fx-font-weight: bold; -fx-font-size: 20;" text="MAIN" />
+                  <Label fx:id="settings_button" layoutX="117.0" layoutY="10.0" onMouseClicked="#clickSettingsButton" onMouseEntered="#settingsButtonMouseover" onMouseExited="#settingsButtonMouseover" style="-fx-font-family: Open Sans; -fx-font-weight: bold; -fx-font-size: 20;" text="SETTINGS" />
+                  <Line endX="38.27734375" layoutX="582.0" layoutY="40.0" startX="-100.0" strokeWidth="2.0" />
+                  <Label fx:id="processinfo_button" layoutX="481.0" layoutY="10.0" onMouseEntered="#processInfoButtonMouseover" onMouseExited="#processInfoButtonMouseover" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-font-family: Open Sans;" text="PROCESS INFO" />
+               </children>
+            </Pane>
+            <TextArea id="process_text" fx:id="process_text" layoutX="10.0" layoutY="60.0" prefHeight="221.0" prefWidth="617.0" />
+            <Button layoutX="10.0" layoutY="289.0" mnemonicParsing="false" onMouseClicked="#killMinecraftButton" prefHeight="25.0" prefWidth="617.0" style="-fx-font-weight: bold;" text="Kill Minecraft Process" />
+         </children>
+      </AnchorPane>
+      <Label id="close_button" fx:id="close_button" layoutX="678.0" layoutY="4.0" onMouseClicked="#close" onMouseEntered="#closeButtonMouseover" onMouseExited="#closeButtonMouseover" style="-fx-font-weight: bold; -fx-font-size: 16;" text="✕" textFill="WHITE" />
+   </children>
+</AnchorPane>

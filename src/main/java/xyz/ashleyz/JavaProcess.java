@@ -1,6 +1,16 @@
 package xyz.ashleyz;
 
+import cf.dejf.Main;
+import cf.dejf.controller.LoginScreenController;
+import cf.dejf.controller.ProcessInfoScreenController;
 import cf.dejf.framework.Install;
+import cf.dejf.utility.LogOutput;
+import cf.dejf.utility.UserInfo;
+import javafx.animation.PauseTransition;
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.text.Text;
+import javafx.util.Duration;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
@@ -27,7 +37,7 @@ public final class JavaProcess {
         System.out.println(classpath);
         System.out.println(className);*/
 
-        String username = "";
+        String username = UserInfo.getUsername();
 
         ProcessBuilder builder = new ProcessBuilder(javaBin, "-Xms"+"100M", "-Xms"+"2G",
                 "-Djava.library.path="+libsPath, "-cp", classpath, className, "--gameDir", Install.getMainPath(), "--username", username);
@@ -39,27 +49,31 @@ public final class JavaProcess {
         return process.isAlive();
     }
 
-    private static class Logger extends Thread {
-        private Process process;
+    public static class Logger extends Thread {
+        public static Process process;
         Logger(Process process) {
-            this.process = process;
+            Logger.process = process;
+        }
+
+        public static void destroyProcess() {
+            process.destroyForcibly();
         }
 
         @Override
         public void run() {
+            String s;
             try {
                 BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
-                String s;
                 while ((s = stdInput.readLine()) != null) {
                     System.out.println(s);
+                    LogOutput.appendLogOutput(s);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
-
     /**
      * Read and process the command output, doesn't include error.
      *
