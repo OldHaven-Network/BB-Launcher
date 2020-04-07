@@ -1,52 +1,41 @@
-package cf.dejf.controller;
+package net.oldhaven.controller;
 
-import cf.dejf.utility.LogOutput;
-import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.ListView;
+import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
-import xyz.ashleyz.JavaProcess;
+import javafx.util.Callback;
 
-import javax.swing.text.DefaultCaret;
 import java.io.IOException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
-public class ProcessInfoScreenController {
+public class SettingsScreenController {
 
     double offset_x;
     double offset_y;
 
+    @FXML public ListView<String> modview;
     @FXML public Label close_button;
     @FXML public Label main_button, settings_button, processinfo_button;
-    @FXML public TextArea process_text;
 
-    public void initialize(){
-        Runnable helloRunnable = new Runnable() {
-            public void run() {
-                Platform.runLater(() -> {
-                    double pos = process_text.getScrollTop();
-                    int anchor = process_text.getAnchor();
-                    int caret = process_text.getCaretPosition();
-                    process_text.setText(LogOutput.getLogOutput());
-                    process_text.setScrollTop(pos);
-                    process_text.selectRange(anchor, caret);
-                });
+    public void initialize() {
+        modview.getItems().addAll("Mod 1", "Mod 2");
 
-            }
-        };
-        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-        executor.scheduleAtFixedRate(helloRunnable, 0, 1, TimeUnit.SECONDS);
+        modview.setCellFactory(CheckBoxListCell.forListView(item -> {
+            BooleanProperty observable = new SimpleBooleanProperty();
+            observable.addListener((obs, wasSelected, isNowSelected) ->
+                    System.out.println("Check box for "+item+" changed from "+wasSelected+" to "+isNowSelected)
+            );
+            return observable ;
+        }));
     }
 
     private void changeScene(String sceneResource) {
@@ -66,8 +55,8 @@ public class ProcessInfoScreenController {
     }
 
     @FXML
-    private void clickSettingsButton() {
-        changeScene("/fxml/SettingsScreen.fxml");
+    private void clickProcessInfoButton() {
+        changeScene("/fxml/ProcessInfoScreen.fxml");
     }
 
     @FXML
@@ -126,8 +115,4 @@ public class ProcessInfoScreenController {
         System.exit(0);
     }
 
-    @FXML
-    private void killMinecraftButton(){
-        JavaProcess.Logger.destroyProcess();
-    }
 }

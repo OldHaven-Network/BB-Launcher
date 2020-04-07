@@ -1,63 +1,68 @@
-package xyz.ashleyz;
+package net.oldhaven.utility;
 
-import cf.dejf.Main;
-import cf.dejf.controller.LoginScreenController;
-import cf.dejf.controller.ProcessInfoScreenController;
-import cf.dejf.framework.Install;
-import cf.dejf.utility.LogOutput;
-import cf.dejf.utility.UserInfo;
-import javafx.animation.PauseTransition;
-import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.text.Text;
-import javafx.util.Duration;
-import org.apache.commons.io.IOUtils;
+import net.oldhaven.framework.Install;
 
 import java.io.*;
-import java.util.Arrays;
 
 public final class JavaProcess {
     private String output = "";
     private String javaHome = "";
+    private static Class lastArg;
+    private static JavaProcess jProc;
+    private static Process process;
+
 
     public JavaProcess(String javaHome) {
+        jProc = this;
         this.javaHome = javaHome;
     }
 
-    public boolean exec(Class klass) throws IOException {
+    public boolean exec(Class clazz) throws IOException {
+        lastArg = clazz;
         String javaBin = javaHome +
                 File.separator + "bin" +
                 File.separator + "java";
         String classpath = System.getProperty("java.class.path");
         String libsPath = System.getProperty("java.libs.path");
-        String className = klass.getCanonicalName();
-
-        /*System.out.println(javaBin);
-        System.out.println(libsPath);
-        System.out.println(classpath);
-        System.out.println(className);*/
+        String className = clazz.getCanonicalName();
 
         String username = UserInfo.getUsername();
 
         ProcessBuilder builder = new ProcessBuilder(javaBin, "-Xms"+"100M", "-Xms"+"2G",
-                "-Djava.library.path="+libsPath, "-cp", classpath, className, "--gameDir", Install.getMainPath(), "--username", username);
+                "-Djava.library.path="+libsPath, "-cp", classpath, className, "--gameDir", Install.getMinecraftPath(), "--username", username);
 
         builder.redirectErrorStream(true);
 
-        Process process = builder.start();
+        process = builder.start();
         new Logger(process).start();
         return process.isAlive();
     }
 
-    public static class Logger extends Thread {
-        public static Process process;
-        Logger(Process process) {
-            Logger.process = process;
+    public static void restartProcess() {
+        destroyProcess();
+        try {
+            jProc.exec(lastArg);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
 
-        public static void destroyProcess() {
-            process.destroyForcibly();
+    public static void destroyProcess() {
+        process.destroyForcibly();
+        if(process != null) {
+            try {
+                process.waitFor();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+    }
+
+    /**
+     * @author ashleez_
+     */
+    public static class Logger extends Thread {
+        Logger(Process process) {}
 
         @Override
         public void run() {

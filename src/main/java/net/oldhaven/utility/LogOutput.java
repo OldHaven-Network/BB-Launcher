@@ -1,4 +1,4 @@
-package cf.dejf.utility;
+package net.oldhaven.utility;
 
 public class LogOutput {
 
@@ -11,6 +11,8 @@ public class LogOutput {
     }
 
     public static String getLogOutput() {
-        return log;
+        String text = log;
+        log = "";
+        return text;
     }
 }

@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.shape.Line?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
 
-<AnchorPane onMouseMoved="#movableWindow" prefHeight="394.0" prefWidth="700.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cf.dejf.controller.ProcessInfoScreenController">
+<AnchorPane onMouseMoved="#movableWindow" prefHeight="394.0" prefWidth="700.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.oldhaven.controller.ProcessInfoScreenController">
    <children>
       <ImageView fitHeight="395.0" fitWidth="700.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -26,8 +23,18 @@
                   <Label fx:id="processinfo_button" layoutX="481.0" layoutY="10.0" onMouseEntered="#processInfoButtonMouseover" onMouseExited="#processInfoButtonMouseover" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-font-family: Open Sans;" text="PROCESS INFO" />
                </children>
             </Pane>
-            <TextArea id="process_text" fx:id="process_text" layoutX="10.0" layoutY="60.0" prefHeight="221.0" prefWidth="617.0" />
-            <Button layoutX="10.0" layoutY="289.0" mnemonicParsing="false" onMouseClicked="#killMinecraftButton" prefHeight="25.0" prefWidth="617.0" style="-fx-font-weight: bold;" text="Kill Minecraft Process" />
+            <TextArea id="process_text" fx:id="process_text" editable="false" layoutX="10.0" layoutY="60.0" prefHeight="221.0" prefWidth="617.0">
+               <cursor>
+                  <Cursor fx:constant="DEFAULT" />
+               </cursor></TextArea>
+            <Button layoutX="10.0" layoutY="289.0" mnemonicParsing="false" onMouseClicked="#restartMinecraftButton" prefHeight="25.0" prefWidth="293.0" style="-fx-font-weight: bold;" text="Restart Minecraft Process">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></Button>
+            <Button layoutX="334.0" layoutY="289.0" mnemonicParsing="false" onMouseClicked="#killMinecraftButton" prefHeight="25.0" prefWidth="293.0" style="-fx-font-weight: bold;" text="Kill Minecraft Process">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></Button>
          </children>
       </AnchorPane>
       <Label id="close_button" fx:id="close_button" layoutX="678.0" layoutY="4.0" onMouseClicked="#close" onMouseEntered="#closeButtonMouseover" onMouseExited="#closeButtonMouseover" style="-fx-font-weight: bold; -fx-font-size: 16;" text="✕" textFill="WHITE" />
