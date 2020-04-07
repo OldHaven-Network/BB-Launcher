@@ -48,10 +48,15 @@ public class Main extends Application {
         }
 
         String mainPath = Install.getMinecraftPath();
-
-        new Mod("MegaMod", mainPath+"mods/MegaMod-Mixins.jar", true);
-        new Mod("Optifine", mainPath+"mods/optifine.jar");
-        Mod.saveMods();
+        File file = new File(Install.getMainPath()+"mods.json");
+        if(!file.exists()) {
+            new Mod("MegaMod", mainPath + "mods/MegaMod-Mixins.jar", true);
+            new Mod("Optifine", mainPath + "mods/optifine.jar");
+            Mod.saveMods();
+            System.out.println("mods.json does not exist, creating one with default config");
+        } else {
+            Mod.getMods();
+        }
 
         Install.installSavedServers(mainPath);
         Install.installMegaMod(mainPath + "mods/");

@@ -9,13 +9,18 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.util.Callback;
+import net.oldhaven.utility.Mod;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class SettingsScreenController {
 
@@ -25,17 +30,39 @@ public class SettingsScreenController {
     @FXML public ListView<String> modview;
     @FXML public Label close_button;
     @FXML public Label main_button, settings_button, processinfo_button;
+    @FXML public TextField selectedmodpath;
 
     public void initialize() {
-        modview.getItems().addAll("Mod 1", "Mod 2");
+
+        ArrayList<String> stringBuilder = new ArrayList<String>();
+        for(Mod mod : Mod.mods) {
+            stringBuilder.add(mod.getName());
+        }
+
+        modview.getItems().addAll(stringBuilder);
 
         modview.setCellFactory(CheckBoxListCell.forListView(item -> {
             BooleanProperty observable = new SimpleBooleanProperty();
-            observable.addListener((obs, wasSelected, isNowSelected) ->
-                    System.out.println("Check box for "+item+" changed from "+wasSelected+" to "+isNowSelected)
+            observable.addListener((obs, oldValue, newValue) -> {
+                    System.out.println("Check box for "+item+" changed from "+oldValue+" to "+newValue);
+                    assert Mod.getModByName(item) != null;
+                    Mod.getModByName(item).setEnabled(newValue);
+                    Mod.saveMods();
+                }
             );
+            assert Mod.getModByName(item) != null;
+            if(Mod.getModByName(item).isEnabled()){
+                observable.setValue(true);
+            } else {
+                observable.setValue(false);
+            }
             return observable ;
         }));
+
+        modview.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> item, String oldValue, String newValue) -> {
+            String selectedItem = modview.getSelectionModel().getSelectedItem();
+            selectedmodpath.setText(Objects.requireNonNull(Mod.getModByName(selectedItem)).getFile().toString());
+        });
     }
 
     private void changeScene(String sceneResource) {
@@ -47,6 +74,19 @@ public class SettingsScreenController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void clickAddModButton() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select mod to add...");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Minecraft.jar mods", "*.jar", "*.zip"));
+        fileChooser.showOpenDialog(close_button.getScene().getWindow());
+    }
+
+    @FXML
+    private void clickRemoveModButton() {
+
     }
 
     @FXML

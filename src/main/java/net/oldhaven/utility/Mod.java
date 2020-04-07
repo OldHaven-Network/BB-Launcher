@@ -21,8 +21,7 @@ public class Mod {
     }
     public Mod(String name, String path, boolean defaultEnable) {
         this(name, path);
-        if(!config.hasProperty(name))
-            this.enabled = defaultEnable;
+        this.enabled = defaultEnable;
     }
 
     public void setEnabled(boolean enabled) {

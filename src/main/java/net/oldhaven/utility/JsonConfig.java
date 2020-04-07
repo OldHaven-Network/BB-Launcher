@@ -21,6 +21,23 @@ public class JsonConfig {
         this.file = new File(filePath);
         if(this.file.exists()) {
             Gson gson = new Gson();
+            try {
+                JsonReader reader = new JsonReader(new FileReader(filePath));
+                this.json = gson.fromJson(reader, READ_TYPE);
+                reader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            this.json = new JsonObject();
+        }
+    }
+
+    /*
+    public JsonConfig(String filePath) {
+        this.file = new File(filePath);
+        if(this.file.exists()) {
+            Gson gson = new Gson();
             JsonReader reader = null;
             try {
                 reader = new JsonReader(new FileReader(filePath));
@@ -35,11 +52,10 @@ public class JsonConfig {
         }
     }
 
+     */
+
     public void clear() {
-        Set<String> keys = json.keySet();
-        for(String key : keys) {
-            json.remove(key);
-        }
+        this.json = new JsonObject();
     }
 
     public File getFile() {
