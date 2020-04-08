@@ -1,7 +1,5 @@
 package net.oldhaven.controller;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.Initializable;
 import net.oldhaven.utility.LogOutput;
 import javafx.application.Platform;
@@ -16,7 +14,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import net.oldhaven.utility.JavaProcess;
 
-import javax.swing.text.DefaultCaret;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;

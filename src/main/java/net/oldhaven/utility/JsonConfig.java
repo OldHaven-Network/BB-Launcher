@@ -9,7 +9,6 @@ import com.google.gson.stream.JsonReader;
 
 import java.io.*;
 import java.lang.reflect.Type;
-import java.util.Set;
 
 public class JsonConfig {
     private static final Type READ_TYPE = new TypeToken<JsonObject>() {}.getType();
@@ -66,6 +65,8 @@ public class JsonConfig {
     }
 
     public boolean hasProperty(String name) {
+        if(json == null || json.isJsonNull())
+            return false;
         return json.has(name);
     }
 

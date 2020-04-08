@@ -1,19 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.RadioButton?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.ToggleGroup?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.shape.Line?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
 
-<AnchorPane onMouseMoved="#movableWindow" prefHeight="394.0" prefWidth="700.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.oldhaven.controller.SettingsScreenController">
+<AnchorPane onMouseMoved="#movableWindow" prefHeight="394.0" prefWidth="700.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.oldhaven.controller.SettingsScreenController">
    <children>
       <ImageView fitHeight="395.0" fitWidth="700.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -30,12 +22,12 @@
                   <Label fx:id="processinfo_button" layoutX="481.0" layoutY="10.0" onMouseClicked="#clickProcessInfoButton" onMouseEntered="#processInfoButtonMouseover" onMouseExited="#processInfoButtonMouseover" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-font-family: Open Sans;" text="PROCESS INFO" />
                </children>
             </Pane>
-            <ListView id="modview" fx:id="modview" layoutX="14.0" layoutY="101.0" prefHeight="175.0" prefWidth="239.0" />
-            <Button id="addmod_button" fx:id="addmod_button" layoutX="262.0" layoutY="217.0" mnemonicParsing="false" onMouseClicked="#clickAddModButton" prefHeight="25.0" prefWidth="95.0" text="Add mod..." />
-            <Button id="removemod_button" fx:id="removemod_button" layoutX="262.0" layoutY="251.0" mnemonicParsing="false" onMouseClicked="#clickRemoveModButton" prefHeight="25.0" prefWidth="95.0" text="Remove mod" />
-            <TextField id="selectedmodpath" fx:id="selectedmodpath" alignment="TOP_LEFT" editable="false" layoutX="14.0" layoutY="285.0" prefHeight="25.0" prefWidth="343.0" promptText="Selected mod path" />
+            <ListView id="modview" fx:id="modview" layoutX="14.0" layoutY="101.0" prefHeight="175.0" prefWidth="345.0" />
+            <Button id="addmod_button" fx:id="addmod_button" layoutX="139.0" layoutY="63.0" mnemonicParsing="false" onMouseClicked="#clickAddModButton" prefHeight="25.0" prefWidth="95.0" text="Add mod..." />
+            <Button id="removemod_button" fx:id="removemod_button" layoutX="264.0" layoutY="63.0" mnemonicParsing="false" onMouseClicked="#clickRemoveModButton" prefHeight="25.0" prefWidth="95.0" text="Remove mod" />
+            <TextField id="selectedmodpath" fx:id="selectedmodpath" alignment="TOP_LEFT" editable="false" layoutX="14.0" layoutY="285.0" prefHeight="25.0" prefWidth="253.0" promptText="Selected mod path" />
             <CheckBox layoutX="393.0" layoutY="103.0" mnemonicParsing="false" text="CheckBox" textFill="WHITE" />
-            <Label layoutX="144.0" layoutY="63.0" style="-fx-font-size: 16;" text="Mod options" textFill="WHITE" />
+            <Label layoutX="14.0" layoutY="63.0" style="-fx-font-size: 16;" text="Mod options" textFill="WHITE" />
             <Label layoutX="448.0" layoutY="63.0" style="-fx-font-size: 16;" text="General settings" textFill="WHITE" />
             <CheckBox layoutX="393.0" layoutY="127.0" mnemonicParsing="false" text="CheckBox" textFill="WHITE" />
             <CheckBox layoutX="393.0" layoutY="152.0" mnemonicParsing="false" text="CheckBox" textFill="WHITE" />
@@ -45,6 +37,7 @@
                </toggleGroup>
             </RadioButton>
             <RadioButton layoutX="525.0" layoutY="187.0" mnemonicParsing="false" text="RadioButton" textFill="WHITE" toggleGroup="$Test" />
+            <TextField id="selectedmodtype" fx:id="selectedmodtype" alignment="TOP_LEFT" editable="false" layoutX="272.0" layoutY="285.0" prefHeight="25.0" prefWidth="87.0" promptText="Mod Type" />
          </children>
       </AnchorPane>
       <Label id="close_button" fx:id="close_button" layoutX="678.0" layoutY="4.0" onMouseClicked="#close" onMouseEntered="#closeButtonMouseover" onMouseExited="#closeButtonMouseover" style="-fx-font-weight: bold; -fx-font-size: 16;" text="✕" textFill="WHITE" />

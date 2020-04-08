@@ -81,7 +81,7 @@ public final class JavaProcess {
     }
     /**
      * Read and process the command output, doesn't include error.
-     *
+     *      *
      * @param input
      */
     private void readOutput(final InputStream input) {

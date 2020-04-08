@@ -15,7 +15,7 @@
       </ImageView>
       <AnchorPane layoutX="398.0" layoutY="38.0" prefHeight="324.0" prefWidth="270.0" style="-fx-background-color: #FFFFFF;">
          <children>
-            <Label layoutX="48.0" layoutY="64.0" style="-fx-font-family: Open Sans; -fx-font-weight: 100;" text="Log in with your Mojang account" />
+            <Label layoutX="48.0" layoutY="64.0" style="-fx-font-family: Open Sans; -fx-font-weight: 100px;" text="Log in with your Mojang account" />
             <TextField id="username_input" fx:id="username_input" layoutX="31.0" layoutY="94.0" prefHeight="26.0" prefWidth="208.0" promptText="Username / E-mail" />
             <Button id="login_button" fx:id="login_button" layoutX="31.0" layoutY="248.0" mnemonicParsing="false" onMouseClicked="#handleLogin" prefHeight="51.0" prefWidth="208.0" style="-fx-font-family: Open Sans; -fx-font-size: 18; -fx-font-weight: bold;" text="LOG IN " />
             <Hyperlink id="noaccount_link" fx:id="noaccount_link" layoutX="50.0" layoutY="162.0" onMouseClicked="#noAccountInfoClick" text="Don't have a Mojang account?" />

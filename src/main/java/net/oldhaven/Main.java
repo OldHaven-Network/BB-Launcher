@@ -1,7 +1,5 @@
 package net.oldhaven;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import net.oldhaven.framework.Install;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -10,8 +8,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import net.oldhaven.utility.JsonConfig;
-import net.oldhaven.utility.Mod;
+import net.oldhaven.utility.mod.ModSection;
+import net.oldhaven.utility.mod.ModType;
+import net.oldhaven.utility.mod.Mods;
 
 import java.awt.*;
 import java.io.*;
@@ -48,15 +47,22 @@ public class Main extends Application {
         }
 
         String mainPath = Install.getMinecraftPath();
-        File file = new File(Install.getMainPath()+"mods.json");
-        if(!file.exists()) {
-            new Mod("MegaMod", mainPath + "mods/MegaMod-Mixins.jar", true);
-            new Mod("Optifine", mainPath + "mods/optifine.jar");
-            Mod.saveMods();
-            System.out.println("mods.json does not exist, creating one with default config");
-        } else {
-            Mod.getMods();
-        }
+        /* note:
+            You need this section cause it adds all of the mods, even if they already exist.
+            defaultEnabled variable is "if not exist, make it enabled/disabled",
+            we're saving afterwards cause if things don't exist and they are created, we're saving that data.
+
+            The CustomMods section is where... custom mods will go, if that wasn't obvious
+            can you make it so they're added to that when they add a new mod?
+            Mods.getModSectionByName("CustomMods").addMod();
+         */
+        Mods.addMod(ModType.Fabric,"MegaMod", mainPath + "mods/MegaMod-Mixins.jar", true);
+        Mods.addMod(ModType.MCP, "Optifine", mainPath + "mods/optifine.jar", false);
+        Mods.addMod(ModType.MCP,"ReiMinimap", mainPath + "mods/ReiMinimap.jar", false);
+        ModSection section = Mods.addModSection("CustomMods");
+        section.addMod(ModType.ModLoader, "TestMod", mainPath+"mods/TestMod.jar", false);
+        if(Mods.shouldUpdate)
+            Mods.saveMods();
 
         Install.installSavedServers(mainPath);
         Install.installMegaMod(mainPath + "mods/");
