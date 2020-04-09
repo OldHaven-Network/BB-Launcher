@@ -3,6 +3,7 @@ package net.oldhaven.controller;
 import com.google.gson.JsonParser;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import net.chris54721.openmcauthenticator.responses.RefreshResponse;
 import net.oldhaven.utility.UserInfo;
 import net.oldhaven.framework.Install;
 import com.google.gson.Gson;
@@ -50,6 +51,7 @@ public class LoginScreenController {
     @FXML public Label error_label;
     @FXML public TextArea news_box;
     @FXML public ComboBox<String> account_choice;
+    @FXML public CheckBox rememberaccount_checkbox;
     public String savedUsername;
 
     @FXML
@@ -72,8 +74,10 @@ public class LoginScreenController {
             try {
                 Reader reader = Files.newBufferedReader(Paths.get(Install.getMainPath() + "players.json"));
                 Map<?, ?> map = gsonAccountChoice.fromJson(reader, Map.class);
-                for(Map.Entry<?, ?> entry : map.entrySet()) {
-                    account_choice.getItems().add(entry.getKey().toString());
+                if(map != null && map.size() > 0) {
+                    for (Map.Entry<?, ?> entry : map.entrySet()) {
+                        account_choice.getItems().add(entry.getKey().toString());
+                    }
                 }
                 reader.close();
             } catch (Exception ex) {
@@ -94,13 +98,12 @@ public class LoginScreenController {
             String username = null;
             if(new File(Install.getMainPath() + "currentuser.txt").exists()) {
                 try {
-                    FileInputStream fstream = new FileInputStream(Install.getMainPath() + "currentuser.txt");
-                    BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
-
+                    FileInputStream fis = new FileInputStream(Install.getMainPath() + "currentuser.txt");
+                    BufferedReader br = new BufferedReader(new InputStreamReader(fis));
                     username = br.readLine();
-
                     br.close();
-                    fstream.close();
+                    fis.close();
+
                     String[] split = username.split("\n");
                     username = split[0];
                     username = username.replaceAll("[^a-zA-Z0-9_?\\s]", "");
@@ -109,41 +112,12 @@ public class LoginScreenController {
                 }
 
                 if (username != null) {
-                    Gson gson = new GsonBuilder().create();
-                    Type type = new TypeToken<Map<String, List<String>>>() {
-                    }.getType();
-                    StringBuilder json = null;
-                    try {
-                        FileInputStream fstream = new FileInputStream(Install.getMainPath() + "players.json");
-                        BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
-                        json = new StringBuilder();
-                        String line;
-                        while ((line = br.readLine()) != null) {
-                            json.append(line);
-                        }
-                        br.close();
-                        fstream.close();
-                    } catch (IOException ignored) {
-                    }
-
-                    if (json != null) {
-                        boolean validated = false;
-                        Map<String, LinkedList<String>> map = gson.fromJson(json.toString(), type);
-                        if (map.containsKey(username)) {
-                            List<String> list = map.get(username);
-                            String acToken = list.get(0);
-                            String clToken = list.get(1);
-                            try {
-                                validated = OpenMCAuthenticator.validate(acToken, clToken);
-                            } catch (AuthenticationUnavailableException | RequestException ex) {
-                                showAndAlignLoginError("Auto login expired, please login manually");
-                            }
-                            if (validated) {
-                                UserInfo.setUserInfo(username, acToken, clToken);
-                                changeScene();
-                                return;
-                            }
-                        }
+                    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                    StringBuilder json = readPlayersJson();
+                    if (!json.toString().isEmpty()) {
+                        Map<String, List<String>> map = gson.fromJson(json.toString(), type);
+                        if(setUserInfo(username, gson, map))
+                            changeScene();
                     }
                 }
             }
@@ -183,6 +157,20 @@ public class LoginScreenController {
 
     @FXML
     private void changeScene() {
+        if(rememberaccount_checkbox.isSelected()) {
+            try {
+                PrintWriter usernameWriter = new PrintWriter(Install.getMainPath() + "currentuser.txt");
+                usernameWriter.print(UserInfo.getUsername());
+                usernameWriter.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        } else {
+            File file = new File(Install.getMainPath() + "currentuser.txt");
+            if(file.exists())
+                file.delete();
+        }
+
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/fxml/MainMenuScreen.fxml"));
             Stage primaryStage = (Stage) login_button.getScene().getWindow();
@@ -256,50 +244,73 @@ public class LoginScreenController {
         } else {
             if (savedUsername != null) {
                 Gson gson = new GsonBuilder().create();
-                Type type = new TypeToken<Map<String, List<String>>>() {
-                }.getType();
-                StringBuilder json = null;
-                try {
-                    FileInputStream fstream = new FileInputStream(Install.getMainPath() + "players.json");
-                    BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
-                    json = new StringBuilder();
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        json.append(line);
-                    }
-                    br.close();
-                    fstream.close();
-                } catch (IOException ignored) {
+                StringBuilder json = readPlayersJson();
+                if (!json.toString().isEmpty()) {
+                    Map<String, List<String>> map = gson.fromJson(json.toString(), type);
+                    boolean b = setUserInfo(savedUsername, gson, map);
+                    if(b)
+                        changeScene();
                 }
+            }
+        }
+    }
 
-                if (json != null) {
-                    boolean validated = false;
-                    Map<String, LinkedList<String>> map = gson.fromJson(json.toString(), type);
-                    if (map.containsKey(savedUsername)) {
-                        List<String> list = map.get(savedUsername);
-                        String acToken = list.get(0);
-                        String clToken = list.get(1);
-                        try {
-                            validated = OpenMCAuthenticator.validate(acToken, clToken);
-                        } catch (AuthenticationUnavailableException | RequestException ex) {
-                            showAndAlignLoginError("Auto login expired, please login manually");
-                        }
-                        if (validated) {
-                            UserInfo.setUserInfo(savedUsername, acToken, clToken);
-                            changeScene();
-                            return;
-                        }
+    private static Type type = new TypeToken<Map<String, List<String>>>() {}.getType();
+    private StringBuilder readPlayersJson() {
+        StringBuilder json = new StringBuilder();
+        try {
+            FileInputStream fstream = new FileInputStream(Install.getMainPath() + "players.json");
+            BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
+            String line;
+            while ((line = br.readLine()) != null) {
+                json.append(line);
+            }
+            br.close();
+            fstream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return json;
+    }
+    private boolean setUserInfo(String username, Gson gson, Map<String, List<String>> map) {
+        boolean validated = false;
+        if(map.containsKey(username)) {
+            List<String> list = map.get(username);
+            String acToken = list.get(0);
+            String clToken = list.get(1);
+            boolean change = false;
+            try {
+                validated = OpenMCAuthenticator.validate(acToken, clToken);
+            } catch (AuthenticationUnavailableException | RequestException ex) {
+                try {
+                    RefreshResponse response = OpenMCAuthenticator.refresh(acToken, clToken);
+                    acToken = response.getAccessToken();
+                    clToken = response.getClientToken();
+                    change = validated = true;
+                } catch (RequestException | AuthenticationUnavailableException exc) {
+                    exc.printStackTrace();
+                }
+            }
+            if (validated) {
+                UserInfo.setUserInfo(username, acToken, clToken);
+                if (change) {
+                    try {
+                        Writer writer = Files.newBufferedWriter(Paths.get(Install.getMainPath() + "players.json"));
+
+                        list.clear();
+                        list.add(UserInfo.getAccessToken());
+                        list.add(UserInfo.getClientToken());
+                        map.replace(UserInfo.getUsername(), list);
+
+                        gson.toJson(map, writer);
+                        writer.close();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
                     }
                 }
             }
         }
-            /*
-            try {
-                PrintWriter usernameWriter = new PrintWriter(Install.getMainPath() + "currentuser.txt");
-                usernameWriter.print(username_input.getText());
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            */
+        System.out.println(validated);
+        return validated;
     }
 }
