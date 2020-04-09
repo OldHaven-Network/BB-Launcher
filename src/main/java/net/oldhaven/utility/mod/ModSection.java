@@ -19,7 +19,7 @@ public class ModSection {
         if(Mods.config.getJson() == null || Mods.config.getJson().isJsonNull()) {
             mod.setEnabled(defaultEnabled);
             Mods.shouldUpdate = true;
-        } else {
+        } else if(Mods.config.getJson().get(this.name) != null) {
             JsonObject self = Mods.config.getJson().get(this.name).getAsJsonObject();
             if (self == null || !self.has(name)) {
                 mod.setEnabled(defaultEnabled);
@@ -29,6 +29,9 @@ public class ModSection {
                 boolean enabled = object.get("Enabled").getAsBoolean();
                 mod.setEnabled(enabled);
             }
+        } else {
+            mod.setEnabled(defaultEnabled);
+            Mods.shouldUpdate = true;
         }
         mods.add(mod);
         Mods.mods.add(mod);

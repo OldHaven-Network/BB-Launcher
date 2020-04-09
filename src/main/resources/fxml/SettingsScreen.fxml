@@ -23,12 +23,12 @@
                </children>
             </Pane>
             <ListView id="modview" fx:id="modview" layoutX="14.0" layoutY="101.0" prefHeight="175.0" prefWidth="345.0" />
-            <Button id="addmod_button" fx:id="addmod_button" layoutX="139.0" layoutY="63.0" mnemonicParsing="false" onMouseClicked="#clickAddModButton" prefHeight="25.0" prefWidth="95.0" text="Add mod..." />
-            <Button id="removemod_button" fx:id="removemod_button" layoutX="264.0" layoutY="63.0" mnemonicParsing="false" onMouseClicked="#clickRemoveModButton" prefHeight="25.0" prefWidth="95.0" text="Remove mod" />
+            <Button id="addmod_button" fx:id="addmod_button" layoutX="180.0" layoutY="63.0" mnemonicParsing="false" onMouseClicked="#clickAddModButton" prefHeight="25.0" prefWidth="87.0" text="Add mod..." />
+            <Button id="removemod_button" fx:id="removemod_button" layoutX="272.0" layoutY="63.0" mnemonicParsing="false" onMouseClicked="#clickRemoveModButton" prefHeight="25.0" prefWidth="87.0" text="Remove mod" />
             <TextField id="selectedmodpath" fx:id="selectedmodpath" alignment="TOP_LEFT" editable="false" layoutX="14.0" layoutY="285.0" prefHeight="25.0" prefWidth="253.0" promptText="Selected mod path" />
             <CheckBox layoutX="393.0" layoutY="103.0" mnemonicParsing="false" text="CheckBox" textFill="WHITE" />
-            <Label layoutX="14.0" layoutY="63.0" style="-fx-font-size: 16;" text="Mod options" textFill="WHITE" />
-            <Label layoutX="448.0" layoutY="63.0" style="-fx-font-size: 16;" text="General settings" textFill="WHITE" />
+            <Label layoutX="14.0" layoutY="63.0" style="-fx-font-size: 16;" text="Mod manager" textFill="WHITE" />
+            <Label layoutX="393.0" layoutY="63.0" style="-fx-font-size: 16;" text="General settings" textFill="WHITE" />
             <CheckBox layoutX="393.0" layoutY="127.0" mnemonicParsing="false" text="CheckBox" textFill="WHITE" />
             <CheckBox layoutX="393.0" layoutY="152.0" mnemonicParsing="false" text="CheckBox" textFill="WHITE" />
             <RadioButton layoutX="393.0" layoutY="187.0" mnemonicParsing="false" text="RadioButton" textFill="WHITE">

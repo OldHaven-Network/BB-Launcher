@@ -1,7 +1,12 @@
 package net.oldhaven.controller;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.*;
 import net.oldhaven.framework.Install;
 import net.oldhaven.utility.UserInfo;
 import javafx.fxml.FXML;
@@ -9,8 +14,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
@@ -20,6 +23,10 @@ import net.oldhaven.utility.JavaProcess;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class MainMenuScreenController implements Initializable {
@@ -28,7 +35,7 @@ public class MainMenuScreenController implements Initializable {
 
     @FXML private Label username;
     @FXML private Button launch_button;
-    @FXML private Label close_button;
+    @FXML private Label close_button, logout_button;
     @FXML private Label main_button, settings_button, processinfo_button;
 
     @Override
@@ -58,15 +65,41 @@ public class MainMenuScreenController implements Initializable {
 
 
     @FXML
-    private void press_logoutButton() {
-        Install.setCurrentUser(null);
-        try {
+    private void press_logoutButton() throws IOException {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Logout");
+        alert.setHeaderText("Are you sure you want to log out?");
+        alert.setContentText("If you also want to erase your account details, click \"Logout and forget\".");
+
+        ButtonType logoutAndForget = new ButtonType("Logout and forget", ButtonBar.ButtonData.LEFT);
+        ButtonType logout = new ButtonType("Logout", ButtonBar.ButtonData.OTHER);
+        ButtonType cancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        alert.getButtonTypes().setAll(logoutAndForget, logout, cancel);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == logoutAndForget){
+            try {
+                JsonObject jsonObject = (JsonObject) JsonParser.parseReader(new FileReader(Install.getMainPath() + "players.json"));
+                jsonObject.remove(UserInfo.getUsername());
+                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                Writer writer = Files.newBufferedWriter(Paths.get(Install.getMainPath() + "players.json"));
+                gson.toJson(jsonObject, writer);
+                writer.close();
+                Install.setCurrentUser(null);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
             Parent root = FXMLLoader.load(getClass().getResource("/fxml/LoginScreen.fxml"));
             Stage primaryStage = (Stage) username.getScene().getWindow();
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } else if (result.get() == logout) {
+            Install.setCurrentUser(null);
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/LoginScreen.fxml"));
+            Stage primaryStage = (Stage) username.getScene().getWindow();
+            Scene scene = new Scene(root);
+            primaryStage.setScene(scene);
         }
     }
 
@@ -76,6 +109,15 @@ public class MainMenuScreenController implements Initializable {
             close_button.setTextFill(Color.web("#646464", 1));
         } else if(event.getEventType().getName().equals("MOUSE_EXITED")) {
             close_button.setTextFill(Color.web("#FFFFFF", 1));
+        }
+    }
+
+    @FXML
+    private void logoutButtonMouseover(MouseEvent event){
+        if(event.getEventType().getName().equals("MOUSE_ENTERED")) {
+            logout_button.setTextFill(Color.web("#646464", 1));
+        } else if(event.getEventType().getName().equals("MOUSE_EXITED")) {
+            logout_button.setTextFill(Color.web("#FFFFFF", 1));
         }
     }
 

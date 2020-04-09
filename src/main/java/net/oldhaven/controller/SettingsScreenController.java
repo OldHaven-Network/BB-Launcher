@@ -62,6 +62,7 @@ public class SettingsScreenController implements Initializable {
             String selectedItem = modview.getSelectionModel().getSelectedItem();
             Mod mod = Mods.getModByName(selectedItem);
             if(mod != null) {
+                
                 selectedmodpath.setText(mod.getFile().toString());
                 selectedmodtype.setText(mod.getType().name());
             }

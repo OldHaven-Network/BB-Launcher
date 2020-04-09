@@ -9,7 +9,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane onMouseMoved="#movableWindow" prefHeight="394.0" prefWidth="700.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.oldhaven.controller.MainMenuScreenController">
+<AnchorPane onMouseEntered="#movableWindow" prefHeight="394.0" prefWidth="700.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.oldhaven.controller.MainMenuScreenController">
    <children>
       <ImageView fitHeight="395.0" fitWidth="700.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -31,9 +31,9 @@
                <font>
                   <Font size="18.0" />
                </font></Label>
-            <Button id="logout_button" fx:id="logout_button" layoutX="521.0" layoutY="271.0" mnemonicParsing="false" onAction="#press_logoutButton" onMouseClicked="#handleLaunch" prefHeight="38.0" prefWidth="102.0" style="-fx-font-family: Open Sans; -fx-font-weight: normal; -fx-font-size: 16;" text="Log Out" />
          </children>
       </AnchorPane>
       <Label id="close_button" fx:id="close_button" layoutX="678.0" layoutY="4.0" onMouseClicked="#close" onMouseEntered="#closeButtonMouseover" onMouseExited="#closeButtonMouseover" style="-fx-font-weight: bold; -fx-font-size: 16;" text="✕" textFill="WHITE" />
+      <Label id="logout_button" fx:id="logout_button" layoutX="615.0" layoutY="8.0" onMouseClicked="#press_logoutButton" onMouseEntered="#logoutButtonMouseover" onMouseExited="#logoutButtonMouseover" style="-fx-font-family: Open Sans; -fx-font-weight: normal; -fx-font-size: 12;" text="Log out" textFill="WHITE" />
    </children>
 </AnchorPane>

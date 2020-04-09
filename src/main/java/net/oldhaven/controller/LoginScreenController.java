@@ -1,5 +1,8 @@
 package net.oldhaven.controller;
 
+import com.google.gson.JsonParser;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import net.oldhaven.utility.UserInfo;
 import net.oldhaven.framework.Install;
 import com.google.gson.Gson;
@@ -29,12 +32,15 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
 
 public class LoginScreenController {
+    double offset_x;
+    double offset_y;
     @FXML private Button login_button;
     @FXML private Label close_button;
     @FXML private Hyperlink noaccount_link;
@@ -42,15 +48,9 @@ public class LoginScreenController {
     @FXML public TextField username_input;
     @FXML public PasswordField password_input;
     @FXML public Label error_label;
-    @FXML public CheckBox usemojangaccount_checkbox;
     @FXML public TextArea news_box;
-
-    @FXML
-    private void useMojangAccCheckBox() {
-        boolean b = usemojangaccount_checkbox.isSelected();
-        password_input.setVisible(b);
-        username_input.setPromptText(b ? "Username / E-mail" : "Username");
-    }
+    @FXML public ComboBox<String> account_choice;
+    public String savedUsername;
 
     @FXML
     private void initialize() {
@@ -67,6 +67,29 @@ public class LoginScreenController {
             news_box.setText(news);
             news_box.requestFocus();
             login_button.requestFocus();
+
+            Gson gsonAccountChoice = new Gson();
+            try {
+                Reader reader = Files.newBufferedReader(Paths.get(Install.getMainPath() + "players.json"));
+                Map<?, ?> map = gsonAccountChoice.fromJson(reader, Map.class);
+                for(Map.Entry<?, ?> entry : map.entrySet()) {
+                    account_choice.getItems().add(entry.getKey().toString());
+                }
+                reader.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            account_choice.valueProperty().addListener(new ChangeListener<String>() {
+                @Override public void changed(ObservableValue obs, String oldValue, String newValue) {
+                    savedUsername = newValue;
+                    username_input.setPromptText("No username input required");
+                    password_input.setPromptText("No password input required");
+                    username_input.editableProperty().setValue(false);
+                    password_input.editableProperty().setValue(false);
+                }
+            });
+
 
             String username = null;
             if(new File(Install.getMainPath() + "currentuser.txt").exists()) {
@@ -113,7 +136,7 @@ public class LoginScreenController {
                             try {
                                 validated = OpenMCAuthenticator.validate(acToken, clToken);
                             } catch (AuthenticationUnavailableException | RequestException ex) {
-                                showAndAlignLoginError("INVALID TOKEN OR CLIENT TOKEN");
+                                showAndAlignLoginError("Auto login expired, please login manually");
                             }
                             if (validated) {
                                 UserInfo.setUserInfo(username, acToken, clToken);
@@ -127,6 +150,21 @@ public class LoginScreenController {
         });
         final Timeline timeline = new Timeline(kf1);
         Platform.runLater(timeline::play);
+    }
+
+    @FXML
+    private void movableWindow(){
+        Scene scene = close_button.getScene();
+        Stage stage = (Stage) close_button.getScene().getWindow();
+        scene.setOnMousePressed(event -> {
+            offset_x = event.getSceneX();
+            offset_y = event.getSceneY();
+        });
+
+        scene.setOnMouseDragged(event -> {
+            stage.setX(event.getScreenX() - offset_x);
+            stage.setY(event.getScreenY() - offset_y);
+        });
     }
 
     @FXML
@@ -171,6 +209,7 @@ public class LoginScreenController {
         alert.setTitle("Don't have a Mojang account?");
         alert.setHeaderText(null);
         alert.setContentText("You can uncheck the \"Use Mojang account\" box and type in a username without a password.");
+        alert.show();
     }
 
 
@@ -180,11 +219,7 @@ public class LoginScreenController {
         username = username == null ? "" : username;
         String password = password_input.getText();
         password = password == null ? "" : password;
-        if(!usemojangaccount_checkbox.isSelected() && !username.isEmpty()){
-            //showAndAlignLoginError("Missing username/password!");
-            UserInfo.setUserInfo(username, null, null);
-            changeScene();
-        } else if(usemojangaccount_checkbox.isSelected()){
+        if(account_choice.getSelectionModel().isEmpty()) {
             try {
                 AuthenticationResponse authResponse = OpenMCAuthenticator.authenticate(username, password);
                 try {
@@ -207,25 +242,64 @@ public class LoginScreenController {
                 }
                 Install.setCurrentUser(authResponse.getSelectedProfile().getName());
             } catch (AuthenticationUnavailableException | RequestException e) {
-                if(e instanceof InvalidCredentialsException) {
+                if (e instanceof InvalidCredentialsException) {
                     showAndAlignLoginError("Invalid credentials!");
-                } else if(e instanceof UserMigratedException) {
+                } else if (e instanceof UserMigratedException) {
                     showAndAlignLoginError("User migrated, use e-mail instead!");
-                } else if(e instanceof AuthenticationUnavailableException) {
+                } else if (e instanceof AuthenticationUnavailableException) {
                     showAndAlignLoginError("Cannot establish connection!");
                 } else {
                     showAndAlignLoginError("Unhandled exception!");
                     System.out.println(e);
                 }
             }
-
         } else {
+            if (savedUsername != null) {
+                Gson gson = new GsonBuilder().create();
+                Type type = new TypeToken<Map<String, List<String>>>() {
+                }.getType();
+                StringBuilder json = null;
+                try {
+                    FileInputStream fstream = new FileInputStream(Install.getMainPath() + "players.json");
+                    BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
+                    json = new StringBuilder();
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        json.append(line);
+                    }
+                    br.close();
+                    fstream.close();
+                } catch (IOException ignored) {
+                }
+
+                if (json != null) {
+                    boolean validated = false;
+                    Map<String, LinkedList<String>> map = gson.fromJson(json.toString(), type);
+                    if (map.containsKey(savedUsername)) {
+                        List<String> list = map.get(savedUsername);
+                        String acToken = list.get(0);
+                        String clToken = list.get(1);
+                        try {
+                            validated = OpenMCAuthenticator.validate(acToken, clToken);
+                        } catch (AuthenticationUnavailableException | RequestException ex) {
+                            showAndAlignLoginError("Auto login expired, please login manually");
+                        }
+                        if (validated) {
+                            UserInfo.setUserInfo(savedUsername, acToken, clToken);
+                            changeScene();
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+            /*
             try {
                 PrintWriter usernameWriter = new PrintWriter(Install.getMainPath() + "currentuser.txt");
                 usernameWriter.print(username_input.getText());
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-        }
+            */
     }
 }

@@ -14,6 +14,7 @@ import net.oldhaven.utility.mod.Mods;
 
 import java.awt.*;
 import java.io.*;
+import java.util.Objects;
 
 public class Main extends Application {
 
@@ -56,11 +57,12 @@ public class Main extends Application {
             can you make it so they're added to that when they add a new mod?
             Mods.getModSectionByName("CustomMods").addMod();
          */
-        Mods.addMod(ModType.Fabric,"MegaMod", mainPath + "mods/MegaMod-Mixins.jar", true);
-        Mods.addMod(ModType.MCP, "Optifine", mainPath + "mods/optifine.jar", false);
-        Mods.addMod(ModType.MCP,"ReiMinimap", mainPath + "mods/ReiMinimap.jar", false);
+
+        Mods.addMod(ModType.Fabric,"MegaMod (built-in)", mainPath + "mods/MegaMod-Mixins.jar", true);
+        Mods.addMod(ModType.MCP, "Optifine (built-in)", mainPath + "mods/optifine.jar", false);
+        Mods.addMod(ModType.MCP,"ReiMinimap (built-in)", mainPath + "mods/ReiMinimap.jar", false);
         ModSection section = Mods.addModSection("CustomMods");
-        section.addMod(ModType.ModLoader, "TestMod", mainPath+"mods/TestMod.jar", false);
+        Objects.requireNonNull(Mods.getModSectionByName("CustomMods")).getMods();
         if(Mods.shouldUpdate)
             Mods.saveMods();
 
