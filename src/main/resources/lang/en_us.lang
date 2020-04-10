@@ -1,0 +1,27 @@
+language.name=English
+language.regin=US
+language.code=en_US
+
+brand.name=OldHaven Network
+
+lang.unknown=Unknown key %1% in lang file %2%
+
+megamod.none=No new versions of MegaMod found
+megamod.latest=Latest MegaMod version: %1%
+
+alert.error=Error
+
+screen.login.userPrompt=UserName / E-mail
+screen.login.passPrompt=Password
+screen.login.savedAcc=Choose saved account...
+screen.login.login=Login
+
+os.unknown=You are running an unknown operating system.
+os.supported=Supported operating systems include Windows, Mac OS X and Linux.
+
+mods.modloader=ModLoader
+mods.fabric=Fabric
+mods.mcp=MCP
+
+button.ok=OK
+button.cancel=Cancel

@@ -3,6 +3,7 @@ package net.oldhaven.controller;
 import com.google.gson.JsonParser;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.fxml.Initializable;
 import net.chris54721.openmcauthenticator.responses.RefreshResponse;
 import net.oldhaven.utility.UserInfo;
 import net.oldhaven.framework.Install;
@@ -33,13 +34,14 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.lang.reflect.Type;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
 
-public class LoginScreenController {
+public class LoginScreenController implements Initializable {
     double offset_x;
     double offset_y;
     @FXML private Button login_button;
@@ -54,8 +56,7 @@ public class LoginScreenController {
     @FXML public CheckBox rememberaccount_checkbox;
     public String savedUsername;
 
-    @FXML
-    private void initialize() {
+    public void initialize(URL url, ResourceBundle bundle) {
         final KeyFrame kf1 = new KeyFrame(Duration.seconds(0.1), e -> {
             login_button.requestFocus();
 

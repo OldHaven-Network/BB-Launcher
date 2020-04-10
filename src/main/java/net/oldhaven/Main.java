@@ -8,6 +8,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import net.oldhaven.utility.lang.Lang;
+import net.oldhaven.utility.lang.LanguageUtil;
 import net.oldhaven.utility.mod.ModSection;
 import net.oldhaven.utility.mod.ModType;
 import net.oldhaven.utility.mod.Mods;
@@ -36,10 +38,9 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         if(Install.isOSUnknown()){
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            System.out.println("ERROR: Unknown operating system, quitting...");
-            alert.setTitle("Error");
-            alert.setHeaderText("You are running an unknown operating system.");
-            alert.setContentText("Supported operating systems include Windows, Mac OS X and Linux. If your system is on this list, you may have an outdated version.");
+            alert.setTitle(Lang.ALERT_ERROR.translate());
+            alert.setHeaderText(Lang.OS_UNKNOWN.translate());
+            alert.setContentText(Lang.OS_SUPPORTED.translate());
             alert.showAndWait();
             if(!alert.isShowing()) {
                 System.exit(0);
