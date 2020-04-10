@@ -40,7 +40,7 @@ public class ProcessInfoScreenController implements Initializable {
                 process_text.appendText(text);
         });
         executor = Executors.newScheduledThreadPool(1);
-        executor.scheduleAtFixedRate(helloRunnable, 0, 200, TimeUnit.MILLISECONDS);
+        executor.scheduleAtFixedRate(helloRunnable, 0, 1000, TimeUnit.MILLISECONDS);
     }
 
     private void changeScene(String sceneResource) {

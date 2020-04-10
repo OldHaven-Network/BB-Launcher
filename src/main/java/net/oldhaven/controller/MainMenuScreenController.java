@@ -7,6 +7,7 @@ import com.google.gson.JsonParser;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import net.lingala.zip4j.ZipFile;
 import net.oldhaven.framework.Install;
 import net.oldhaven.utility.UserInfo;
 import javafx.fxml.FXML;
@@ -20,14 +21,16 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import net.fabricmc.loader.launch.knot.KnotClient;
 import net.oldhaven.utility.JavaProcess;
+import net.oldhaven.utility.mod.Mod;
+import net.oldhaven.utility.mod.ModType;
+import net.oldhaven.utility.mod.Mods;
+import org.apache.commons.io.FileUtils;
 
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Map;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class MainMenuScreenController implements Initializable {
     double offset_x;
@@ -66,6 +69,8 @@ public class MainMenuScreenController implements Initializable {
 
     @FXML
     private void press_logoutButton() throws IOException {
+
+        // Show the user a dialog box to help him decide.
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Logout");
         alert.setHeaderText("Are you sure you want to log out?");
@@ -77,8 +82,10 @@ public class MainMenuScreenController implements Initializable {
 
         alert.getButtonTypes().setAll(logoutAndForget, logout, cancel);
 
+        // Get the button pressed.
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == logoutAndForget){
+            // Read JSON to JsonObject, remove user's account, pretty print JSON back to players.json, clear current user, switch to login scene.
             try {
                 JsonObject jsonObject = (JsonObject) JsonParser.parseReader(new FileReader(Install.getMainPath() + "players.json"));
                 jsonObject.remove(UserInfo.getUsername());
@@ -95,6 +102,7 @@ public class MainMenuScreenController implements Initializable {
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
         } else if (result.get() == logout) {
+            // Only switch to login scene.
             Install.setCurrentUser(null);
             Parent root = FXMLLoader.load(getClass().getResource("/fxml/LoginScreen.fxml"));
             Stage primaryStage = (Stage) username.getScene().getWindow();
@@ -149,7 +157,37 @@ public class MainMenuScreenController implements Initializable {
     }
 
     @FXML
-    private void handleLaunch(MouseEvent event) throws IOException, InterruptedException {
+    private void handleLaunch(MouseEvent event) throws IOException {
+
+        // Back up MC to minecraft.old if that hasn't been done yet. If it has, get fresh MC from minecraft.old to prepare it for injection.
+        if(!new File(Install.getBinPath() + "minecraft.old").exists()) {
+            FileUtils.copyFile(new File(Install.getBinPath() + "minecraft.jar"), new File(Install.getBinPath() + "minecraft.old"));
+        } else {
+            FileUtils.copyFile(new File(Install.getBinPath() + "minecraft.old"), new File(Install.getBinPath() + "minecraft.jar"));
+        }
+
+
+        // Create temp folder, catch non-existent mods, extract appropriate mod contents into it.
+        File modTempPath = new File(Install.getMinecraftPath() + "mods/temp/");
+        for(Mod mod : Mods.getMods()) {
+            if(mod.getFile().exists() && mod.getType().equals(ModType.MCP) && mod.isEnabled()) {
+                ZipFile modZip = new ZipFile(mod.getFile());
+                modZip.extractAll(modTempPath.toString());
+                System.out.println("Mod " + mod.getName() + " will be added to minecraft.jar.");
+            } else if (mod.isEnabled()) {
+                System.out.println("Tried to prepare enabled mod " + mod.getName() + " for adding to minecraft.jar, but it does not exist!");
+            }
+        }
+
+        // Inject mods into minecraft.jar and clean up our mess behind us.
+        ZipFile minecraftJarZip = new ZipFile(Install.getBinPath() + "minecraft.jar");
+        if(modTempPath.listFiles() != null) {
+            minecraftJarZip.addFiles(Arrays.asList(modTempPath.listFiles()));
+        }
+        FileUtils.deleteDirectory(modTempPath);
+        System.out.println("All mods have been injected.");
+
+        // This doesn't serve a purpose anymore.
         StringBuilder libraryBuilder = new StringBuilder();
         String[] libraries = new String[]{"minecraft.jar", "jinput.jar", "lwjgl.jar", "lwjgl_util.jar", "json.jar"};
         for(String libraryAppend : libraries) {
@@ -159,6 +197,7 @@ public class MainMenuScreenController implements Initializable {
                 libraryBuilder.append(Install.getBinPath()).append(libraryAppend).append(":");
         }
 
+        // This does, however. It sets all of the paths, launches Minecraft and switches to the process info screen.
         System.setProperty("java.class.path", Install.getClassPath());
         System.setProperty("java.libs.path", Install.getNativesPath());
         new JavaProcess(System.getProperty("java.home")).exec(KnotClient.class);

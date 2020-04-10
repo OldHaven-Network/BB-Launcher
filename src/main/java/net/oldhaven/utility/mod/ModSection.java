@@ -45,11 +45,21 @@ public class ModSection {
         return mods;
     }
 
-    public void removeMod(String name) {
-        Mod mod = Mods.getModByName(name);
+    public Mod getModByName(String name) {
+        for(Mod mod : mods) {
+            if(mod.getName().equalsIgnoreCase(name))
+                return mod;
+        }
+        return null;
+    }
+    public boolean removeMod(String name) {
+        Mod mod = this.getModByName(name);
         if(mod != null) {
             Mods.removeMod(mod);
+            mods.remove(mod);
+            return true;
         }
+        return false;
     }
 
     JsonObject toJson() {

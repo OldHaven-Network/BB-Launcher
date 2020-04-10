@@ -8,24 +8,23 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import net.oldhaven.utility.mod.Mod;
+import net.oldhaven.utility.mod.ModSection;
+import net.oldhaven.utility.mod.ModType;
 import net.oldhaven.utility.mod.Mods;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
-public class SettingsScreenController implements Initializable {
+public class SettingsScreenController {
 
     private double offset_x;
     private double offset_y;
@@ -36,8 +35,7 @@ public class SettingsScreenController implements Initializable {
     @FXML private TextField selectedmodpath;
     @FXML private TextField selectedmodtype;
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    public void initialize() {
 
         ArrayList<String> stringBuilder = new ArrayList<>();
         for(Mod mod : Mods.getMods())
@@ -49,7 +47,6 @@ public class SettingsScreenController implements Initializable {
             final Mod mod = Mods.getModByName(item);
             if(mod != null) {
                 observable.addListener((obs, oldValue, newValue) -> {
-                    System.out.println("Check box for " + item + " changed from " + oldValue + " to " + newValue);
                     mod.setEnabled(newValue);
                     Mods.saveMods();
                 });
@@ -85,12 +82,53 @@ public class SettingsScreenController implements Initializable {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select mod to add...");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Mod for Minecraft", "*.jar", "*.zip"));
-        fileChooser.showOpenDialog(close_button.getScene().getWindow());
-        /* can you make it so they also choose if it's a fabric/modloader/MCP mod? */
+        File file = fileChooser.showOpenDialog(close_button.getScene().getWindow());
+
+        List<String> choices = new ArrayList<>();
+        choices.add("MCP");
+        choices.add("ModLoader");
+        choices.add("Fabric");
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("ModLoader", choices);
+        dialog.setTitle("Choose mod type");
+        dialog.setHeaderText("Please choose the correct type for your mod.");
+        dialog.setContentText("If you're not sure, select ModLoader.");
+        Optional<String> result = dialog.showAndWait();
+        if(result.isPresent()){
+            switch(result.get()) {
+                case "MCP":
+                    Mods.getModSectionByName("CustomMods").addMod(ModType.MCP, file.getName(), file.getAbsolutePath(), true);
+                    break;
+                case "ModLoader":
+                    Mods.getModSectionByName("CustomMods").addMod(ModType.ModLoader, file.getName(), file.getAbsolutePath(), true);
+                    break;
+                case "Fabric":
+                    Mods.getModSectionByName("CustomMods").addMod(ModType.Fabric, file.getName(), file.getAbsolutePath(), true);
+                    break;
+                default:
+                    // I swear, if somebody manages to select a fourth item from a hard coded three item check box, I won't like it.
+                    Mods.getModSectionByName("CustomMods").addMod(ModType.Unknown, file.getName(), file.getAbsolutePath(), true);
+                    break;
+            }
+            Mods.saveMods();
+            modview.getItems().add(file.getName());
+        }
+
     }
 
     @FXML
     private void clickRemoveModButton() {
+
+        boolean removeSuccessful = Mods.getModSectionByName("CustomMods").removeMod(modview.getSelectionModel().getSelectedItem());
+        if(removeSuccessful){
+            Mods.saveMods();
+            modview.getItems().remove(modview.getSelectionModel().getSelectedIndex());
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("You have tried to remove a built-in mod.");
+            alert.setContentText("Please note that built-in mods cannot be removed. However, they can be disabled if you don't feel like using them.");
+            alert.showAndWait();
+        }
 
     }
 
