@@ -117,6 +117,17 @@ publishing {
     }
 }
 
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Gradle Jar File Example',
+                'Implementation-Version': version,
+                'Main-Class': 'net.oldhaven.Main'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
 compileJava.options.fork = true
-compileJava.options.forkOptions.executable = "C:/Program Files/Java/jdk1.8.0_231/bin/javac.exe"
+compileJava.options.forkOptions.executable = "C:/Program Files/Java/jdk1.8.0_241/bin/javac.exe"
 // Change to match your JDK

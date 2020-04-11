@@ -1,6 +1,7 @@
 package net.oldhaven.controller;
 
 import javafx.fxml.Initializable;
+import net.oldhaven.framework.Install;
 import net.oldhaven.utility.LogOutput;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -13,9 +14,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import net.oldhaven.utility.JavaProcess;
+import org.apache.commons.io.IOUtils;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -36,11 +39,21 @@ public class ProcessInfoScreenController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         Runnable helloRunnable = () -> Platform.runLater(() -> {
             String text;
-            if(!(text=LogOutput.getLogOutput()).isEmpty())
+            if (!(text = LogOutput.getLogOutput()).isEmpty()) {
                 process_text.appendText(text);
+            }
+            String textInArea = process_text.getText();
+            String[] lines = textInArea.split("\n", -1);
+            if (lines.length > 10000) {
+                lines = Arrays.copyOfRange(lines, lines.length - 10000, lines.length);
+                textInArea = String.join("\n", lines);
+                process_text.clear();
+                process_text.appendText("WARNING: Log exceeded 10,000 lines. Logging has ceased to save memory.");
+                executor.shutdownNow();
+            }
         });
         executor = Executors.newScheduledThreadPool(1);
-        executor.scheduleAtFixedRate(helloRunnable, 0, 1000, TimeUnit.MILLISECONDS);
+        executor.scheduleAtFixedRate(helloRunnable, 0, 250, TimeUnit.MILLISECONDS);
     }
 
     private void changeScene(String sceneResource) {

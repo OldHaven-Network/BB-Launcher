@@ -5,6 +5,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
@@ -153,6 +154,36 @@ public class Install {
             }
         }
         return true;
+    }
+
+    // This is a future function that will get and install everything needed for launching Minecraft.
+    // TODO: Implement function fully. I can most likely manage this myself,
+    //  but feel free to work on it if you really have nothing else to do. - Dejf
+    public static boolean installMinecraft() {
+        boolean success;
+        try {
+            URL clientJarURL = new URL("https://launcher.mojang.com/v1/objects/43db9b498cb67058d2e12d394e6507722e71bb45/client.jar");
+            URL binZipURL = new URL("https://www.oldhaven.net/resources/launcher/bin.zip");
+            URL optifineZipURL = new URL("https://www.oldhaven.net/resources/launcher/OptiFine.zip");
+            URL reiminimapZipURL = new URL("https://www.oldhaven.net/resources/launcher/ReiMinimap.zip");
+
+            FileUtils.copyURLToFile(clientJarURL, new File(Install.getMainPath() + "downloads/minecraft.jar")
+                    , 5000, 5000);
+            FileUtils.copyURLToFile(binZipURL, new File(Install.getMainPath() + "downloads/bin.zip")
+                    , 5000, 5000);
+            FileUtils.copyURLToFile(optifineZipURL, new File(Install.getMainPath() + "downloads/optifine.zip")
+                    , 5000, 5000);
+            FileUtils.copyURLToFile(reiminimapZipURL, new File(Install.getMainPath() + "downloads/reiminimap.zip")
+                    , 5000, 5000);
+
+            // Look at its unfinished and unoptimized glory. Don't stare too hard though. It might stare back.
+
+            success = true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            success = false;
+        }
+        return success;
     }
 
     public static boolean installMegaMod(String modsFolder) {
