@@ -1,5 +1,6 @@
 package net.oldhaven;
 
+import net.lingala.zip4j.ZipFile;
 import net.oldhaven.framework.Install;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -60,17 +61,22 @@ public class Main extends Application {
          */
 
         Mods.addMod(ModType.Fabric,"MegaMod (built-in)", mainPath + "mods/MegaMod-Mixins.jar", true);
-        Mods.addMod(ModType.MCP, "Optifine (built-in)", mainPath + "mods/optifine.jar", false);
-        Mods.addMod(ModType.MCP,"ReiMinimap (built-in)", mainPath + "mods/ReiMinimap.jar", false);
+        Mods.addMod(ModType.MCP, "Optifine (built-in)", mainPath + "mods/non-fabric/optifine.zip", false);
+        Mods.addMod(ModType.MCP,"ReiMinimap (built-in)", mainPath + "mods/non-fabric/reiminimap.zip", false);
         ModSection section = Mods.addModSection("CustomMods");
         Objects.requireNonNull(Mods.getModSectionByName("CustomMods")).getMods();
         if(Mods.shouldUpdate)
             Mods.saveMods();
 
+        this.createFolders();
         Install.installSavedServers(mainPath);
         Install.installMegaMod(mainPath + "mods/");
-
-        this.createFolders();
+        if(!new File(Install.getBinPath() + "minecraft.jar").exists()) {
+            Install.installMinecraft();
+        }
+        if(!new File(Install.getBinPath() + "fabric/").exists()) {
+            Install.installFabric();
+        }
         this.loadFXML(primaryStage);
     }
 

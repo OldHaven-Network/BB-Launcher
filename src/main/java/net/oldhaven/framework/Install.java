@@ -1,14 +1,18 @@
 package net.oldhaven.framework;
 
+import net.lingala.zip4j.ZipFile;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 
 public class Install {
 
@@ -156,27 +160,33 @@ public class Install {
         return true;
     }
 
-    // This is a future function that will get and install everything needed for launching Minecraft.
-    // TODO: Implement function fully. I can most likely manage this myself,
-    //  but feel free to work on it if you really have nothing else to do. - Dejf
     public static boolean installMinecraft() {
         boolean success;
         try {
+            Files.createDirectory(Paths.get(Install.getMainPath() + "downloads/"));
+
             URL clientJarURL = new URL("https://launcher.mojang.com/v1/objects/43db9b498cb67058d2e12d394e6507722e71bb45/client.jar");
             URL binZipURL = new URL("https://www.oldhaven.net/resources/launcher/bin.zip");
             URL optifineZipURL = new URL("https://www.oldhaven.net/resources/launcher/OptiFine.zip");
             URL reiminimapZipURL = new URL("https://www.oldhaven.net/resources/launcher/ReiMinimap.zip");
 
-            FileUtils.copyURLToFile(clientJarURL, new File(Install.getMainPath() + "downloads/minecraft.jar")
-                    , 5000, 5000);
-            FileUtils.copyURLToFile(binZipURL, new File(Install.getMainPath() + "downloads/bin.zip")
-                    , 5000, 5000);
-            FileUtils.copyURLToFile(optifineZipURL, new File(Install.getMainPath() + "downloads/optifine.zip")
-                    , 5000, 5000);
-            FileUtils.copyURLToFile(reiminimapZipURL, new File(Install.getMainPath() + "downloads/reiminimap.zip")
-                    , 5000, 5000);
+            File clientJarFile = new File(Install.getMainPath() + "downloads/minecraft.jar");
+            File binZipFile = new File(Install.getMainPath() + "downloads/bin.zip");
+            File optifineZipFile = new File(Install.getMainPath() + "downloads/optifine.zip");
+            File reiminimapZipFile = new File(Install.getMainPath() + "downloads/reiminimap.zip");
 
-            // Look at its unfinished and unoptimized glory. Don't stare too hard though. It might stare back.
+            getFileFromURL(clientJarURL, clientJarFile.toString());
+            getFileFromURL(binZipURL, binZipFile.toString());
+            getFileFromURL(optifineZipURL, optifineZipFile.toString());
+            getFileFromURL(reiminimapZipURL, reiminimapZipFile.toString());
+
+            ZipFile binZip = new ZipFile(binZipFile);
+            binZip.extractAll(Install.getBinPath());
+
+            FileUtils.copyFile(clientJarFile, new File(Install.getBinPath() + "minecraft.jar"));
+            FileUtils.copyFile(optifineZipFile, new File(Install.getMinecraftPath() + "mods/non-fabric/optifine.zip"));
+            FileUtils.copyFile(reiminimapZipFile, new File(Install.getMinecraftPath() + "mods/non-fabric/reiminimap.zip"));
+            FileUtils.deleteDirectory(new File(Install.getMainPath() + "downloads/"));
 
             success = true;
         } catch (IOException e) {
@@ -184,6 +194,64 @@ public class Install {
             success = false;
         }
         return success;
+    }
+
+    private static String convertFabricResource(String name) {
+        String origin = "https://maven.fabricmc.net/";
+        String url = name;
+        String[] split = url.split(":");
+        String classPath = split[0].replace(".", "/");
+        url = origin + classPath + "/" + split[1] + "/" + split[2] + "/" + split[1] + "-" + split[2] + ".jar";
+        return url;
+    }
+
+    public static void installFabric() {
+        try {
+            Files.createDirectory(Paths.get(Install.getBinPath() + "fabric/"));
+
+            URL fabricJsonUrl = new URL("https://meta.fabricmc.net/v2/versions/loader/1.15.2/0.7.10+build.191");
+            URLConnection urlConnection = fabricJsonUrl.openConnection();
+            urlConnection.addRequestProperty("User-Agent", "Mozilla/5.0");
+            InputStream inputStream = urlConnection.getInputStream();
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            StringBuilder stringBuffer = new StringBuilder();
+            String s;
+            while((s = bufferedReader.readLine())!= null){
+                stringBuffer.append(s);
+            }
+            String fabricJsonString = stringBuffer.toString();
+            bufferedReader.close();
+
+            JSONObject fabricJson = new JSONObject(fabricJsonString);
+            JSONArray rawResourceArray = fabricJson.getJSONObject("launcherMeta").getJSONObject("libraries").getJSONArray("common");
+
+            for(int i = 0; i < rawResourceArray.length(); i++) {
+                String rawResource = rawResourceArray.getJSONObject(i).getString("name");
+                String convertedResource = convertFabricResource(rawResource);
+                String[] split = rawResource.split(":");
+                String fileName = split[1] + "-" + split[2] + ".jar";
+                getFileFromURL(new URL(convertedResource), Install.getBinPath() + "fabric/" + fileName);
+            }
+
+            getFileFromURL(new URL("https://repo1.maven.org/maven2/asm/asm-all/3.3.1/asm-all-3.3.1.jar"),
+                    Install.getBinPath() + "fabric/asm-all.jar");
+            getFileFromURL(new URL("https://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.6/gson-2.8.6.jar"),
+                    Install.getBinPath() + "fabric/gson.jar");
+            getFileFromURL(new URL("https://repo1.maven.org/maven2/com/google/guava/guava/28.2-jre/guava-28.2-jre.jar"),
+                    Install.getBinPath() + "fabric/guava-28.2-jre.jar");
+            getFileFromURL(new URL("https://repo1.maven.org/maven2/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar"),
+                    Install.getBinPath() + "fabric/jsr305-3.0.2.jar");
+            getFileFromURL(new URL("https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-api/2.13.1/log4j-api-2.13.1.jar"),
+                    Install.getBinPath() + "fabric/log4j-api.jar");
+            getFileFromURL(new URL("https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.13.1/log4j-core-2.13.1.jar"),
+                    Install.getBinPath() + "fabric/log4j-core.jar");
+            getFileFromURL(new URL("https://www.oldhaven.net/resources/launcher/fabric-loader.jar"),
+                    Install.getBinPath() + "fabric/fabric-loader.jar");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static boolean installMegaMod(String modsFolder) {
@@ -265,6 +333,19 @@ public class Install {
             usernameWriter.close();
         } catch (Exception ex2) {
             ex2.printStackTrace();
+        }
+    }
+
+    public static void getFileFromURL(URL url, String targetPath) {
+        try {
+            URLConnection urlConnection = url.openConnection();
+            urlConnection.addRequestProperty("User-Agent", "Mozilla/5.0");
+            InputStream inputStream = urlConnection.getInputStream();
+            IOUtils.copy(inputStream, new FileOutputStream(targetPath));
+            IOUtils.close(urlConnection);
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

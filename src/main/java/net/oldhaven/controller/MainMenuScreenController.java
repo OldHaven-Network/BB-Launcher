@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.model.FileHeader;
 import net.oldhaven.framework.Install;
 import net.oldhaven.utility.UserInfo;
 import javafx.fxml.FXML;
@@ -161,6 +162,7 @@ public class MainMenuScreenController implements Initializable {
 
         // Back up MC to minecraft.old if that hasn't been done yet. If it has, get fresh MC from minecraft.old to prepare it for injection.
         if(!new File(Install.getBinPath() + "minecraft.old").exists()) {
+            new ZipFile(Install.getBinPath() + "minecraft.jar").removeFile("META-INF/");
             FileUtils.copyFile(new File(Install.getBinPath() + "minecraft.jar"), new File(Install.getBinPath() + "minecraft.old"));
         } else {
             FileUtils.copyFile(new File(Install.getBinPath() + "minecraft.old"), new File(Install.getBinPath() + "minecraft.jar"));
@@ -179,10 +181,20 @@ public class MainMenuScreenController implements Initializable {
             }
         }
 
-        // Inject mods into minecraft.jar and clean up our mess behind us.
+        // Delete META-INF files, inject mods into minecraft.jar and clean up our mess behind us.
         ZipFile minecraftJarZip = new ZipFile(Install.getBinPath() + "minecraft.jar");
+        List<FileHeader> headers = minecraftJarZip.getFileHeaders();
+        // The following three lines are not a mistake, by the way. It just works. Trust me.
+        minecraftJarZip.removeFile(headers.get(0));
+        minecraftJarZip.removeFile(headers.get(0));
+        minecraftJarZip.removeFile(headers.get(0));
         if(modTempPath.listFiles() != null) {
             minecraftJarZip.addFiles(Arrays.asList(modTempPath.listFiles()));
+            for(File file : modTempPath.listFiles()) {
+                if(file.isDirectory()){
+                    minecraftJarZip.addFolder(file);
+                }
+            }
         }
         FileUtils.deleteDirectory(modTempPath);
         System.out.println("All mods have been injected.");
