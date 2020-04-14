@@ -7,6 +7,8 @@ import com.google.gson.JsonParser;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.model.FileHeader;
 import net.oldhaven.framework.Install;
@@ -37,6 +39,7 @@ public class MainMenuScreenController implements Initializable {
     double offset_x;
     double offset_y;
 
+    @FXML public ImageView background;
     @FXML private Label username;
     @FXML private Button launch_button;
     @FXML private Label close_button, logout_button;
@@ -44,6 +47,15 @@ public class MainMenuScreenController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        File[] fileArray = new File(Install.getMainPath()).listFiles();
+        assert fileArray != null;
+        for(File file : fileArray) {
+            if(file.getAbsolutePath().contains("launcherbg")) {
+                background.setImage(new Image(file.toURI().toString()));
+            }
+        }
+
         username.setText("Username: " + UserInfo.getUsername());
         username.setMaxWidth(Double.MAX_VALUE);
         AnchorPane.setLeftAnchor(username, 0.0);
@@ -172,13 +184,17 @@ public class MainMenuScreenController implements Initializable {
         // Create temp folder, catch non-existent mods, extract appropriate mod contents into it.
         File modTempPath = new File(Install.getMinecraftPath() + "mods/temp/");
         for(Mod mod : Mods.getMods()) {
-            if(mod.getFile().exists() && mod.getType().equals(ModType.MCP) && mod.isEnabled()) {
-                ZipFile modZip = new ZipFile(mod.getFile());
-                modZip.extractAll(modTempPath.toString());
-                System.out.println("Mod " + mod.getName() + " will be added to minecraft.jar.");
-            } else if (mod.isEnabled()) {
+            if(mod.getFile().exists() && mod.isEnabled()) {
+                if(mod.getType().equals(ModType.MCP)) {
+                    ZipFile modZip = new ZipFile(mod.getFile());
+                    modZip.extractAll(modTempPath.toString());
+                    System.out.println("Mod " + mod.getName() + " will be added to minecraft.jar.");
+                }
+            } else if (mod.isEnabled() && !mod.getType().equals(ModType.MCP)) {
                 System.out.println("Tried to prepare enabled mod " + mod.getName() + " for adding to minecraft.jar, but it does not exist!");
             }
+
+
         }
 
         // Delete META-INF files, inject mods into minecraft.jar and clean up our mess behind us.

@@ -4,6 +4,8 @@ import com.google.gson.JsonParser;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.Initializable;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import net.chris54721.openmcauthenticator.responses.RefreshResponse;
 import net.oldhaven.utility.UserInfo;
 import net.oldhaven.framework.Install;
@@ -44,6 +46,7 @@ import java.util.*;
 public class LoginScreenController implements Initializable {
     double offset_x;
     double offset_y;
+    @FXML public ImageView background;
     @FXML private Button login_button;
     @FXML private Label close_button;
     @FXML private Hyperlink noaccount_link;
@@ -57,6 +60,15 @@ public class LoginScreenController implements Initializable {
     public String savedUsername;
 
     public void initialize(URL url, ResourceBundle bundle) {
+
+        File[] fileArray = new File(Install.getMainPath()).listFiles();
+        assert fileArray != null;
+        for(File file : fileArray) {
+            if(file.getAbsolutePath().contains("launcherbg")) {
+                background.setImage(new Image(file.toURI().toString()));
+            }
+        }
+
         final KeyFrame kf1 = new KeyFrame(Duration.seconds(0.1), e -> {
             login_button.requestFocus();
 

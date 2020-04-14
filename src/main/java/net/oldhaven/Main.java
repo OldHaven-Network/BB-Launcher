@@ -14,6 +14,7 @@ import net.oldhaven.utility.lang.LanguageUtil;
 import net.oldhaven.utility.mod.ModSection;
 import net.oldhaven.utility.mod.ModType;
 import net.oldhaven.utility.mod.Mods;
+import org.apache.commons.io.FileUtils;
 
 import java.awt.*;
 import java.io.*;
@@ -60,9 +61,9 @@ public class Main extends Application {
             Mods.getModSectionByName("CustomMods").addMod();
          */
 
-        Mods.addMod(ModType.Fabric,"MegaMod (built-in)", mainPath + "mods/MegaMod-Mixins.jar", true);
-        Mods.addMod(ModType.MCP, "Optifine (built-in)", mainPath + "mods/non-fabric/optifine.zip", false);
-        Mods.addMod(ModType.MCP,"ReiMinimap (built-in)", mainPath + "mods/non-fabric/reiminimap.zip", false);
+        Mods.addMod(ModType.Fabric,"MegaMod-Mixins.jar", mainPath + "mods-inactive/MegaMod-Mixins.jar", true);
+        Mods.addMod(ModType.MCP, "Optifine.zip", mainPath + "mods/non-fabric/optifine.zip", false);
+        Mods.addMod(ModType.MCP,"ReiMinimap.zip", mainPath + "mods/non-fabric/reiminimap.zip", false);
         ModSection section = Mods.addModSection("CustomMods");
         Objects.requireNonNull(Mods.getModSectionByName("CustomMods")).getMods();
         if(Mods.shouldUpdate)
@@ -77,6 +78,18 @@ public class Main extends Application {
         if(!new File(Install.getBinPath() + "fabric/").exists()) {
             Install.installFabric();
         }
+        File settingsFile = new File(Install.getMainPath() + "settings.txt");
+        if(!settingsFile.exists()){
+            try {
+                PrintWriter settingsWriter = new PrintWriter(settingsFile, "UTF-8");
+                settingsWriter.println("1024"); // Maximum allocated memory
+                settingsWriter.println("256"); // Minimum allocated memory
+                settingsWriter.close();
+            } catch (FileNotFoundException | UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+
         this.loadFXML(primaryStage);
     }
 

@@ -28,7 +28,19 @@ public final class JavaProcess {
 
         String username = UserInfo.getUsername();
 
-        ProcessBuilder builder = new ProcessBuilder(javaBin, "-Xms"+"100M", "-Xms"+"2G",
+        File settingsFile = new File(Install.getMainPath() + "settings.txt");
+        String maxmem = null;
+        String minmem = null;
+        try {
+            BufferedReader settingsReader = new BufferedReader(new FileReader(settingsFile));
+            maxmem = settingsReader.readLine();
+            minmem = settingsReader.readLine();
+            settingsReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ProcessBuilder builder = new ProcessBuilder(javaBin, "-Xms"+minmem+"m", "-Xms"+maxmem+"m",
                 "-Djava.library.path="+libsPath, "-cp", classpath, className, "--gameDir", Install.getMinecraftPath(), "--username", username);
 
         builder.redirectErrorStream(true);

@@ -8,7 +8,7 @@
 
 <AnchorPane onMouseMoved="#movableWindow" prefHeight="394.0" prefWidth="700.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.oldhaven.controller.ProcessInfoScreenController">
    <children>
-      <ImageView fitHeight="395.0" fitWidth="700.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="background" fitHeight="395.0" fitWidth="700.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../images/blur.png" />
          </image>

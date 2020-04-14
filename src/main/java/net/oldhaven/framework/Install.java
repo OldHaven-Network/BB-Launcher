@@ -163,17 +163,18 @@ public class Install {
     public static boolean installMinecraft() {
         boolean success;
         try {
-            Files.createDirectory(Paths.get(Install.getMainPath() + "downloads/"));
+            Files.createDirectory(Paths.get(Install.getMainPath() + "temp/"));
+            Files.createDirectories(Paths.get(Install.getMinecraftPath() + "mods/non-fabric/"));
 
             URL clientJarURL = new URL("https://launcher.mojang.com/v1/objects/43db9b498cb67058d2e12d394e6507722e71bb45/client.jar");
             URL binZipURL = new URL("https://www.oldhaven.net/resources/launcher/bin.zip");
             URL optifineZipURL = new URL("https://www.oldhaven.net/resources/launcher/OptiFine.zip");
             URL reiminimapZipURL = new URL("https://www.oldhaven.net/resources/launcher/ReiMinimap.zip");
 
-            File clientJarFile = new File(Install.getMainPath() + "downloads/minecraft.jar");
-            File binZipFile = new File(Install.getMainPath() + "downloads/bin.zip");
-            File optifineZipFile = new File(Install.getMainPath() + "downloads/optifine.zip");
-            File reiminimapZipFile = new File(Install.getMainPath() + "downloads/reiminimap.zip");
+            File clientJarFile = new File(Install.getBinPath() + "minecraft.jar");
+            File binZipFile = new File(Install.getMainPath() + "temp/bin.zip");
+            File optifineZipFile = new File(Install.getMinecraftPath() + "mods/non-fabric/optifine.zip");
+            File reiminimapZipFile = new File(Install.getMinecraftPath() + "mods/non-fabric/reiminimap.zip");
 
             getFileFromURL(clientJarURL, clientJarFile.toString());
             getFileFromURL(binZipURL, binZipFile.toString());
@@ -183,10 +184,7 @@ public class Install {
             ZipFile binZip = new ZipFile(binZipFile);
             binZip.extractAll(Install.getBinPath());
 
-            FileUtils.copyFile(clientJarFile, new File(Install.getBinPath() + "minecraft.jar"));
-            FileUtils.copyFile(optifineZipFile, new File(Install.getMinecraftPath() + "mods/non-fabric/optifine.zip"));
-            FileUtils.copyFile(reiminimapZipFile, new File(Install.getMinecraftPath() + "mods/non-fabric/reiminimap.zip"));
-            FileUtils.deleteDirectory(new File(Install.getMainPath() + "downloads/"));
+            FileUtils.forceDelete(new File(Install.getMainPath() + "temp/"));
 
             success = true;
         } catch (IOException e) {
@@ -341,8 +339,10 @@ public class Install {
             URLConnection urlConnection = url.openConnection();
             urlConnection.addRequestProperty("User-Agent", "Mozilla/5.0");
             InputStream inputStream = urlConnection.getInputStream();
-            IOUtils.copy(inputStream, new FileOutputStream(targetPath));
+            FileOutputStream fileOutputStream = new FileOutputStream(targetPath);
+            IOUtils.copy(inputStream, fileOutputStream);
             IOUtils.close(urlConnection);
+            fileOutputStream.close();
             inputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
