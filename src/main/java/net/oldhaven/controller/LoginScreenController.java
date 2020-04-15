@@ -74,12 +74,16 @@ public class LoginScreenController implements Initializable {
 
             String news = null;
             try {
-                news = IOUtils.toString(new FileInputStream(Install.getMainPath() + "news.txt"));
+                URL newsUrl = new URL("https://www.oldhaven.net/resources/launcher/news.txt");
+                Install.getFileFromURL(newsUrl, Install.getMainPath() + "news.txt");
+                news = IOUtils.toString(new FileInputStream(Install.getMainPath() + "news.txt"), StandardCharsets.UTF_8);
             } catch (IOException e2) {
                 e2.printStackTrace();
             }
 
-            news_box.setText(news);
+            if(!(news == null)) {
+                news_box.setText(news);
+            }
             news_box.requestFocus();
             login_button.requestFocus();
 
@@ -114,12 +118,13 @@ public class LoginScreenController implements Initializable {
                     FileInputStream fis = new FileInputStream(Install.getMainPath() + "currentuser.txt");
                     BufferedReader br = new BufferedReader(new InputStreamReader(fis));
                     username = br.readLine();
-                    br.close();
-                    fis.close();
+
 
                     String[] split = username.split("\n");
                     username = split[0];
                     username = username.replaceAll("[^a-zA-Z0-9_?\\s]", "");
+                    br.close();
+                    fis.close();
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -130,6 +135,8 @@ public class LoginScreenController implements Initializable {
                     if (!json.toString().isEmpty()) {
                         Map<String, List<String>> map = gson.fromJson(json.toString(), type);
                         if(setUserInfo(username, gson, map))
+                            System.out.println("Auto logging in " + username);
+                            rememberaccount_checkbox.setSelected(true);
                             changeScene();
                     }
                 }

@@ -17,6 +17,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import net.oldhaven.utility.JavaProcess;
 import org.apache.commons.io.IOUtils;
+import org.fxmisc.richtext.StyleClassedTextArea;
 
 import java.io.*;
 import java.net.URL;
@@ -34,7 +35,7 @@ public class ProcessInfoScreenController implements Initializable {
     @FXML public ImageView background;
     @FXML public Label close_button;
     @FXML public Label main_button, settings_button, processinfo_button;
-    @FXML public TextArea process_text;
+    @FXML public StyleClassedTextArea process_text;
 
     private ScheduledExecutorService executor;
 
@@ -48,18 +49,18 @@ public class ProcessInfoScreenController implements Initializable {
                 background.setImage(new Image(file.toURI().toString()));
             }
         }
-
         Runnable helloRunnable = () -> Platform.runLater(() -> {
             String text;
             if (!(text = LogOutput.getLogOutput()).isEmpty()) {
                 process_text.appendText(text);
+                process_text.scrollYToPixel(process_text.getLayoutY());
+                process_text.moveTo(process_text.getText().length());
             }
             String textInArea = process_text.getText();
             String[] lines = textInArea.split("\n", -1);
             if (lines.length > 10000) {
-                lines = Arrays.copyOfRange(lines, lines.length - 10000, lines.length);
-                textInArea = String.join("\n", lines);
-                process_text.clear();
+                //lines = Arrays.copyOfRange(lines, lines.length - 10000, lines.length);
+                //textInArea = String.join("\n", lines);
                 process_text.appendText("WARNING: Log exceeded 10,000 lines. Logging has ceased to save memory.");
                 executor.shutdownNow();
             }

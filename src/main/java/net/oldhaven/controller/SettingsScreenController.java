@@ -9,6 +9,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -25,9 +27,11 @@ import net.oldhaven.utility.mod.Mods;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
+import java.awt.*;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
+import java.util.List;
 
 public class SettingsScreenController {
 
@@ -245,6 +249,11 @@ public class SettingsScreenController {
         launcherbg_path.setText(newImage.getAbsolutePath());
         background.setImage(new Image(file.toURI().toString()));
 
+    }
+
+    @FXML
+    private void clickLauncherFolderButton() throws IOException {
+        Desktop.getDesktop().open(new File(Install.getMainPath()));
     }
 
     @FXML

@@ -1,5 +1,6 @@
 package net.oldhaven;
 
+import javafx.scene.image.Image;
 import net.lingala.zip4j.ZipFile;
 import net.oldhaven.framework.Install;
 import javafx.application.Application;
@@ -18,6 +19,7 @@ import org.apache.commons.io.FileUtils;
 
 import java.awt.*;
 import java.io.*;
+import java.net.URL;
 import java.util.Objects;
 
 public class Main extends Application {
@@ -105,6 +107,8 @@ public class Main extends Application {
         primaryStage.initStyle(StageStyle.UNDECORATED);
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
+        primaryStage.setTitle("Beyond Beta Launcher");
+        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/icon.png")));
         primaryStage.show();
         scene.setOnMousePressed(event -> {
             offset_x = event.getSceneX();

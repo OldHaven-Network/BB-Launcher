@@ -39,9 +39,9 @@
             <Label layoutX="449.0" layoutY="105.0" text="Maximum memory (MB)" textFill="WHITE" />
             <TextField fx:id="minmem_field" layoutX="393.0" layoutY="134.0" prefHeight="25.0" prefWidth="44.0" />
             <Label layoutX="449.0" layoutY="138.0" text="Minimum memory (MB)" textFill="WHITE" />
-            <TextField id="launcherbgpath" fx:id="launcherbg_path" alignment="TOP_LEFT" editable="false" layoutX="393.0" layoutY="183.0" prefHeight="25.0" prefWidth="227.0" promptText="Custom launcher background path" />
+            <TextField id="launcherbg_path" fx:id="launcherbg_path" alignment="TOP_LEFT" editable="false" layoutX="393.0" layoutY="183.0" prefHeight="25.0" prefWidth="227.0" promptText="Custom launcher background path" />
             <Button id="launcherbgbutton" fx:id="launcherbg_button" layoutX="393.0" layoutY="216.0" mnemonicParsing="false" onMouseClicked="#clickChangeBackgroundButton" prefHeight="25.0" prefWidth="227.0" text="Change background..." />
-            <Button id="launcherfolderbutton" fx:id="launcherfolder_button" layoutX="393.0" layoutY="265.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="227.0" style="-fx-font-weight: bold;" text="Open launcher folder" />
+            <Button id="launcherfolderbutton" fx:id="launcherfolder_button" layoutX="393.0" layoutY="265.0" mnemonicParsing="false" onMouseClicked="#clickLauncherFolderButton" prefHeight="25.0" prefWidth="227.0" style="-fx-font-weight: bold;" text="Open launcher folder" />
             <Label layoutX="341.0" layoutY="289.0" style="-fx-font-weight: bold;" text="(?)">
                <tooltip>
                   <Tooltip text="Fabric - Special mods designed for FabricMC.&#10;MCP - Standalone mods that don't require a mod loader.&#10;ModLoader - Standard ModLoader mods, most common mod type." wrapText="true" />
