@@ -9,6 +9,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.model.FileHeader;
 import net.oldhaven.framework.Install;
@@ -44,6 +45,8 @@ public class MainMenuScreenController implements Initializable {
     @FXML private Button launch_button;
     @FXML private Label close_button, logout_button;
     @FXML private Label main_button, settings_button, processinfo_button;
+    @FXML public AnchorPane pain;
+    @FXML public Pane clipPane;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -52,11 +55,13 @@ public class MainMenuScreenController implements Initializable {
         assert fileArray != null;
         for(File file : fileArray) {
             if(file.getAbsolutePath().contains("launcherbg")) {
-                background.setImage(new Image(file.toURI().toString()));
+                Image image = new Image(file.toURI().toString());
+                background.setImage(image);
+                background.fitWidthProperty().bind(clipPane.widthProperty());
             }
         }
 
-        username.setText("Username: " + UserInfo.getUsername());
+        username.setText(UserInfo.getUsername());
         username.setMaxWidth(Double.MAX_VALUE);
         AnchorPane.setLeftAnchor(username, 0.0);
         AnchorPane.setRightAnchor(username, 0.0);

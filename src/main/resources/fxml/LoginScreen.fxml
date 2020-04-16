@@ -15,13 +15,19 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="394.0" prefWidth="700.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.oldhaven.controller.LoginScreenController">
+<AnchorPane fx:id="pain" prefHeight="394.0" prefWidth="700.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.oldhaven.controller.LoginScreenController">
    <children>
-      <ImageView fx:id="background" fitHeight="395.0" fitWidth="700.0" onMouseMoved="#movableWindow" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../images/blur.png" />
-         </image>
-      </ImageView>
+      <Pane fx:id="clipPane" prefHeight="394.0" prefWidth="700.0">
+         <children>
+            <ImageView fx:id="background" cache="true" cacheHint="SPEED" depthTest="ENABLE" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true"
+                       fitWidth="${clipPane.width}"
+                       smooth="false" managed="false">
+               <image>
+                  <Image url="@../images/blur.png" />
+               </image>
+            </ImageView>
+         </children>
+      </Pane>
       <AnchorPane layoutX="398.0" layoutY="38.0" prefHeight="324.0" prefWidth="270.0" style="-fx-background-color: #FFFFFF;">
          <children>
             <Text layoutX="93.0" layoutY="49.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: Open Sans; -fx-font-weight: bold; -fx-font-size: 32;" text="Login" />

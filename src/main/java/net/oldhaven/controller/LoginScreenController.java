@@ -6,6 +6,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.Initializable;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import net.chris54721.openmcauthenticator.responses.RefreshResponse;
 import net.oldhaven.utility.UserInfo;
 import net.oldhaven.framework.Install;
@@ -57,6 +58,8 @@ public class LoginScreenController implements Initializable {
     @FXML public TextArea news_box;
     @FXML public ComboBox<String> account_choice;
     @FXML public CheckBox rememberaccount_checkbox;
+    @FXML public AnchorPane pain;
+    @FXML public Pane clipPane;
     public String savedUsername;
 
     public void initialize(URL url, ResourceBundle bundle) {
@@ -65,7 +68,9 @@ public class LoginScreenController implements Initializable {
         assert fileArray != null;
         for(File file : fileArray) {
             if(file.getAbsolutePath().contains("launcherbg")) {
-                background.setImage(new Image(file.toURI().toString()));
+                Image image = new Image(file.toURI().toString());
+                background.setImage(image);
+                background.fitWidthProperty().bind(clipPane.widthProperty());
             }
         }
 

@@ -15,6 +15,8 @@ import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -43,6 +45,8 @@ public class SettingsScreenController {
     @FXML private Label main_button, settings_button, processinfo_button;
     @FXML private TextField selectedmodpath, selectedmodtype, minmem_field, maxmem_field, launcherbg_path;
     @FXML private ImageView background;
+    @FXML public AnchorPane pain;
+    @FXML public Pane clipPane;
 
     public void initialize() {
 
@@ -50,7 +54,9 @@ public class SettingsScreenController {
         assert fileArray != null;
         for(File file : fileArray) {
             if(file.getAbsolutePath().contains("launcherbg")) {
-                background.setImage(new Image(file.toURI().toString()));
+                Image image = new Image(file.toURI().toString());
+                background.setImage(image);
+                background.fitWidthProperty().bind(clipPane.widthProperty());
             }
         }
 

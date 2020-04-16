@@ -3,6 +3,8 @@ package net.oldhaven.controller;
 import javafx.fxml.Initializable;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import net.oldhaven.framework.Install;
 import net.oldhaven.utility.LogOutput;
 import javafx.application.Platform;
@@ -36,6 +38,8 @@ public class ProcessInfoScreenController implements Initializable {
     @FXML public Label close_button;
     @FXML public Label main_button, settings_button, processinfo_button;
     @FXML public StyleClassedTextArea process_text;
+    @FXML public AnchorPane pain;
+    @FXML public Pane clipPane;
 
     private ScheduledExecutorService executor;
 
@@ -46,9 +50,13 @@ public class ProcessInfoScreenController implements Initializable {
         assert fileArray != null;
         for(File file : fileArray) {
             if(file.getAbsolutePath().contains("launcherbg")) {
-                background.setImage(new Image(file.toURI().toString()));
+                Image image = new Image(file.toURI().toString());
+                background.setImage(image);
+                background.fitWidthProperty().bind(clipPane.widthProperty());
             }
         }
+
+
         Runnable helloRunnable = () -> Platform.runLater(() -> {
             String text;
             if (!(text = LogOutput.getLogOutput()).isEmpty()) {
