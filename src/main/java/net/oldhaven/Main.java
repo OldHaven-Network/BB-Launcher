@@ -74,12 +74,7 @@ public class Main extends Application {
         this.createFolders();
         Install.installSavedServers(mainPath);
         Install.installMegaMod(mainPath + "mods/");
-        if(!new File(Install.getBinPath() + "minecraft.jar").exists()) {
-            Install.installMinecraft();
-        }
-        if(!new File(Install.getBinPath() + "fabric/").exists()) {
-            Install.installFabric();
-        }
+        // Moved Minecraft installation to after login so unauthorized users cannot download Mojang files without logging in.
         File settingsFile = new File(Install.getMainPath() + "settings.txt");
         if(!settingsFile.exists()){
             try {

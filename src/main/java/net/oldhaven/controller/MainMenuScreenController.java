@@ -66,6 +66,13 @@ public class MainMenuScreenController implements Initializable {
         AnchorPane.setLeftAnchor(username, 0.0);
         AnchorPane.setRightAnchor(username, 0.0);
         username.setAlignment(Pos.CENTER);
+
+        if(!new File(Install.getBinPath() + "minecraft.jar").exists()) {
+            Install.installMinecraft();
+        }
+        if(!new File(Install.getBinPath() + "fabric/").exists()) {
+            Install.installFabric();
+        }
     }
 
     @FXML

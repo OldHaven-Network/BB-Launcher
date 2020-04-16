@@ -20,6 +20,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import net.oldhaven.Main;
 import net.oldhaven.framework.Install;
 import net.oldhaven.utility.lang.Lang;
 import net.oldhaven.utility.mod.Mod;
@@ -43,7 +44,7 @@ public class SettingsScreenController {
     @FXML private ListView<String> modview;
     @FXML private Label close_button;
     @FXML private Label main_button, settings_button, processinfo_button;
-    @FXML private TextField selectedmodpath, selectedmodtype, minmem_field, maxmem_field, launcherbg_path;
+    @FXML private TextField selectedmodpath, selectedmodtype, minmem_field, maxmem_field;
     @FXML private ImageView background;
     @FXML public AnchorPane pain;
     @FXML public Pane clipPane;
@@ -252,9 +253,20 @@ public class SettingsScreenController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        launcherbg_path.setText(newImage.getAbsolutePath());
         background.setImage(new Image(file.toURI().toString()));
 
+    }
+
+    @FXML
+    private void clickResetLauncherBackground() {
+        File[] fileArray = new File(Install.getMainPath()).listFiles();
+        assert fileArray != null;
+        for(File fileUghh : fileArray) {
+            if(fileUghh.getAbsolutePath().contains("launcherbg")) {
+                fileUghh.delete();
+            }
+        }
+        background.setImage(new Image(getClass().getResource("/images/blur.png").toString()));
     }
 
     @FXML
