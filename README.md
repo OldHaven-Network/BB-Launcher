@@ -1,4 +1,4 @@
-# OH-Launcher / Beyond Beta Launcher
+# Beyond Beta Launcher
 
 A user-friendly, simple to use launcher for Minecraft Beta 1.7.3.
 
