@@ -47,6 +47,7 @@ public class MainMenuScreenController implements Initializable {
     @FXML private Label main_button, settings_button, processinfo_button;
     @FXML public AnchorPane pain;
     @FXML public Pane clipPane;
+    @FXML public ImageView skin;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -61,11 +62,12 @@ public class MainMenuScreenController implements Initializable {
             }
         }
 
+        this.skin.setImage(new Image("https://minotar.net/body/"+UserInfo.getUsername()+"/100.png"));
         username.setText(UserInfo.getUsername());
         username.setMaxWidth(Double.MAX_VALUE);
-        AnchorPane.setLeftAnchor(username, 0.0);
-        AnchorPane.setRightAnchor(username, 0.0);
-        username.setAlignment(Pos.CENTER);
+        //AnchorPane.setLeftAnchor(username, 0.0);
+        //AnchorPane.setRightAnchor(username, 0.0);
+        //username.setAlignment(Pos.CENTER);
 
         if(!new File(Install.getBinPath() + "minecraft.jar").exists()) {
             Install.installMinecraft();
