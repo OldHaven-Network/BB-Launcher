@@ -27,11 +27,13 @@
                   <Label fx:id="processinfo_button" layoutX="481.0" layoutY="10.0" onMouseClicked="#clickProcessInfoButton" onMouseEntered="#processInfoButtonMouseover" onMouseExited="#processInfoButtonMouseover" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-font-family: Open Sans;" text="PROCESS INFO" />
                </children>
             </Pane>
-            <Button id="launch_button" fx:id="launch_button" layoutX="220.0" layoutY="240.0" mnemonicParsing="false" onMouseClicked="#handleLaunch" prefHeight="67.0" prefWidth="197.0" style="-fx-font-family: Open Sans; -fx-font-weight: bold; -fx-font-size: 32;" text="Launch" />
-            <Label id="username" fx:id="username" layoutX="45.0" layoutY="94.0" style="-fx-font-weight: bold;" text="qazwsxedcrfvtgby" textAlignment="CENTER" textFill="WHITE">
+            <Button id="launch_button" fx:id="launch_button" layoutX="219.0" layoutY="240.0" mnemonicParsing="false" onMouseClicked="#handleLaunch" prefHeight="67.0" prefWidth="197.0" style="-fx-font-family: Open Sans; -fx-font-weight: bold; -fx-font-size: 32;" text="Launch" />
+            <Label id="username" fx:id="username" alignment="CENTER" contentDisplay="CENTER" layoutX="-3.0" layoutY="73.0" prefHeight="30.0" prefWidth="212.0" style="-fx-font-weight: bold;" text="123456789123456" textAlignment="CENTER" textFill="WHITE">
                <font>
-                  <Font size="64.0" />
+                  <Font size="16.0" />
                </font></Label>
+            <ImageView id="skin" fx:id="skin" fitHeight="200.0" fitWidth="100.0" layoutX="53.0" layoutY="103.0" pickOnBounds="true" />
+            <Label alignment="CENTER" layoutX="69.0" layoutY="64.0" text="Logged in as" textAlignment="CENTER" textFill="WHITE" />
          </children>
       </AnchorPane>
       <Label id="close_button" fx:id="close_button" layoutX="678.0" layoutY="4.0" onMouseClicked="#close" onMouseEntered="#closeButtonMouseover" onMouseExited="#closeButtonMouseover" style="-fx-font-weight: bold; -fx-font-size: 16;" text="✕" textFill="WHITE" />

@@ -50,14 +50,14 @@ public class SettingsScreenController {
     @FXML public Pane clipPane;
 
     public void initialize() {
-
         File[] fileArray = new File(Install.getMainPath()).listFiles();
         assert fileArray != null;
         for(File file : fileArray) {
             if(file.getAbsolutePath().contains("launcherbg")) {
                 Image image = new Image(file.toURI().toString());
                 background.setImage(image);
-                background.fitWidthProperty().bind(clipPane.widthProperty());
+                background.setFitWidth(clipPane.getWidth());
+                background.setFitHeight(clipPane.getHeight());
             }
         }
 
@@ -72,19 +72,10 @@ public class SettingsScreenController {
                 observable.addListener((obs, oldValue, newValue) -> {
                     mod.setEnabled(newValue);
                     if(mod.getType().equals(ModType.ModLoader) || mod.getType().equals(ModType.Fabric)){
-                        if(newValue){
-                            try {
-                                FileUtils.moveFile(mod.getFile(), new File(Install.getMinecraftPath() + "mods/" + mod.getName()));
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        } else {
-                            try {
-                                FileUtils.moveFile(new File(Install.getMinecraftPath() + "mods/" + mod.getName()), mod.getFile());
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
+                        File file = new File(Install.getMinecraftPath() + "mods/" + mod.getName());
+                        try {
+                            FileUtils.moveFile(newValue ? mod.getFile() : file, newValue ? file : mod.getFile());
+                        } catch(IOException ignored) {}
                     }
                     Mods.saveMods();
                 });
@@ -115,22 +106,16 @@ public class SettingsScreenController {
             e.printStackTrace();
         }
 
-        maxmem_field.textProperty().addListener((observable, oldValue, newValue) -> {
-            try {
-                PrintWriter settingsWriter = new PrintWriter(settingsFile, "UTF-8");
-                settingsWriter.println(maxmem_field.getText()); // Maximum allocated memory
-                settingsWriter.println(minmem_field.getText()); // Minimum allocated memory
-                settingsWriter.close();
-            } catch (FileNotFoundException | UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-        });
+        doMemOption(settingsFile, maxmem_field);
+        doMemOption(settingsFile, minmem_field);
+    }
 
-        minmem_field.textProperty().addListener((observable, oldValue, newValue) -> {
+    private void doMemOption(final File settingsFile, final TextField mem_field) {
+        mem_field.textProperty().addListener((observable, oldValue, newValue) -> {
             try {
                 PrintWriter settingsWriter = new PrintWriter(settingsFile, "UTF-8");
-                settingsWriter.println(maxmem_field.getText()); // Maximum allocated memory
-                settingsWriter.println(minmem_field.getText()); // Minimum allocated memory
+                settingsWriter.println(mem_field.getText()); // Maximum allocated memory
+                settingsWriter.println(mem_field.getText()); // Minimum allocated memory
                 settingsWriter.close();
             } catch (FileNotFoundException | UnsupportedEncodingException e) {
                 e.printStackTrace();
