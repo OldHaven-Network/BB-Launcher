@@ -1,7 +1,7 @@
 package net.oldhaven.utility.mod;
 
 public enum ModType {
-    Fabric, ModLoader, MCP, Unknown;
+    Fabric, ModLoader, NonFabric, Unknown;
 
     public static ModType fromString(String s) {
         for(ModType type : values()) {

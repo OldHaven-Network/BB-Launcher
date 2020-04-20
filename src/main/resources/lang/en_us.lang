@@ -22,6 +22,7 @@ os.supported=Supported operating systems include Windows, Mac OS X and Linux.
 mods.modloader=ModLoader
 mods.fabric=Fabric
 mods.mcp=MCP
+mods.nonfabric=NonFabric
 
 button.ok=OK
 button.cancel=Cancel
