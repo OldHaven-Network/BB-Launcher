@@ -74,28 +74,11 @@ public class SettingsScreenController {
             if(mod != null) {
                 observable.addListener((obs, oldValue, newValue) -> {
                     mod.setEnabled(newValue);
-<<<<<<< Updated upstream
-                    if(mod.getType().equals(ModType.ModLoader) || mod.getType().equals(ModType.Fabric)){
+                    if(mod.getType().equals(ModType.Fabric)){
                         File file = new File(Install.getMinecraftPath() + "mods/" + mod.getName());
                         try {
                             FileUtils.moveFile(newValue ? mod.getFile() : file, newValue ? file : mod.getFile());
                         } catch(IOException ignored) {}
-=======
-                    if(mod.getType().equals(ModType.Fabric)){
-                        if(newValue && mod.getFile().exists()){
-                            try {
-                                FileUtils.moveFile(mod.getFile(), new File(Install.getMinecraftPath() + "mods/" + mod.getName()));
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        } else if(new File(Install.getMinecraftPath() + "mods/" + mod.getName()).exists()) {
-                            try {
-                                FileUtils.moveFile(new File(Install.getMinecraftPath() + "mods/" + mod.getName()), mod.getFile());
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
->>>>>>> Stashed changes
                     }
                     Mods.saveMods();
                 });
