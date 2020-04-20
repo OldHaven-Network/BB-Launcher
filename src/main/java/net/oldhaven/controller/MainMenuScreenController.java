@@ -194,21 +194,18 @@ public class MainMenuScreenController implements Initializable {
             FileUtils.copyFile(new File(Install.getBinPath() + "minecraft.old"), new File(Install.getBinPath() + "minecraft.jar"));
         }
 
-
         // Create temp folder, catch non-existent mods, extract appropriate mod contents into it.
         File modTempPath = new File(Install.getMinecraftPath() + "mods/temp/");
         for(Mod mod : Mods.getMods()) {
-            if(mod.getFile().exists() && mod.isEnabled()) {
-                if(mod.getType().equals(ModType.MCP)) {
+            if(mod.isEnabled() && mod.getType().equals(ModType.NonFabric)) {
+                if (mod.getFile().exists()) {
                     ZipFile modZip = new ZipFile(mod.getFile());
                     modZip.extractAll(modTempPath.toString());
                     System.out.println("Mod " + mod.getName() + " will be added to minecraft.jar.");
+                } else {
+                    System.out.println("Tried to prepare enabled mod " + mod.getName() + " for adding to minecraft.jar, but it does not exist!");
                 }
-            } else if (mod.isEnabled() && !mod.getType().equals(ModType.MCP)) {
-                System.out.println("Tried to prepare enabled mod " + mod.getName() + " for adding to minecraft.jar, but it does not exist!");
             }
-
-
         }
 
         // Delete META-INF files, inject mods into minecraft.jar and clean up our mess behind us.

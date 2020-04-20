@@ -20,6 +20,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
 import net.oldhaven.Main;
 import net.oldhaven.framework.Install;
 import net.oldhaven.utility.lang.Lang;
@@ -29,6 +31,7 @@ import net.oldhaven.utility.mod.ModType;
 import net.oldhaven.utility.mod.Mods;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.lwjgl.Sys;
 
 import java.awt.*;
 import java.io.*;
@@ -71,11 +74,28 @@ public class SettingsScreenController {
             if(mod != null) {
                 observable.addListener((obs, oldValue, newValue) -> {
                     mod.setEnabled(newValue);
+<<<<<<< Updated upstream
                     if(mod.getType().equals(ModType.ModLoader) || mod.getType().equals(ModType.Fabric)){
                         File file = new File(Install.getMinecraftPath() + "mods/" + mod.getName());
                         try {
                             FileUtils.moveFile(newValue ? mod.getFile() : file, newValue ? file : mod.getFile());
                         } catch(IOException ignored) {}
+=======
+                    if(mod.getType().equals(ModType.Fabric)){
+                        if(newValue && mod.getFile().exists()){
+                            try {
+                                FileUtils.moveFile(mod.getFile(), new File(Install.getMinecraftPath() + "mods/" + mod.getName()));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        } else if(new File(Install.getMinecraftPath() + "mods/" + mod.getName()).exists()) {
+                            try {
+                                FileUtils.moveFile(new File(Install.getMinecraftPath() + "mods/" + mod.getName()), mod.getFile());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+>>>>>>> Stashed changes
                     }
                     Mods.saveMods();
                 });
@@ -141,68 +161,35 @@ public class SettingsScreenController {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Mod for Minecraft", "*.jar", "*.zip"));
         File file = fileChooser.showOpenDialog(close_button.getScene().getWindow());
 
-        List<String> choices = new ArrayList<>();
-        choices.add("MCP");
-        choices.add("ModLoader");
-        choices.add("Fabric");
-        ChoiceDialog<String> dialog = new ChoiceDialog<>("ModLoader", choices);
-        dialog.setTitle("Choose mod type");
-        dialog.setHeaderText("Please choose the correct type for your mod.");
-        dialog.setContentText("If you're not sure, select ModLoader.");
-        Optional<String> result = dialog.showAndWait();
-        if(result.isPresent()){
-            String notMcpModPath = Install.getMinecraftPath() + "mods-inactive/" + file.getName();
-            switch(result.get()) {
-                case "MCP":
-                    Mods.getModSectionByName("CustomMods").addMod(ModType.MCP, file.getName(), file.getAbsolutePath(), true);
-                    break;
-                case "ModLoader":
-                    try {
-                        FileUtils.copyFile(new File(file.getAbsolutePath()), new File(notMcpModPath));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    Mods.getModSectionByName("CustomMods").addMod(ModType.ModLoader, file.getName(), notMcpModPath, true);
-                    boolean isModloaderPresent = false;
-                    for(Mod mod : Mods.getMods()){
-                        if(mod.getName().toLowerCase().contains("modloader")){
-                            isModloaderPresent = true;
-                        }
-                    }
-                    if(!isModloaderPresent) {
-                        Alert alert = new Alert(Alert.AlertType.WARNING);
-                        alert.setTitle("Warning");
-                        alert.setHeaderText("Could not detect ModLoader within your mods.");
-                        alert.setContentText("Please make sure to acquire and add ModLoader as an MCP mod alongside your ModLoader mod.");
-                        alert.showAndWait();
-                    }
-                    break;
-                case "Fabric":
-                    try {
-                        FileUtils.copyFile(new File(file.getAbsolutePath()), new File(notMcpModPath));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    Mods.getModSectionByName("CustomMods").addMod(ModType.Fabric, file.getName(), notMcpModPath, true);
-                    break;
-                default:
-                    // I swear, if somebody manages to select a fourth item from a hard coded three item check box, I won't like it.
-                    Mods.getModSectionByName("CustomMods").addMod(ModType.Unknown, file.getName(), file.getAbsolutePath(), true);
-                    break;
+        ZipFile modZipFile = new ZipFile(file);
+        String nonFabricModPath = Install.getMinecraftPath() + "mods-inactive/" + file.getName();
+        try {
+            if(modZipFile.getFileHeader("fabric.mod.json") != null) {
+                try {
+                    FileUtils.copyFile(new File(file.getAbsolutePath()), new File(nonFabricModPath));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Mods.getModSectionByName("CustomMods").addMod(ModType.Fabric, file.getName(), nonFabricModPath, true);
+            } else {
+                Mods.getModSectionByName("CustomMods").addMod(ModType.NonFabric, file.getName(), file.getAbsolutePath(), true);
             }
-            Mods.saveMods();
-            modview.getItems().add(file.getName());
+        } catch (ZipException e) {
+            e.printStackTrace();
         }
-
+        Mods.saveMods();
+        modview.getItems().add(file.getName());
     }
 
     @FXML
     private void clickRemoveModButton() {
+
+        ModType removedModType = Mods.getModSectionByName("CustomMods").getModByName(modview.getSelectionModel().getSelectedItem()).getType();
+        String removedModName = Mods.getModSectionByName("CustomMods").getModByName(modview.getSelectionModel().getSelectedItem()).getName();
+
         boolean removeSuccessful = Mods.getModSectionByName("CustomMods").removeMod(modview.getSelectionModel().getSelectedItem());
         if(removeSuccessful){
-            ModType removedModType = Mods.getModSectionByName("CustomMods").getModByName(modview.getSelectionModel().getSelectedItem()).getType();
-            String removedModName = Mods.getModSectionByName("CustomMods").getModByName(modview.getSelectionModel().getSelectedItem()).getName();
-            if(removedModType.equals(ModType.ModLoader) || removedModType.equals(ModType.Fabric)){
+            if(removedModType.equals(ModType.Fabric)){
                 FileUtils.deleteQuietly(new File(Install.getMinecraftPath() + "mods-inactive/" + removedModName));
                 FileUtils.deleteQuietly(new File(Install.getMinecraftPath() + "mods/" + removedModName));
             }
