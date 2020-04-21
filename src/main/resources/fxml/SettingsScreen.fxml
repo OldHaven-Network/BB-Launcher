@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Line?>
 
-<AnchorPane fx:id="pain" onMouseMoved="#movableWindow" prefHeight="394.0" prefWidth="700.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.oldhaven.controller.SettingsScreenController">
+<AnchorPane fx:id="pain" onMouseMoved="#movableWindow" prefHeight="394.0" prefWidth="700.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.oldhaven.controller.SettingsScreenController">
    <children>
       <Pane fx:id="clipPane" prefHeight="394.0" prefWidth="700.0">
          <children>
@@ -41,7 +47,7 @@
             <Button id="launcherfolderbutton" fx:id="launcherfolder_button" layoutX="393.0" layoutY="265.0" mnemonicParsing="false" onMouseClicked="#clickLauncherFolderButton" prefHeight="25.0" prefWidth="227.0" style="-fx-font-weight: bold;" text="Open launcher folder" />
             <Label layoutX="341.0" layoutY="289.0" style="-fx-font-weight: bold;" text="(?)">
                <tooltip>
-                  <Tooltip text="Fabric - Special mods designed for FabricMC.&#10;MCP - Standalone mods that don't require a mod loader.&#10;ModLoader - Standard ModLoader mods, most common mod type." wrapText="true" />
+                  <Tooltip text="FABRIC - Special mods designed for FabricMC.&#10;NON-FABRIC - Standard ModLoader and MCP mods.&#10;Note that ModLoader needs to be installed and enabled if you wish to use ModLoader mods." wrapText="true" />
                </tooltip>
             </Label>
             <Button id="resetbgbutton" fx:id="resetbgbutton" layoutX="393.0" layoutY="224.0" mnemonicParsing="false" onMouseClicked="#clickResetLauncherBackground" prefHeight="25.0" prefWidth="227.0" text="Reset launcher background" />

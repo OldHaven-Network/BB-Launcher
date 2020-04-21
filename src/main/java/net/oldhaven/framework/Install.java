@@ -173,8 +173,8 @@ public class Install {
 
             File clientJarFile = new File(Install.getBinPath() + "minecraft.jar");
             File binZipFile = new File(Install.getMainPath() + "temp/bin.zip");
-            File optifineZipFile = new File(Install.getMinecraftPath() + "mods/non-fabric/optifine.zip");
-            File reiminimapZipFile = new File(Install.getMinecraftPath() + "mods/non-fabric/reiminimap.zip");
+            File optifineZipFile = new File(Install.getMinecraftPath() + "mods/non-fabric/OptiFine.zip");
+            File reiminimapZipFile = new File(Install.getMinecraftPath() + "mods/non-fabric/ReiMinimap.zip");
 
             getFileFromURL(clientJarURL, clientJarFile.toString());
             getFileFromURL(binZipURL, binZipFile.toString());

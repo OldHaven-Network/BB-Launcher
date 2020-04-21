@@ -45,7 +45,6 @@ public class ProcessInfoScreenController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
         File[] fileArray = new File(Install.getMainPath()).listFiles();
         assert fileArray != null;
         for(File file : fileArray) {
@@ -56,19 +55,20 @@ public class ProcessInfoScreenController implements Initializable {
             }
         }
 
+        process_text.setAutoScrollOnDragDesired(true);
 
         Runnable helloRunnable = () -> Platform.runLater(() -> {
             String text;
             if (!(text = LogOutput.getLogOutput()).isEmpty()) {
                 process_text.appendText(text);
-                process_text.scrollYToPixel(process_text.getLayoutY());
-                process_text.moveTo(process_text.getText().length());
+                process_text.scrollYBy(process_text.getLength());
             }
             String textInArea = process_text.getText();
             String[] lines = textInArea.split("\n", -1);
             if (lines.length > 10000) {
                 //lines = Arrays.copyOfRange(lines, lines.length - 10000, lines.length);
                 //textInArea = String.join("\n", lines);
+                process_text.clear();
                 process_text.appendText("WARNING: Log exceeded 10,000 lines. Logging has ceased to save memory.");
                 executor.shutdownNow();
             }

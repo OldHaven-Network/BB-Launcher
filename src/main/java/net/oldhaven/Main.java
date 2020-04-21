@@ -64,8 +64,8 @@ public class Main extends Application {
          */
 
         Mods.addMod(ModType.Fabric,"MegaMod-Mixins.jar", mainPath + "mods-inactive/MegaMod-Mixins.jar", true);
-        Mods.addMod(ModType.NonFabric, "Optifine.zip", mainPath + "mods/non-fabric/optifine.zip", false);
-        Mods.addMod(ModType.NonFabric,"ReiMinimap.zip", mainPath + "mods/non-fabric/reiminimap.zip", false);
+        Mods.addMod(ModType.NonFabric, "OptiFine.zip", mainPath + "mods/non-fabric/OptiFine.zip", false);
+        Mods.addMod(ModType.NonFabric,"ReiMinimap.zip", mainPath + "mods/non-fabric/ReiMinimap.zip", false);
         ModSection section = Mods.addModSection("CustomMods");
         Objects.requireNonNull(Mods.getModSectionByName("CustomMods")).getMods();
         if(Mods.shouldUpdate)
