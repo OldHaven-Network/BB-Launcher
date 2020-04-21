@@ -29,7 +29,7 @@ Current installation procedures are as follows:
 
 ## Requirements
 
-- **Java 8** or greater.
+- **Java 8** or greater with a **JavaFX** runtime installed. If you use Oracle Java 8 (recommended), you should have this by default. With OpenJDK, you may have to install an appropriate JavaFX version.
 - **Windows, Mac OS X** or **Linux** operating system.
 
 ## Building
