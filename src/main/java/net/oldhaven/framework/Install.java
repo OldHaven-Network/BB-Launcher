@@ -53,7 +53,7 @@ public class Install {
             case "Windows":
                 return (System.getProperty("user.home") + "/AppData/Roaming/."+name+"/").replaceAll("/", "\\\\");
             case "Mac OS":
-                return "~/Library/Application Support/"+name+"/";
+                return System.getProperty("user.home") + "/Library/Application Support/"+name+"/";
             default:
                 String linuxMainPath = (System.getProperty("user.home") + "/."+name+"/");
                 String linuxUser = System.getenv("USER");
@@ -284,7 +284,7 @@ public class Install {
                 alert.setTitle("Launcher update");
                 alert.setHeaderText("A new version of the launcher has been detected.");
                 alert.setContentText("Your current version is "+currentVersion+", the latest version is "+tag+". " +
-                        "                           Would you like to open your browser to grab the latest release?");
+                        "\nWould you like to open your browser to grab the latest release?");
 
                 ButtonType yes = new ButtonType("Yes", ButtonBar.ButtonData.YES);
                 ButtonType no = new ButtonType("No", ButtonBar.ButtonData.NO);
