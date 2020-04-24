@@ -59,8 +59,7 @@ public class SettingsScreenController {
             if(file.getAbsolutePath().contains("launcherbg")) {
                 Image image = new Image(file.toURI().toString());
                 background.setImage(image);
-                background.setFitWidth(clipPane.getWidth());
-                background.setFitHeight(clipPane.getHeight());
+                background.fitWidthProperty().bind(clipPane.widthProperty());
             }
         }
 

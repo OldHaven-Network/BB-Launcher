@@ -87,6 +87,8 @@ public class Main extends Application {
             }
         }
 
+        Install.checkLauncherUpdate();
+
         this.loadFXML(primaryStage);
     }
 

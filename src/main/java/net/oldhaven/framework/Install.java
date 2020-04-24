@@ -1,18 +1,25 @@
 package net.oldhaven.framework;
 
+import javafx.geometry.Insets;
+import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
 import net.lingala.zip4j.ZipFile;
+import net.oldhaven.utility.lang.Lang;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.awt.*;
 import java.io.*;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
+import java.util.Optional;
 
 public class Install {
 
@@ -26,9 +33,10 @@ public class Install {
         return os.contains("nix") || os.contains("nux") || os.contains("aix");
     }
 
+    // Not gonna lie, this function is pretty garbage
     public static boolean isOSUnknown() {
         String os = System.getProperty("os.name").toLowerCase();
-        return !os.contains("win") && !os.equals("osx") && !isLinux(os);
+        return !os.contains("win") && !os.contains("mac") && !isLinux(os);
     }
 
     public static String getOS(){
@@ -249,6 +257,47 @@ public class Install {
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void checkLauncherUpdate() {
+
+        // This is a very dirty way of setting a version, I know. I'll change it later. Maybe.
+        String currentVersion = "0.1.2";
+
+        try {
+            URL oracle = new URL("https://api.github.com/repos/OldHaven-Network/BB-Launcher/releases");
+            URLConnection uc = oracle.openConnection();
+            BufferedReader in = new BufferedReader(new InputStreamReader(uc.getInputStream()));
+            StringBuilder builder = new StringBuilder();
+            String s;
+            while ((s = in.readLine()) != null) {
+                builder.append(s);
+            }
+            JSONObject json = (JSONObject) new JSONArray(builder.toString()).get(0);
+            String tag = (String) json.get("tag_name");
+
+            if(!currentVersion.equals(tag) && !tag.isEmpty()) {
+
+            }
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Launcher update");
+                alert.setHeaderText("A new version of the launcher has been detected.");
+                alert.setContentText("Your current version is "+currentVersion+", the latest version is "+tag+". " +
+                        "                           Would you like to open your browser to grab the latest release?");
+
+                ButtonType yes = new ButtonType("Yes", ButtonBar.ButtonData.YES);
+                ButtonType no = new ButtonType("No", ButtonBar.ButtonData.NO);
+                alert.getButtonTypes().setAll(yes, no);
+
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == yes) {
+                    Desktop.getDesktop().browse(new URL("https://github.com/OldHaven-Network/BB-Launcher/releases").toURI());
+                    System.exit(0);
+                }
+
+        } catch (IOException | URISyntaxException e) {
+
         }
     }
 
