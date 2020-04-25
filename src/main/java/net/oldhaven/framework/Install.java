@@ -263,7 +263,7 @@ public class Install {
     public static void checkLauncherUpdate() {
 
         // This is a very dirty way of setting a version, I know. I'll change it later. Maybe.
-        String currentVersion = "0.1.2";
+        String currentVersion = "0.1.3";
 
         try {
             URL oracle = new URL("https://api.github.com/repos/OldHaven-Network/BB-Launcher/releases");
