@@ -278,12 +278,10 @@ public class Install {
             String tag = (String) json.get("tag_name");
 
             if(!currentVersion.equals(tag) && !tag.isEmpty()) {
-
-            }
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Launcher update");
                 alert.setHeaderText("A new version of the launcher has been detected.");
-                alert.setContentText("Your current version is "+currentVersion+", the latest version is "+tag+". " +
+                alert.setContentText("Your current version is " + currentVersion + ", the latest version is " + tag + ". " +
                         "\nWould you like to open your browser to grab the latest release?");
 
                 ButtonType yes = new ButtonType("Yes", ButtonBar.ButtonData.YES);
@@ -295,6 +293,7 @@ public class Install {
                     Desktop.getDesktop().browse(new URL("https://github.com/OldHaven-Network/BB-Launcher/releases").toURI());
                     System.exit(0);
                 }
+            }
 
         } catch (IOException | URISyntaxException e) {
 
