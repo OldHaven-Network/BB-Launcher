@@ -23,7 +23,7 @@ A user-friendly, simple to use launcher for Minecraft Beta 1.7.3.
 
 Current installation procedures are as follows:
 
-1. Download the latest release in the GitHub Release tab.
+1. Download the latest release in the GitHub Release tab. (https://github.com/OldHaven-Network/BB-Launcher/releases)
 2. Launch the downloaded jar file.
 3. Done! All necessary files should be acquired by the launcher automatically.
 
