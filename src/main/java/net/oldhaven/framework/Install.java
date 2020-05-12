@@ -269,7 +269,7 @@ public class Install {
             if(!currentVersion.equals(tag) && !tag.isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Launcher update");
-                alert.setHeaderText("A new version of the launcher has been detected.");
+                alert.setHeaderText("A new version of the launcher has been released!");
                 alert.setContentText("Your current version is " + currentVersion + ", the latest version is " + tag + ". " +
                         "\nWould you like to open your browser to grab the latest release?");
 
