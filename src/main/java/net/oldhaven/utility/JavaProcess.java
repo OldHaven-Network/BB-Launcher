@@ -17,6 +17,10 @@ public final class JavaProcess {
         this.javaHome = javaHome;
     }
 
+    public static boolean isAlive() {
+        return process.isAlive();
+    }
+
     public boolean exec(Class clazz) throws IOException {
         lastArg = clazz;
         String javaBin = javaHome +

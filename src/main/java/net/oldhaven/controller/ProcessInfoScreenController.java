@@ -179,7 +179,14 @@ public class ProcessInfoScreenController implements Initializable {
         JavaProcess.destroyProcess();
     }
 
+    @FXML
     public void restartMinecraftButton(MouseEvent event) {
         JavaProcess.restartProcess();
     }
+
+    @FXML
+    public void clearButton() {
+        process_text.clear();
+    }
+
 }

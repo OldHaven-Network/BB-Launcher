@@ -29,11 +29,11 @@
                   <Label fx:id="processinfo_button" layoutX="481.0" layoutY="10.0" onMouseEntered="#processInfoButtonMouseover" onMouseExited="#processInfoButtonMouseover" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-font-family: Open Sans;" text="PROCESS INFO" />
                </children>
             </Pane>
-            <Button layoutX="10.0" layoutY="289.0" mnemonicParsing="false" onMouseClicked="#restartMinecraftButton" prefHeight="19.0" prefWidth="205.0" style="-fx-font-weight: bold;" text="Restart Minecraft Process">
+            <Button layoutX="10.0" layoutY="289.0" mnemonicParsing="false" onMouseClicked="#restartMinecraftButton" prefHeight="25.0" prefWidth="175.0" style="-fx-font-weight: bold;" text="Restart Minecraft process">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></Button>
-            <Button layoutX="222.0" layoutY="289.0" mnemonicParsing="false" onMouseClicked="#killMinecraftButton" prefHeight="25.0" prefWidth="205.0" style="-fx-font-weight: bold;" text="Kill Minecraft Process">
+            <Button layoutX="193.0" layoutY="289.0" mnemonicParsing="false" onMouseClicked="#killMinecraftButton" prefHeight="25.0" prefWidth="148.0" style="-fx-font-weight: bold;" text="Kill Minecraft process">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></Button>
@@ -44,6 +44,11 @@
             </VirtualizedScrollPane>
             <TextField id="loglines_textfield" fx:id="loglines_textfield" layoutX="458.0" layoutY="289.0" prefHeight="25.0" prefWidth="55.0" text="10000" />
             <Label layoutX="520.0" layoutY="293.0" text="Maximum log lines" textFill="WHITE" />
+            <Button fx:id="clearlog_button" layoutX="349.0" layoutY="289.0" mnemonicParsing="false" onMouseClicked="#clearButton" prefHeight="25.0" prefWidth="71.0" style="-fx-font-weight: bold;" text="Clear log">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
          </children>
       </AnchorPane>
       <Label id="close_button" fx:id="close_button" layoutX="678.0" layoutY="4.0" onMouseClicked="#close" onMouseEntered="#closeButtonMouseover" onMouseExited="#closeButtonMouseover" style="-fx-font-weight: bold; -fx-font-size: 16;" text="✕" textFill="WHITE" />
