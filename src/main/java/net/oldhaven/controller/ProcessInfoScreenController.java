@@ -1,6 +1,7 @@
 package net.oldhaven.controller;
 
 import javafx.fxml.Initializable;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -13,35 +14,38 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import net.oldhaven.utility.JavaProcess;
-import org.apache.commons.io.IOUtils;
 import org.fxmisc.richtext.StyleClassedTextArea;
 
 import java.io.*;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ProcessInfoScreenController implements Initializable {
 
     double offset_x;
     double offset_y;
 
-    @FXML public ImageView background;
-    @FXML public Label close_button;
-    @FXML public Label main_button, settings_button, processinfo_button;
-    @FXML public StyleClassedTextArea process_text;
-    @FXML public AnchorPane pain;
-    @FXML public Pane clipPane;
+    @FXML private ImageView background;
+    @FXML private Label close_button;
+    @FXML private Label main_button, settings_button, processinfo_button;
+    @FXML private StyleClassedTextArea process_text;
+    @FXML private AnchorPane pain;
+    @FXML private Pane clipPane;
+    @FXML private TextField loglines_textfield;
 
     private ScheduledExecutorService executor;
+
+    public void clearLog() {
+        process_text.clear();
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -55,6 +59,24 @@ public class ProcessInfoScreenController implements Initializable {
             }
         }
 
+        AtomicInteger loglines = new AtomicInteger();
+        loglines.set(10000);
+        loglines_textfield.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                loglines_textfield.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+            try{
+                // Don't worry about this. It looks cancer, and it is, but pretend that this isn't here.
+                if(process_text.getText().split("\n", -1).length < Integer.parseInt(loglines_textfield.getText())) {
+                    loglines.set(Integer.parseInt(loglines_textfield.getText()));
+                } else {
+                    loglines.set(Integer.parseInt(loglines_textfield.getText()) + 10);
+                }
+            } catch(NumberFormatException e){
+                loglines.set(10000);
+            }
+        });
+
         process_text.setAutoScrollOnDragDesired(true);
 
         Runnable helloRunnable = () -> Platform.runLater(() -> {
@@ -65,11 +87,8 @@ public class ProcessInfoScreenController implements Initializable {
             }
             String textInArea = process_text.getText();
             String[] lines = textInArea.split("\n", -1);
-            if (lines.length > 10000) {
-                //lines = Arrays.copyOfRange(lines, lines.length - 10000, lines.length);
-                //textInArea = String.join("\n", lines);
-                process_text.clear();
-                process_text.appendText("WARNING: Log exceeded 10,000 lines. Logging has ceased to save memory.");
+            if (lines.length > loglines.get()) {
+                process_text.appendText("WARNING: Log exceeded " + loglines.get() + " lines. Logging has ceased to save memory.");
                 executor.shutdownNow();
             }
         });

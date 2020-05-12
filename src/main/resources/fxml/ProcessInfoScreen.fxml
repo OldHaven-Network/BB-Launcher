@@ -1,24 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.Cursor?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.shape.Line?>
-<?import org.fxmisc.richtext.StyleClassedTextArea?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import org.fxmisc.flowless.*?>
+<?import org.fxmisc.richtext.*?>
 
-<?import org.fxmisc.flowless.VirtualizedScrollPane?>
-<AnchorPane fx:id="pain" onMouseMoved="#movableWindow" prefHeight="394.0" prefWidth="700.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.oldhaven.controller.ProcessInfoScreenController">
+<AnchorPane fx:id="pain" onMouseMoved="#movableWindow" prefHeight="394.0" prefWidth="700.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.oldhaven.controller.ProcessInfoScreenController">
    <children>
       <Pane fx:id="clipPane" prefHeight="394.0" prefWidth="700.0">
          <children>
-            <ImageView fx:id="background" cache="true" cacheHint="SPEED" depthTest="ENABLE" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true"
-                       fitWidth="${clipPane.width}"
-                       smooth="false" managed="false">
+            <ImageView fx:id="background" cache="true" cacheHint="SPEED" depthTest="ENABLE" fitWidth="${clipPane.width}" managed="false" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" smooth="false">
                <image>
                   <Image url="@../images/blur.png" />
                </image>
@@ -35,11 +29,11 @@
                   <Label fx:id="processinfo_button" layoutX="481.0" layoutY="10.0" onMouseEntered="#processInfoButtonMouseover" onMouseExited="#processInfoButtonMouseover" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-font-family: Open Sans;" text="PROCESS INFO" />
                </children>
             </Pane>
-            <Button layoutX="10.0" layoutY="289.0" mnemonicParsing="false" onMouseClicked="#restartMinecraftButton" prefHeight="25.0" prefWidth="293.0" style="-fx-font-weight: bold;" text="Restart Minecraft Process">
+            <Button layoutX="10.0" layoutY="289.0" mnemonicParsing="false" onMouseClicked="#restartMinecraftButton" prefHeight="19.0" prefWidth="205.0" style="-fx-font-weight: bold;" text="Restart Minecraft Process">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></Button>
-            <Button layoutX="334.0" layoutY="289.0" mnemonicParsing="false" onMouseClicked="#killMinecraftButton" prefHeight="25.0" prefWidth="293.0" style="-fx-font-weight: bold;" text="Kill Minecraft Process">
+            <Button layoutX="222.0" layoutY="289.0" mnemonicParsing="false" onMouseClicked="#killMinecraftButton" prefHeight="25.0" prefWidth="205.0" style="-fx-font-weight: bold;" text="Kill Minecraft Process">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></Button>
@@ -48,6 +42,8 @@
                   <StyleClassedTextArea id="process_text" fx:id="process_text" prefHeight="221.0" prefWidth="617.0" />
                </content>
             </VirtualizedScrollPane>
+            <TextField id="loglines_textfield" fx:id="loglines_textfield" layoutX="458.0" layoutY="289.0" prefHeight="25.0" prefWidth="55.0" text="10000" />
+            <Label layoutX="520.0" layoutY="293.0" text="Maximum log lines" textFill="WHITE" />
          </children>
       </AnchorPane>
       <Label id="close_button" fx:id="close_button" layoutX="678.0" layoutY="4.0" onMouseClicked="#close" onMouseEntered="#closeButtonMouseover" onMouseExited="#closeButtonMouseover" style="-fx-font-weight: bold; -fx-font-size: 16;" text="✕" textFill="WHITE" />

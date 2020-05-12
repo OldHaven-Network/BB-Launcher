@@ -48,6 +48,7 @@ public class MainMenuScreenController implements Initializable {
     @FXML public AnchorPane pain;
     @FXML public Pane clipPane;
     @FXML public ImageView skin;
+    @FXML private ComboBox<String> version_picker;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -61,6 +62,8 @@ public class MainMenuScreenController implements Initializable {
                 background.fitWidthProperty().bind(clipPane.widthProperty());
             }
         }
+
+        version_picker.getItems().addAll("Beta 1.7.3", "More versions will be added soon!");
 
         this.skin.setImage(new Image("https://minotar.net/body/"+UserInfo.getUsername()+"/100.png"));
         username.setText(UserInfo.getUsername());

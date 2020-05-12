@@ -116,8 +116,8 @@ public class SettingsScreenController {
         mem_field.textProperty().addListener((observable, oldValue, newValue) -> {
             try {
                 PrintWriter settingsWriter = new PrintWriter(settingsFile, "UTF-8");
-                settingsWriter.println(mem_field.getText()); // Maximum allocated memory
-                settingsWriter.println(mem_field.getText()); // Minimum allocated memory
+                settingsWriter.println(maxmem_field.getText()); // Maximum allocated memory
+                settingsWriter.println(minmem_field.getText()); // Minimum allocated memory
                 settingsWriter.close();
             } catch (FileNotFoundException | UnsupportedEncodingException e) {
                 e.printStackTrace();

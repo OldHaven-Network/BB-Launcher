@@ -117,38 +117,27 @@ public class Install {
         if ("Windows".equals(getOS()))
             return getMinecraftPath() + "bin\\fabric\\";
         return getMinecraftPath() + "bin/fabric/";
+
     }
     public static String getBinPath(){
-        switch(getOS()){
-            case "Windows":
-                return getMinecraftPath() + "bin\\";
-            case "Mac OS":
-                return getMinecraftPath() + "/bin/";
-            default:
-                return getMinecraftPath() + "bin/";
+        if ("Windows".equals(getOS())) {
+            return getMinecraftPath() + "bin\\";
         }
+        return getMinecraftPath() + "bin/";
     }
 
     public static String getLogsPath(){
-        switch(getOS()){
-            case "Windows":
-                return getMainPath() + "logs\\";
-            case "Mac OS":
-                return getMainPath() + "/logs";
-            default:
-                return getMainPath() + "logs/";
+        if ("Windows".equals(getOS())) {
+            return getMainPath() + "logs\\";
         }
+        return getMainPath() + "logs/";
     }
 
     public static String getNativesPath(){
-        switch(getOS()){
-            case "Windows":
-                return getMinecraftPath() + "bin\\natives\\";
-            case "Mac OS":
-                return getMinecraftPath() + "/bin/natives";
-            default:
-                return getMinecraftPath() + "bin/natives/";
+        if ("Windows".equals(getOS())) {
+            return getMinecraftPath() + "bin\\natives\\";
         }
+        return getMinecraftPath() + "bin/natives/";
     }
 
     public static boolean installSavedServers(String baseFolder) {
