@@ -1,7 +1,6 @@
 package net.oldhaven;
 
 import javafx.scene.image.Image;
-import net.lingala.zip4j.ZipFile;
 import net.oldhaven.framework.Install;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -10,8 +9,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import net.oldhaven.framework.VersionHandler;
 import net.oldhaven.utility.lang.Lang;
-import net.oldhaven.utility.lang.LanguageUtil;
 import net.oldhaven.utility.mod.ModSection;
 import net.oldhaven.utility.mod.ModType;
 import net.oldhaven.utility.mod.Mods;
@@ -19,7 +18,6 @@ import org.apache.commons.io.FileUtils;
 
 import java.awt.*;
 import java.io.*;
-import java.net.URL;
 import java.util.Objects;
 
 public class Main extends Application {
@@ -52,6 +50,20 @@ public class Main extends Application {
             }
         }
 
+        VersionHandler.initializeVersionHandler();
+        File oldMinecraftFolder = new File(Install.getMainPath() + "minecraft");
+        File newMinecraftFolder = new File(Install.getMainPath() + "versions/b1.7.3");
+        System.out.println(oldMinecraftFolder.getAbsolutePath());
+        System.out.println(newMinecraftFolder.getAbsolutePath());
+        if(oldMinecraftFolder.exists()){
+            try {
+                FileUtils.deleteDirectory(newMinecraftFolder);
+                FileUtils.moveDirectory(oldMinecraftFolder, newMinecraftFolder);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         String mainPath = Install.getMinecraftPath();
         /* note:
             You need this section cause it adds all of the mods, even if they already exist.
@@ -71,6 +83,7 @@ public class Main extends Application {
         if(Mods.shouldUpdate)
             Mods.saveMods();
 
+        System.out.println("Hello there, General Kenobi");
         this.createFolders();
         Install.installSavedServers(mainPath);
         Install.installMegaMod(mainPath + "mods/");
@@ -105,7 +118,7 @@ public class Main extends Application {
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Beyond Beta Launcher");
-        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/icon.png")));
+        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/icon2.png")));
         primaryStage.show();
         scene.setOnMousePressed(event -> {
             offset_x = event.getSceneX();

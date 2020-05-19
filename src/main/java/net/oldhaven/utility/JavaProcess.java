@@ -3,6 +3,7 @@ package net.oldhaven.utility;
 import net.oldhaven.framework.Install;
 
 import java.io.*;
+import java.util.Arrays;
 
 public final class JavaProcess {
     private String output = "";
@@ -46,7 +47,8 @@ public final class JavaProcess {
 
         ProcessBuilder builder = new ProcessBuilder(javaBin, "-Xms"+minmem+"m", "-Xms"+maxmem+"m",
                 "-Djava.library.path="+libsPath, "-cp", classpath, className, "--gameDir", Install.getMinecraftPath(), "--username", username);
-
+        System.out.println(Arrays.toString(new String[]{javaBin, "-Xms" + minmem + "m", "-Xms" + maxmem + "m",
+                "-Djava.library.path=" + libsPath, "-cp", classpath, className, "--gameDir", Install.getMinecraftPath(), "--username", username}));
         builder.redirectErrorStream(true);
 
         process = builder.start();

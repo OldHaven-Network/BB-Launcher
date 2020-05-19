@@ -29,11 +29,11 @@
                   <Label fx:id="processinfo_button" layoutX="481.0" layoutY="10.0" onMouseEntered="#processInfoButtonMouseover" onMouseExited="#processInfoButtonMouseover" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-font-family: Open Sans;" text="PROCESS INFO" />
                </children>
             </Pane>
-            <Button layoutX="10.0" layoutY="289.0" mnemonicParsing="false" onMouseClicked="#restartMinecraftButton" prefHeight="25.0" prefWidth="175.0" style="-fx-font-weight: bold;" text="Restart Minecraft process">
+            <Button layoutX="10.0" layoutY="289.0" mnemonicParsing="false" onMouseClicked="#restartMinecraftButton" prefHeight="25.0" prefWidth="131.0" style="-fx-font-weight: bold;" text="Restart Minecraft">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></Button>
-            <Button layoutX="193.0" layoutY="289.0" mnemonicParsing="false" onMouseClicked="#killMinecraftButton" prefHeight="25.0" prefWidth="148.0" style="-fx-font-weight: bold;" text="Kill Minecraft process">
+            <Button layoutX="149.0" layoutY="289.0" mnemonicParsing="false" onMouseClicked="#killMinecraftButton" prefHeight="25.0" prefWidth="131.0" style="-fx-font-weight: bold;" text="Kill Minecraft">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></Button>
@@ -44,7 +44,7 @@
             </VirtualizedScrollPane>
             <TextField id="loglines_textfield" fx:id="loglines_textfield" layoutX="458.0" layoutY="289.0" prefHeight="25.0" prefWidth="55.0" text="10000" />
             <Label layoutX="520.0" layoutY="293.0" text="Maximum log lines" textFill="WHITE" />
-            <Button fx:id="clearlog_button" layoutX="349.0" layoutY="289.0" mnemonicParsing="false" onMouseClicked="#clearButton" prefHeight="25.0" prefWidth="71.0" style="-fx-font-weight: bold;" text="Clear log">
+            <Button fx:id="clearlog_button" layoutX="288.0" layoutY="289.0" mnemonicParsing="false" onMouseClicked="#clearButton" prefHeight="25.0" prefWidth="131.0" text="Clear log">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>

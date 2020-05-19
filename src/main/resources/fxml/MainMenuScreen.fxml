@@ -44,6 +44,7 @@
                   <Tooltip text="Version selection will be coming in a future release!" />
                </tooltip></ComboBox>
             <Label alignment="CENTER" layoutX="587.0" layoutY="295.0" style="-fx-font-weight: bold;" text="v0.1.4" textAlignment="CENTER" textFill="WHITE" />
+            <Label id="downloading_label" fx:id="downloading_label" alignment="CENTER" layoutX="278.0" layoutY="180.0" text="Downloading..." textAlignment="CENTER" textFill="WHITE" visible="false" />
          </children>
       </AnchorPane>
       <Label id="close_button" fx:id="close_button" layoutX="678.0" layoutY="4.0" onMouseClicked="#close" onMouseEntered="#closeButtonMouseover" onMouseExited="#closeButtonMouseover" style="-fx-font-weight: bold; -fx-font-size: 16;" text="✕" textFill="WHITE" />

@@ -1,24 +1,31 @@
 package net.oldhaven.framework;
 
-import javafx.geometry.Insets;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
 import net.lingala.zip4j.ZipFile;
-import net.oldhaven.utility.lang.Lang;
+import net.oldhaven.utility.mod.Mod;
+import net.oldhaven.utility.mod.ModType;
+import net.oldhaven.utility.mod.Mods;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.lwjgl.Sys;
 
 import java.awt.*;
 import java.io.*;
+import java.lang.reflect.Type;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class Install {
@@ -53,7 +60,7 @@ public class Install {
             case "Windows":
                 return (System.getProperty("user.home") + "/AppData/Roaming/."+name+"/").replaceAll("/", "\\\\");
             case "Mac OS":
-                return System.getProperty("user.home") + "/Library/Application Support/"+name+"/";
+                return System.getProperty("user.home") + "/Library/Application%20Support/"+name+"/";
             default:
                 String linuxMainPath = (System.getProperty("user.home") + "/."+name+"/");
                 String linuxUser = System.getenv("USER");
@@ -71,9 +78,9 @@ public class Install {
     public static String getMinecraftPath() {
         String path;
         if ("Windows".equals(getOS()))
-            path =getMainPath() + "minecraft\\";
+            path = getMainPath() + "versions\\" + VersionHandler.getSelectedVersion() +  "\\";
         else
-            path = getMainPath() + "minecraft/";
+            path = getMainPath() + "versions/" + VersionHandler.getSelectedVersion() + "/";
         File file = new File(path);
         if(!file.exists())
             file.mkdirs();
@@ -89,10 +96,18 @@ public class Install {
                 builder.append(".jar");
             if(!addEnd) {
                 if (i != atPaths.length - 1) {
-                    builder.append(";");
+                    if(getOS().equals("Windows")) {
+                        builder.append(";");
+                    } else {
+                        builder.append(":");
+                    }
                 }
             } else
-                builder.append(";");
+                if(getOS().equals("Windows")) {
+                    builder.append(";");
+                } else {
+                    builder.append(":");
+                }
         }
         return builder.toString();
     }
@@ -181,7 +196,6 @@ public class Install {
             ZipFile binZip = new ZipFile(binZipFile);
             binZip.extractAll(Install.getBinPath());
 
-            FileUtils.forceDelete(new File(Install.getMainPath() + "temp/"));
 
             success = true;
         } catch (IOException e) {
@@ -189,6 +203,73 @@ public class Install {
             success = false;
         }
         return success;
+    }
+
+    public static boolean installAetherMp() {
+        try {
+            URL aetherMpURL = new URL("https://download1591.mediafire.com/xq567bzsoomg/69ria4rt355t6u8/Aether+modpack+2.13.1.zip");
+            File aetherMpFile = new File(Install.getMainPath() + "temp/aethermp.zip");
+            File tempFolder = new File(Install.getMainPath() + "temp/");
+
+            if(!tempFolder.exists()) {
+                Files.createDirectory(Paths.get(tempFolder.toString()));
+            }
+            System.out.println(1);
+
+            Thread downloadThread = new Thread(() -> {
+                System.out.println(2);
+                getFileFromURL(aetherMpURL, aetherMpFile.toString());
+                System.out.println(3);
+                System.out.println(4);
+            });
+            downloadThread.start();
+            downloadThread.join();
+            System.out.println(5);
+
+            Thread unzipThread = new Thread(() -> {
+                try {
+                    System.out.println(6);
+                    ZipFile aetherMpZipFile = new ZipFile(aetherMpFile);
+                    aetherMpZipFile.extractAll(tempFolder.toString());
+                    System.out.println(7);
+                } catch (IOException e){
+                    e.printStackTrace();
+                }
+            });
+            unzipThread.start();
+            unzipThread.join();
+            System.out.println(8);
+
+            File[] fileArray = tempFolder.listFiles();
+            assert fileArray != null;
+            for(File file : fileArray) {
+                if(file.getAbsolutePath().contains("Aether")) {
+                    FileUtils.copyDirectory(new File(file.getAbsolutePath() + "/.minecraft"),
+                            new File(Install.getMinecraftPath()));
+                    String jarmodsJson = Install.readJson(new File(file.getAbsolutePath() + "/mmc-pack.json")).toString();
+                    JsonObject jsonObject = JsonParser.parseString(jarmodsJson).getAsJsonObject();
+                    JsonArray jsonArray = jsonObject.getAsJsonArray("components");
+
+                    for (int i=0; i < jsonArray.size(); i++) {
+                        jsonObject = jsonArray.get(i).getAsJsonObject();
+                        String uid = jsonObject.get("uid").getAsString();
+                        String cachedName = jsonObject.get("cachedName").getAsString();
+                        if(uid.contains("org.multimc.jarmod")){
+                            uid = uid.replace("org.multimc.jarmod.", "") + ".jar";
+                            FileUtils.copyFile(new File(file.getAbsolutePath() + "/jarmods/" + uid),
+                                    new File(Install.getMinecraftPath() + "/mods/non-fabric/" + uid));
+                            Mods.getModSectionByName("CustomMods").addMod(ModType.NonFabric, cachedName, Install.getMinecraftPath() + "mods/non-fabric/"
+                                    + uid, true);
+                        }
+                    }
+                    System.out.println(9);
+                }
+            }
+
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return true;
     }
 
     private static String convertFabricResource(String name) {
@@ -202,7 +283,7 @@ public class Install {
 
     public static void installFabric() {
         try {
-            Files.createDirectory(Paths.get(Install.getBinPath() + "fabric/"));
+            Files.createDirectories(Paths.get(Install.getBinPath() + "fabric/"));
 
             URL fabricJsonUrl = new URL("https://meta.fabricmc.net/v2/versions/loader/1.15.2/0.7.10+build.191");
             URLConnection urlConnection = fabricJsonUrl.openConnection();
@@ -384,5 +465,23 @@ public class Install {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private static Type type = new TypeToken<Map<String, List<String>>>() {}.getType();
+    private static StringBuilder readJson(File file) {
+        StringBuilder json = new StringBuilder();
+        try {
+            FileInputStream fstream = new FileInputStream(file);
+            BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
+            String line;
+            while ((line = br.readLine()) != null) {
+                json.append(line);
+            }
+            br.close();
+            fstream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return json;
     }
 }

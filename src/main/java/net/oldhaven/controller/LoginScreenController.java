@@ -75,6 +75,7 @@ public class LoginScreenController implements Initializable {
         }
 
         final KeyFrame kf1 = new KeyFrame(Duration.seconds(0.1), e -> {
+
             login_button.requestFocus();
 
             String news = null;
@@ -91,31 +92,6 @@ public class LoginScreenController implements Initializable {
             }
             news_box.requestFocus();
             login_button.requestFocus();
-
-            Gson gsonAccountChoice = new Gson();
-            try {
-                Reader reader = Files.newBufferedReader(Paths.get(Install.getMainPath() + "players.json"));
-                Map<?, ?> map = gsonAccountChoice.fromJson(reader, Map.class);
-                if(map != null && map.size() > 0) {
-                    for (Map.Entry<?, ?> entry : map.entrySet()) {
-                        account_choice.getItems().add(entry.getKey().toString());
-                    }
-                }
-                reader.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-
-            account_choice.valueProperty().addListener(new ChangeListener<String>() {
-                @Override public void changed(ObservableValue obs, String oldValue, String newValue) {
-                    savedUsername = newValue;
-                    username_input.setPromptText("No username input required");
-                    password_input.setPromptText("No password input required");
-                    username_input.editableProperty().setValue(false);
-                    password_input.editableProperty().setValue(false);
-                }
-            });
-
 
             String username = null;
             if(new File(Install.getMainPath() + "currentuser.txt").exists()) {
@@ -141,11 +117,34 @@ public class LoginScreenController implements Initializable {
                         Map<String, List<String>> map = gson.fromJson(json.toString(), type);
                         if(setUserInfo(username, gson, map))
                             System.out.println("Auto logging in " + username);
-                            rememberaccount_checkbox.setSelected(true);
-                            changeScene();
+                        rememberaccount_checkbox.setSelected(true);
+                        changeScene();
                     }
                 }
             }
+
+            Gson gsonAccountChoice = new Gson();
+            try {
+                Reader reader = Files.newBufferedReader(Paths.get(Install.getMainPath() + "players.json"));
+                Map<?, ?> map = gsonAccountChoice.fromJson(reader, Map.class);
+                if(map != null && map.size() > 0) {
+                    for (Map.Entry<?, ?> entry : map.entrySet()) {
+                        account_choice.getItems().add(entry.getKey().toString());
+                    }
+                }
+                reader.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            account_choice.valueProperty().addListener((obs, oldValue, newValue) -> {
+                savedUsername = newValue;
+                username_input.setPromptText("No username input required");
+                password_input.setPromptText("No password input required");
+                username_input.editableProperty().setValue(false);
+                password_input.editableProperty().setValue(false);
+            });
+
         });
         final Timeline timeline = new Timeline(kf1);
         Platform.runLater(timeline::play);
