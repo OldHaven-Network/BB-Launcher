@@ -8,6 +8,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import net.chris54721.openmcauthenticator.responses.RefreshResponse;
+import net.oldhaven.Main;
 import net.oldhaven.utility.UserInfo;
 import net.oldhaven.framework.Install;
 import com.google.gson.Gson;
@@ -63,7 +64,7 @@ public class LoginScreenController implements Initializable {
     public String savedUsername;
 
     public void initialize(URL url, ResourceBundle bundle) {
-
+        Main.setCurrentController(this);
         File[] fileArray = new File(Install.getMainPath()).listFiles();
         assert fileArray != null;
         for(File file : fileArray) {

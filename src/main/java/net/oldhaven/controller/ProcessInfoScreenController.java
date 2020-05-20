@@ -6,6 +6,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import net.oldhaven.Main;
 import net.oldhaven.framework.Install;
 import net.oldhaven.utility.LogOutput;
 import javafx.application.Platform;
@@ -49,6 +50,7 @@ public class ProcessInfoScreenController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        Main.setCurrentController(this);
         File[] fileArray = new File(Install.getMainPath()).listFiles();
         assert fileArray != null;
         for(File file : fileArray) {

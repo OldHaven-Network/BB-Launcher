@@ -1,5 +1,6 @@
 package net.oldhaven;
 
+import javafx.fxml.Initializable;
 import javafx.scene.image.Image;
 import net.oldhaven.framework.Install;
 import javafx.application.Application;
@@ -25,11 +26,19 @@ public class Main extends Application {
     private double offset_x;
     private double offset_y;
     private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    private static Initializable currentController;
     private static Stage primaryStage;
 
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public static void setCurrentController(Initializable initializable) {
+        currentController = initializable;
+    }
+    public static Initializable getCurrentController() {
+        return currentController;
     }
 
     public static Stage getPrimaryStage() {
@@ -52,7 +61,7 @@ public class Main extends Application {
 
         VersionHandler.initializeVersionHandler();
         File oldMinecraftFolder = new File(Install.getMainPath() + "minecraft");
-        File newMinecraftFolder = new File(Install.getMainPath() + "versions/b1.7.3");
+        File newMinecraftFolder = new File(Install.getMainPath() + "versions/b173");
         System.out.println(oldMinecraftFolder.getAbsolutePath());
         System.out.println(newMinecraftFolder.getAbsolutePath());
         if(oldMinecraftFolder.exists()){
@@ -65,28 +74,21 @@ public class Main extends Application {
         }
 
         String mainPath = Install.getMinecraftPath();
-        /* note:
-            You need this section cause it adds all of the mods, even if they already exist.
-            defaultEnabled variable is "if not exist, make it enabled/disabled",
-            we're saving afterwards cause if things don't exist and they are created, we're saving that data.
-
-            The CustomMods section is where... custom mods will go, if that wasn't obvious
-            can you make it so they're added to that when they add a new mod?
-            Mods.getModSectionByName("CustomMods").addMod();
-         */
-
-        Mods.addMod(ModType.Fabric,"MegaMod-Mixins.jar", mainPath + "mods-inactive/MegaMod-Mixins.jar", true);
-        Mods.addMod(ModType.NonFabric, "OptiFine.zip", mainPath + "mods/non-fabric/OptiFine.zip", false);
-        Mods.addMod(ModType.NonFabric,"ReiMinimap.zip", mainPath + "mods/non-fabric/ReiMinimap.zip", false);
-        ModSection section = Mods.addModSection("CustomMods");
-        Objects.requireNonNull(Mods.getModSectionByName("CustomMods")).getMods();
-        if(Mods.shouldUpdate)
-            Mods.saveMods();
-
         System.out.println("Hello there, General Kenobi");
         this.createFolders();
-        Install.installSavedServers(mainPath);
-        Install.installMegaMod(mainPath + "mods/");
+        Mods.updateConfigLoc();
+        if(VersionHandler.getSelectedVersion() == VersionHandler.Version.b173) {
+            Mods.addMod(ModType.Fabric, "MegaMod-Mixins.jar", mainPath + "mods-inactive/MegaMod-Mixins.jar", true);
+            Mods.addMod(ModType.NonFabric, "OptiFine.zip", mainPath + "mods/non-fabric/OptiFine.zip", false);
+            Mods.addMod(ModType.NonFabric, "ReiMinimap.zip", mainPath + "mods/non-fabric/ReiMinimap.zip", false);
+            ModSection section = Mods.addModSection("CustomMods");
+            Mods.getModSectionByName("CustomMods").getMods();
+            if (Mods.shouldUpdate)
+                Mods.saveMods();
+
+            Install.installSavedServers(mainPath);
+            Install.installMegaMod(mainPath + "mods/");
+        }
         // Moved Minecraft installation to after login so unauthorized users cannot download Mojang files without logging in.
         File settingsFile = new File(Install.getMainPath() + "settings.txt");
         if(!settingsFile.exists()){

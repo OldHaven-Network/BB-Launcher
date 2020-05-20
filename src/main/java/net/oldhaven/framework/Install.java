@@ -1,20 +1,17 @@
 package net.oldhaven.framework;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import javafx.scene.control.*;
 import net.lingala.zip4j.ZipFile;
-import net.oldhaven.utility.mod.Mod;
 import net.oldhaven.utility.mod.ModType;
 import net.oldhaven.utility.mod.Mods;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.lwjgl.Sys;
 
 import java.awt.*;
 import java.io.*;
@@ -78,9 +75,21 @@ public class Install {
     public static String getMinecraftPath() {
         String path;
         if ("Windows".equals(getOS()))
-            path = getMainPath() + "versions\\" + VersionHandler.getSelectedVersion() +  "\\";
+            path = getVersionPath() + VersionHandler.getSelectedVersion().getName() +  "\\";
         else
-            path = getMainPath() + "versions/" + VersionHandler.getSelectedVersion() + "/";
+            path = getVersionPath() + VersionHandler.getSelectedVersion().getName() + "/";
+        File file = new File(path);
+        if(!file.exists())
+            file.mkdirs();
+        return path;
+    }
+
+    public static String getVersionPath() {
+        String path;
+        if ("Windows".equals(getOS()))
+            path = getMainPath() + "versions\\";
+        else
+            path = getMainPath() + "versions/";
         File file = new File(path);
         if(!file.exists())
             file.mkdirs();
@@ -112,7 +121,7 @@ public class Install {
         return builder.toString();
     }
 
-    public static String getClassPath() {
+    public static String getClassPath(boolean fabric) {
         String aV = "-7.3.1";
         String[] fLibs = new String[]{
             "fabric-loader", "asm"+aV, "asm-commons"+aV, "asm-analysis"+aV, "asm-tree"+aV, "asm-util"+aV,
@@ -128,7 +137,7 @@ public class Install {
         return fLibsStr + libsStr;
     }
 
-    public static String getFabricPath(){
+    public static String getFabricPath() {
         if ("Windows".equals(getOS()))
             return getMinecraftPath() + "bin\\fabric\\";
         return getMinecraftPath() + "bin/fabric/";
@@ -172,30 +181,38 @@ public class Install {
         return true;
     }
 
+    public static void installDefaultMods() {
+        try {
+            URL optifineZipURL = new URL("https://www.oldhaven.net/resources/launcher/OptiFine.zip");
+            URL reiminimapZipURL = new URL("https://www.oldhaven.net/resources/launcher/ReiMinimap.zip");
+            File optifineZipFile = new File(Install.getMinecraftPath() + "mods/non-fabric/OptiFine.zip");
+            File reiminimapZipFile = new File(Install.getMinecraftPath() + "mods/non-fabric/ReiMinimap.zip");
+            getFileFromURL(optifineZipURL, optifineZipFile.toString());
+            getFileFromURL(reiminimapZipURL, reiminimapZipFile.toString());
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static boolean installMinecraft() {
         boolean success;
         try {
-            Files.createDirectory(Paths.get(Install.getMainPath() + "temp/"));
-            Files.createDirectories(Paths.get(Install.getMinecraftPath() + "mods/non-fabric/"));
+            if(!Files.exists(Paths.get(Install.getMainPath() + "temp/")))
+                Files.createDirectory(Paths.get(Install.getMainPath() + "temp/"));
+            if(!Files.exists(Paths.get(Install.getMainPath() + "mods/non-fabric/")))
+                Files.createDirectories(Paths.get(Install.getMinecraftPath() + "mods/non-fabric/"));
 
             URL clientJarURL = new URL("https://launcher.mojang.com/v1/objects/43db9b498cb67058d2e12d394e6507722e71bb45/client.jar");
             URL binZipURL = new URL("https://www.oldhaven.net/resources/launcher/bin.zip");
-            URL optifineZipURL = new URL("https://www.oldhaven.net/resources/launcher/OptiFine.zip");
-            URL reiminimapZipURL = new URL("https://www.oldhaven.net/resources/launcher/ReiMinimap.zip");
 
             File clientJarFile = new File(Install.getBinPath() + "minecraft.jar");
             File binZipFile = new File(Install.getMainPath() + "temp/bin.zip");
-            File optifineZipFile = new File(Install.getMinecraftPath() + "mods/non-fabric/OptiFine.zip");
-            File reiminimapZipFile = new File(Install.getMinecraftPath() + "mods/non-fabric/ReiMinimap.zip");
 
             getFileFromURL(clientJarURL, clientJarFile.toString());
             getFileFromURL(binZipURL, binZipFile.toString());
-            getFileFromURL(optifineZipURL, optifineZipFile.toString());
-            getFileFromURL(reiminimapZipURL, reiminimapZipFile.toString());
 
             ZipFile binZip = new ZipFile(binZipFile);
             binZip.extractAll(Install.getBinPath());
-
 
             success = true;
         } catch (IOException e) {
@@ -205,71 +222,49 @@ public class Install {
         return success;
     }
 
-    public static boolean installAetherMp() {
-        try {
-            URL aetherMpURL = new URL("https://download1591.mediafire.com/xq567bzsoomg/69ria4rt355t6u8/Aether+modpack+2.13.1.zip");
+    public static boolean installAetherMP() {
+        GitHubAPI gitHubAPI = GitHubAPI.openURL("https://api.github.com/repos/OldHaven-Network/AetherMP/releases");
+        gitHubAPI.writeToFile(Install.getMainPath() + "temp/aethermp.zip", () -> {
             File aetherMpFile = new File(Install.getMainPath() + "temp/aethermp.zip");
             File tempFolder = new File(Install.getMainPath() + "temp/");
+            try {
+                ZipFile aetherMpZipFile = new ZipFile(aetherMpFile);
+                aetherMpZipFile.extractAll(tempFolder.toString());
 
-            if(!tempFolder.exists()) {
-                Files.createDirectory(Paths.get(tempFolder.toString()));
-            }
-            System.out.println(1);
+                aetherMpFile.delete();
 
-            Thread downloadThread = new Thread(() -> {
-                System.out.println(2);
-                getFileFromURL(aetherMpURL, aetherMpFile.toString());
-                System.out.println(3);
-                System.out.println(4);
-            });
-            downloadThread.start();
-            downloadThread.join();
-            System.out.println(5);
+                File[] fileArray = tempFolder.listFiles();
+                assert fileArray != null;
+                for (File file : fileArray) {
+                    if (file.getAbsolutePath().contains("Aether")) {
+                        FileUtils.copyDirectory(new File(file.getAbsolutePath() + "/.minecraft"),
+                                new File(Install.getMinecraftPath()));
+                        String jarmodsJson = Install.readJson(new File(file.getAbsolutePath() + "/mmc-pack.json")).toString();
+                        JsonObject jsonObject = JsonParser.parseString(jarmodsJson).getAsJsonObject();
+                        JsonArray jsonArray = jsonObject.getAsJsonArray("components");
 
-            Thread unzipThread = new Thread(() -> {
-                try {
-                    System.out.println(6);
-                    ZipFile aetherMpZipFile = new ZipFile(aetherMpFile);
-                    aetherMpZipFile.extractAll(tempFolder.toString());
-                    System.out.println(7);
-                } catch (IOException e){
-                    e.printStackTrace();
-                }
-            });
-            unzipThread.start();
-            unzipThread.join();
-            System.out.println(8);
-
-            File[] fileArray = tempFolder.listFiles();
-            assert fileArray != null;
-            for(File file : fileArray) {
-                if(file.getAbsolutePath().contains("Aether")) {
-                    FileUtils.copyDirectory(new File(file.getAbsolutePath() + "/.minecraft"),
-                            new File(Install.getMinecraftPath()));
-                    String jarmodsJson = Install.readJson(new File(file.getAbsolutePath() + "/mmc-pack.json")).toString();
-                    JsonObject jsonObject = JsonParser.parseString(jarmodsJson).getAsJsonObject();
-                    JsonArray jsonArray = jsonObject.getAsJsonArray("components");
-
-                    for (int i=0; i < jsonArray.size(); i++) {
-                        jsonObject = jsonArray.get(i).getAsJsonObject();
-                        String uid = jsonObject.get("uid").getAsString();
-                        String cachedName = jsonObject.get("cachedName").getAsString();
-                        if(uid.contains("org.multimc.jarmod")){
-                            uid = uid.replace("org.multimc.jarmod.", "") + ".jar";
-                            FileUtils.copyFile(new File(file.getAbsolutePath() + "/jarmods/" + uid),
-                                    new File(Install.getMinecraftPath() + "/mods/non-fabric/" + uid));
-                            Mods.getModSectionByName("CustomMods").addMod(ModType.NonFabric, cachedName, Install.getMinecraftPath() + "mods/non-fabric/"
-                                    + uid, true);
+                        for (int i = 0; i < jsonArray.size(); i++) {
+                            jsonObject = jsonArray.get(i).getAsJsonObject();
+                            String uid = jsonObject.get("uid").getAsString();
+                            String cachedName = jsonObject.get("cachedName").getAsString();
+                            if (uid.contains("org.multimc.jarmod")) {
+                                uid = uid.replace("org.multimc.jarmod.", "") + ".jar";
+                                FileUtils.copyFile(new File(file.getAbsolutePath() + "/jarmods/" + uid),
+                                        new File(Install.getMinecraftPath() + "/mods/non-fabric/" + uid));
+                                Mods.getModSectionByName("CustomMods").addMod(ModType.NonFabric, cachedName, Install.getMinecraftPath() + "mods/non-fabric/"
+                                        + uid, true);
+                                Mods.saveMods();
+                            }
                         }
+                        file.delete();
                     }
-                    System.out.println(9);
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return true;
+            tempFolder.delete();
+        });
+        return false;
     }
 
     private static String convertFabricResource(String name) {
@@ -374,16 +369,8 @@ public class Install {
         System.out.println(" ");
         boolean success = false;
         try {
-            URL oracle = new URL("https://api.github.com/repos/OldHaven-Network/MegaMod-Mixins/releases");
-            URLConnection uc = oracle.openConnection();
-            BufferedReader in = new BufferedReader(new InputStreamReader(uc.getInputStream()));
-            StringBuilder builder = new StringBuilder();
-            String s;
-            while((s = in.readLine()) != null) {
-                builder.append(s);
-            }
-            JSONObject json = (JSONObject)new JSONArray(builder.toString()).get(0);
-            String tag = (String)json.get("tag_name");
+            GitHubAPI gitHubAPI = GitHubAPI.openURL("https://api.github.com/repos/OldHaven-Network/MegaMod-Mixins/releases");
+            String tag = gitHubAPI.getTag();
             System.out.println("  Latest MegaMod version: " + tag);
             File modDir = new File(modsFolder);
             if(!modDir.exists()) {
@@ -417,17 +404,9 @@ public class Install {
                 out.write(tag);
                 out.close();
             }
-            JSONObject assets = (JSONObject)((JSONArray)json.get("assets")).get(0);
-            String url = (String)assets.get("browser_download_url");
-
-            BufferedInputStream inputStream = new BufferedInputStream(new URL(url).openStream());
-            FileOutputStream fileOS = new FileOutputStream(modsFolder + "MegaMod-Mixins.jar");
-            byte[] data = new byte[1024];
-            int byteContent;
-            while ((byteContent = inputStream.read(data, 0, 1024)) != -1) {
-                fileOS.write(data, 0, byteContent);
-            }
-
+gitHubAPI.writeToFile(modsFolder + "MegaMod-Mixins.jar", () -> {
+    // do stuff upon finishing
+});
             success = true;
         } catch (IOException e) {
             e.printStackTrace();

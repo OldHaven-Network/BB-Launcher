@@ -39,7 +39,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.List;
 
-public class SettingsScreenController {
+public class SettingsScreenController implements Initializable {
 
     private double offset_x;
     private double offset_y;
@@ -52,7 +52,9 @@ public class SettingsScreenController {
     @FXML public AnchorPane pain;
     @FXML public Pane clipPane;
 
-    public void initialize() {
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        Main.setCurrentController(this);
         File[] fileArray = new File(Install.getMainPath()).listFiles();
         assert fileArray != null;
         for(File file : fileArray) {
@@ -64,11 +66,17 @@ public class SettingsScreenController {
         }
 
         ArrayList<String> stringBuilder = new ArrayList<>();
-        for(Mod mod : Mods.getMods())
-            stringBuilder.add(mod.getName());
+        for(Mod mod : Mods.getMods()) {
+            String req = !mod.canDisable() ? "* " : "";
+            stringBuilder.add(req + mod.getName());
+        }
         modview.getItems().addAll(stringBuilder);
         modview.setCellFactory(CheckBoxListCell.forListView(item -> {
             BooleanProperty observable = new SimpleBooleanProperty();
+            boolean forceEnable = false;
+            if(item.startsWith("* "))
+                forceEnable = true;
+            item = item.replace("* ", "");
             final Mod mod = Mods.getModByName(item);
             if(mod != null) {
                 observable.addListener((obs, oldValue, newValue) -> {
@@ -81,9 +89,12 @@ public class SettingsScreenController {
                     }
                     Mods.saveMods();
                 });
-                observable.set(mod.isEnabled());
+                if(!forceEnable)
+                    observable.set(mod.isEnabled());
+                else
+                    observable.set(true);
             }
-            return observable ;
+            return observable;
         }));
 
         modview.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> item, String oldValue, String newValue) -> {

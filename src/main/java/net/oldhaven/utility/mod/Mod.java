@@ -3,6 +3,7 @@ package net.oldhaven.utility.mod;
 import java.io.File;
 
 public class Mod {
+    private boolean canDisable;
     private final File file;
     private final String name;
     private final ModType type;
@@ -12,11 +13,16 @@ public class Mod {
         this.type = type;
         this.name = name;
         this.file = new File(path);
+        this.canDisable = true;
     }
 
     Mod(ModType type, ModSection section, String name, String path) {
         this(type, name, path);
         this.section = section;
+    }
+
+    public boolean canDisable() {
+        return canDisable;
     }
 
     public ModType getType() {

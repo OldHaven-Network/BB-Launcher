@@ -5,19 +5,20 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.model.FileHeader;
+import net.lingala.zip4j.model.ZipParameters;
+import net.minecraft.client.Minecraft;
+import net.oldhaven.Main;
 import net.oldhaven.framework.Install;
 import net.oldhaven.framework.VersionHandler;
 import net.oldhaven.utility.UserInfo;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
@@ -43,17 +44,18 @@ public class MainMenuScreenController implements Initializable {
 
     @FXML public ImageView background;
     @FXML private Label username, downloading_label;
-    @FXML private Button launch_button;
+    @FXML public Button launch_button;
     @FXML private Label close_button, logout_button;
     @FXML private Label main_button, settings_button, processinfo_button;
     @FXML public AnchorPane pain;
     @FXML public Pane clipPane;
     @FXML public ImageView skin;
-    @FXML private ComboBox<String> version_picker;
+    @FXML public ComboBox<String> version_picker;
+    @FXML public ProgressBar progress_bar;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        Main.setCurrentController(this);
         File[] fileArray = new File(Install.getMainPath()).listFiles();
         assert fileArray != null;
         for(File file : fileArray) {
@@ -65,9 +67,11 @@ public class MainMenuScreenController implements Initializable {
         }
 
         version_picker.getItems().addAll("b1.7.3", "AetherMP");
-        version_picker.getSelectionModel().select(VersionHandler.getSelectedVersion());
+        version_picker.getSelectionModel().select(VersionHandler.getSelectedVersion().getName());
         version_picker.valueProperty().addListener((obs, oldValue, newValue) -> {
+            newValue = newValue.replaceAll("\\.", "");
             VersionHandler.updateSelectedVersion(newValue);
+            Mods.updateConfigLoc();
         });
 
         this.skin.setImage(new Image("https://minotar.net/body/"+UserInfo.getUsername()+"/100.png"));
@@ -187,32 +191,36 @@ public class MainMenuScreenController implements Initializable {
     @FXML
     private void handleLaunch(MouseEvent event) throws IOException {
 
-        if(new File(Install.getMainPath() + "temp/").exists()) {
+        File temp = new File(Install.getMainPath() + "temp/");
+        if(temp.exists())
             FileUtils.forceDelete(new File(Install.getMainPath() + "temp/"));
-        }
+        temp.mkdirs();
 
         // Download Minecraft if it hasn't been done so before.
         downloading_label.setVisible(true);
-        if(!new File(Install.getBinPath() + "fabric/").exists()) {
-            Install.installFabric(); }
+        if(VersionHandler.getSelectedVersion() != VersionHandler.Version.AetherMP) {
+            if (!new File(Install.getBinPath() + "fabric/").exists()) {
+                Install.installFabric();
+                Install.installDefaultMods();
+            }
+        }
         if(!new File(Install.getBinPath() + "minecraft.jar").exists()) {
-            while(!Install.installMinecraft())
-                downloading_label.setText("Installing Minecraft...");
+            downloading_label.setText("Installing Minecraft...");
+            Install.installMinecraft();
         }
-        if(!new File(Install.getMinecraftPath() + "planes/").exists() && VersionHandler.getSelectedVersion().equals("AetherMP")) {
-            while(!Install.installAetherMp())
-                downloading_label.setText("Installing AetherMP...");
+        if(!new File(Install.getMinecraftPath() + "planes/").exists() &&
+          VersionHandler.getSelectedVersion() == VersionHandler.Version.AetherMP) {
+            Install.installAetherMP();
         }
-        launchDatShite();
+        this.launchMinecraft();
         downloading_label.setVisible(false);
     }
 
-    public void launchDatShite(){
+    public void launchMinecraft() {
+        launch_button.setDisable(true);
         try {
-
-
             // Back up MC to minecraft.old if that hasn't been done yet. If it has, get fresh MC from minecraft.old to prepare it for injection.
-            if (!new File(Install.getBinPath() + "minecraft.old").exists()) {
+            if(!Files.exists(Paths.get(Install.getBinPath() + "minecraft.old"))) {
                 new ZipFile(Install.getBinPath() + "minecraft.jar").removeFile("META-INF/");
                 FileUtils.copyFile(new File(Install.getBinPath() + "minecraft.jar"), new File(Install.getBinPath() + "minecraft.old"));
             } else {
@@ -226,6 +234,7 @@ public class MainMenuScreenController implements Initializable {
                     if (mod.getFile().exists()) {
                         ZipFile modZip = new ZipFile(mod.getFile());
                         modZip.extractAll(modTempPath.toString());
+                        System.out.println(modTempPath.toString());
                         System.out.println("Mod " + mod.getName() + " will be added to minecraft.jar.");
                     } else {
                         System.out.println("Tried to prepare enabled mod " + mod.getName() + " for adding to minecraft.jar, but it does not exist!");
@@ -240,47 +249,22 @@ public class MainMenuScreenController implements Initializable {
             minecraftJarZip.removeFile(headers.get(0));
             minecraftJarZip.removeFile(headers.get(0));
             minecraftJarZip.removeFile(headers.get(0));
-            if (modTempPath.listFiles() != null) {
-                minecraftJarZip.addFiles(Arrays.asList(modTempPath.listFiles()));
-                for (File file : modTempPath.listFiles()) {
-                    if (file.isDirectory()) {
-                        minecraftJarZip.addFolder(file);
-                    }
-                }
+            File[] files = modTempPath.listFiles(File::isFile);
+            File[] folders = modTempPath.listFiles(File::isDirectory);
+            if (files != null)
+                minecraftJarZip.addFiles(Arrays.asList(files));
+            if(folders != null) {
+                for(File folder : folders)
+                    minecraftJarZip.addFolder(folder);
             }
             FileUtils.deleteDirectory(modTempPath);
             System.out.println("All mods have been injected.");
 
-            // This doesn't serve a purpose anymore.
-            /*
-            StringBuilder libraryBuilder = new StringBuilder();
-            String[] libraries = new String[]{"minecraft.jar", "jinput.jar", "lwjgl.jar", "lwjgl_util.jar", "json.jar"};
-            for (String libraryAppend : libraries) {
-                if (Install.getOS().equals("Windows"))
-                    libraryBuilder.append(Install.getBinPath()).append(libraryAppend).append(";");
-                else
-                    libraryBuilder.append(Install.getBinPath()).append(libraryAppend).append(":");
-            }
-             */
-
-            // This does, however. It sets all of the paths, launches Minecraft and switches to the process info screen.
-            //System.setProperty("java.class.path", Install.getClassPath());
-            //System.setProperty("java.libs.path", Install.getNativesPath());
-
-            if(!VersionHandler.getSelectedVersion().equals("AetherMP")) {
+            if(!VersionHandler.getSelectedVersion().getName().equals("AetherMP")) {
+                System.setProperty("java.class.path", Install.getClassPath(true));
+                System.setProperty("java.libs.path", Install.getNativesPath());
                 new JavaProcess(System.getProperty("java.home")).exec(KnotClient.class);
             } else {
-
-                // TODO
-                // Yes, I resurrected old code for this.
-
-                // FabricMC doesn't work. Period. You can either bug Meefy to add Fabric support or give up.
-                // The old launching method also doesn't work. One of the AetherMP mods doesn't want to accept that it's not
-                // residing in the proper default .minecraft.
-
-                // Good luck.
-                // - Dejf
-
                 StringBuilder libraryBuilder = new StringBuilder();
                 String[] libraries = new String[]{"minecraft.jar", "jinput.jar", "lwjgl.jar", "lwjgl_util.jar", "json.jar"};
                 for(String libraryAppend : libraries) {
@@ -290,26 +274,9 @@ public class MainMenuScreenController implements Initializable {
                         libraryBuilder.append(Install.getBinPath()).append(libraryAppend).append(":");
                 }
                 String libraryFinal = libraryBuilder.toString();
-
-                String username = "ToddHoward";
-                String id = "7ae9007b9909de05ea58e94199a33b30c310c69c";
-
-                ProcessBuilder launch = new ProcessBuilder(
-                        "java", "-Xms256M", "-Xmx1G",
-                        "-Djava.library.path=" + Install.getNativesPath(), "-cp", "\"" + libraryFinal + "\"", "net.minecraft.client.Minecraft",
-                        username, id);
-                launch.directory(new File(Install.getBinPath()));
-                Process process = launch.start();
-                System.out.println(launch.command());
-                Scanner s = new Scanner(process.getInputStream());
-                StringBuilder text = new StringBuilder();
-                while (s.hasNextLine()) {
-                    text.append(s.nextLine());
-                    text.append("\n");
-                }
-                s.close();
-                int result = process.waitFor();
-                System.out.printf( "Process exited with result %d and output %s%n", result, text );
+                System.setProperty("java.class.path", libraryFinal);
+                System.setProperty("java.libs.path", Install.getNativesPath());
+                new JavaProcess(System.getProperty("java.home")).exec(Minecraft.class);
             }
             try {
                 Parent root = FXMLLoader.load(getClass().getResource("/fxml/ProcessInfoScreen.fxml"));
@@ -319,9 +286,10 @@ public class MainMenuScreenController implements Initializable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } catch(IOException | InterruptedException e) {
+        } catch(IOException e) {
             e.printStackTrace();
         }
+        launch_button.setDisable(false);
     }
 
     @FXML private void close(MouseEvent event){

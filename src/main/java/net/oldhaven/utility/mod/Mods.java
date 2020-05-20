@@ -1,17 +1,47 @@
 package net.oldhaven.utility.mod;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.oldhaven.framework.Install;
 import net.oldhaven.utility.JsonConfig;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 public class Mods {
-    static List<Mod> mods = new LinkedList<>();
-    static List<ModSection> sections = new LinkedList<>();
+    static final List<Mod> mods = new LinkedList<>();
+    static final List<ModSection> sections = new LinkedList<>();
     static JsonConfig config = new JsonConfig(Install.getMainPath() + "mods.json");
 
     public static boolean shouldUpdate = false;
+
+    public static void updateConfigLoc() {
+        String fileLoc = Install.getMinecraftPath() + "mods.json";
+        File file = new File(fileLoc);
+        if(!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        config = new JsonConfig(fileLoc);
+        Mods.removeAllMods();
+        Mods.addModSection("CustomMods");
+        JsonObject json = config.getJson();
+        Set<Map.Entry<String, JsonElement>> entrySet = json.entrySet();
+        for(Map.Entry<String,JsonElement> entry : entrySet) {
+            String modName = entry.getKey();
+            if(modName.equalsIgnoreCase("CustomMods"))
+                continue;
+            JsonObject modObj = entry.getValue().getAsJsonObject();
+            String modType = modObj.get("Type").getAsString();
+            String modPath = modObj.get("Path").getAsString();
+            boolean modEnab = modObj.get("Enabled").getAsBoolean();
+            addMod(ModType.valueOf(modType), modName, modPath, modEnab);
+        }
+    }
 
     public static Mod addMod(ModType type, String name, String path, boolean defaultEnabled) {
         Mod mod = new Mod(type, name, path);
@@ -24,8 +54,18 @@ public class Mods {
             boolean enabled = object.get("Enabled").getAsBoolean();
             mod.setEnabled(enabled);
         }
-        mods.add(mod);
+        synchronized (mods) {
+            mods.add(mod);
+        }
         return mod;
+    }
+    public static void removeAllMods() {
+        synchronized(mods) {
+            mods.clear();
+        }
+        synchronized(sections) {
+            sections.clear();
+        }
     }
     public static ModSection addModSection(String name) {
         ModSection section = new ModSection(name);
@@ -41,30 +81,39 @@ public class Mods {
             }
         } else
             shouldUpdate = true;
-        sections.add(section);
+        synchronized(sections) {
+            sections.add(section);
+        }
         return section;
     }
     public static void removeMod(Mod mod) {
-        mods.remove(mod);
+        synchronized(mods) {
+            mods.remove(mod);
+        }
     }
 
     public static Mod getModByName(String name) {
-        for(Mod mod : mods) {
-            if(mod.getName().equalsIgnoreCase(name))
-                return mod;
+        synchronized(mods) {
+            for (Mod mod : mods) {
+                if (mod.getName().equalsIgnoreCase(name))
+                    return mod;
+            }
         }
         return null;
     }
     public static ModSection getModSectionByName(String name) {
-        for(ModSection section : sections) {
-            if(section.getName().equalsIgnoreCase(name))
-                return section;
+        synchronized(sections) {
+            for (ModSection section : sections) {
+                System.out.println(section.getName());
+                if (section.getName().equalsIgnoreCase(name))
+                    return section;
+            }
+            return addModSection(name);
         }
-        return null;
     }
 
     public static List<Mod> getMods() {
-        return mods;
+        synchronized(mods) { return mods; }
     }
     public static List<ModSection> getSections() {
         return sections;
@@ -72,17 +121,21 @@ public class Mods {
 
     public static void saveMods() {
         config.clear();
-        for(ModSection section : sections)
-            config.setProperty(section.getName(), section.toJson());
-        for(Mod mod : mods) {
-            if(mod.getSection() != null)
-                /* Mod belongs to a section */
-                continue;
-            JsonObject object = new JsonObject();
-            object.addProperty("Path", mod.getFile().getAbsolutePath());
-            object.addProperty("Enabled", mod.isEnabled());
-            object.addProperty("Type", mod.getType().name());
-            config.setProperty(mod.getName(), object);
+        synchronized(sections) {
+            for (ModSection section : sections)
+                config.setProperty(section.getName(), section.toJson());
+        }
+        synchronized(mods) {
+            for (Mod mod : mods) {
+                if (mod.getSection() != null)
+                    /* Mod belongs to a section */
+                    continue;
+                JsonObject object = new JsonObject();
+                object.addProperty("Path", mod.getFile().getAbsolutePath());
+                object.addProperty("Enabled", mod.isEnabled());
+                object.addProperty("Type", mod.getType().name());
+                config.setProperty(mod.getName(), object);
+            }
         }
         config.save();
         shouldUpdate = false;
