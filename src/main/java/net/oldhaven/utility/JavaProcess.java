@@ -1,9 +1,12 @@
 package net.oldhaven.utility;
 
+import net.oldhaven.framework.Arguments;
 import net.oldhaven.framework.Install;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public final class JavaProcess {
     private String output = "";
@@ -47,10 +50,17 @@ public final class JavaProcess {
 
         //ProcessBuilder builder = new ProcessBuilder(javaBin, "-Xms"+minmem+"m", "-Xms"+maxmem+"m",
         //        "-Djava.library.path="+libsPath, "-cp", classpath, className, username);
-        ProcessBuilder builder = new ProcessBuilder(javaBin, "-Xms"+minmem+"m", "-Xms"+maxmem+"m",
-                "-Djava.library.path="+libsPath, "-cp", classpath, className, "--gameDir", Install.getMinecraftPath(), "--username", username);
-        System.out.println(Arrays.toString(new String[]{javaBin, "-Xms" + minmem + "m", "-Xms" + maxmem + "m",
-                "-Djava.library.path=" + libsPath, "-cp", classpath, className, "--gameDir", Install.getMinecraftPath(), "--username", username}));
+        Arguments arguments = new Arguments();
+        arguments.add(javaBin, "-Xms"+minmem+"m", "-Xms"+maxmem+"m", "-Djava.library.path="+libsPath, "-cp", classpath, className);
+        arguments.add("--gameDir", Install.getMinecraftPath());
+        arguments.add("--username", username);
+        String token = UserInfo.getAccessToken();
+        arguments.add("--session", token);
+        arguments.add("--accessToken", token);
+        arguments.add("--sessionId", token);
+        String[] args = arguments.build();
+        ProcessBuilder builder = new ProcessBuilder(args);
+        System.out.println(Arrays.toString(args));
         builder.redirectErrorStream(true);
 
         process = builder.start();

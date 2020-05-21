@@ -30,7 +30,9 @@ public class VersionHandler {
         }
         try {
             BufferedReader versionReader = new BufferedReader(new FileReader(versionFile));
-            Version.selectedVersion = Version.valueOf(versionReader.readLine());
+            String line = versionReader.readLine();
+            line = line.replaceAll("\\.", "");
+            Version.selectedVersion = Version.valueOf(line);
             versionReader.close();
         } catch (IOException e) {
             e.printStackTrace();

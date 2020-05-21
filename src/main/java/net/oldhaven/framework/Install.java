@@ -237,7 +237,9 @@ public class Install {
         try {
             if (versionFile.exists()) {
                 String old = new String(Files.readAllBytes(versionFile.toPath()));
-                if (tag.equals(old)) {
+                if(tag == null || tag.equals(old)) {
+                    if(tag == null)
+                        System.out.println("  Can't access newest version of AetherMP. Are you rate-limited?");
                     System.out.println("  No new versions of AetherMP, You have: " + old);
                     Launcher.launch();
                     return;
