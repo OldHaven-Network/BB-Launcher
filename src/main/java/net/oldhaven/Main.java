@@ -12,14 +12,11 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.oldhaven.framework.VersionHandler;
 import net.oldhaven.utility.lang.Lang;
-import net.oldhaven.utility.mod.ModSection;
-import net.oldhaven.utility.mod.ModType;
 import net.oldhaven.utility.mod.Mods;
 import org.apache.commons.io.FileUtils;
 
 import java.awt.*;
 import java.io.*;
-import java.util.Objects;
 
 public class Main extends Application {
 
@@ -73,22 +70,9 @@ public class Main extends Application {
             }
         }
 
-        String mainPath = Install.getMinecraftPath();
         System.out.println("Hello there, General Kenobi");
         this.createFolders();
         Mods.updateConfigLoc();
-        if(VersionHandler.getSelectedVersion() == VersionHandler.Version.b173) {
-            Mods.addMod(ModType.Fabric, "MegaMod-Mixins.jar", mainPath + "mods-inactive/MegaMod-Mixins.jar", true);
-            Mods.addMod(ModType.NonFabric, "OptiFine.zip", mainPath + "mods/non-fabric/OptiFine.zip", false);
-            Mods.addMod(ModType.NonFabric, "ReiMinimap.zip", mainPath + "mods/non-fabric/ReiMinimap.zip", false);
-            ModSection section = Mods.addModSection("CustomMods");
-            Mods.getModSectionByName("CustomMods").getMods();
-            if (Mods.shouldUpdate)
-                Mods.saveMods();
-
-            Install.installSavedServers(mainPath);
-            Install.installMegaMod(mainPath + "mods/");
-        }
         // Moved Minecraft installation to after login so unauthorized users cannot download Mojang files without logging in.
         File settingsFile = new File(Install.getMainPath() + "settings.txt");
         if(!settingsFile.exists()){

@@ -58,17 +58,20 @@ public class GitHubAPI {
             try {
                 BufferedInputStream inputStream = new BufferedInputStream(new URL(this.getDownloadURL()).openStream());
                 FileOutputStream fileOS = new FileOutputStream(absoluteLoc);
-                byte[] data = new byte[1024];
+                byte[] data = new byte[1024*30];
                 int byteContent;
                 int currentByte = 0;
-                Platform.runLater(() -> {
-                    ((MainMenuScreenController) Main.getCurrentController()).version_picker.setDisable(true);
-                    ((MainMenuScreenController) Main.getCurrentController()).progress_bar.setVisible(true);
-                    ((MainMenuScreenController) Main.getCurrentController()).launch_button.setText("Installing...");
-                    ((MainMenuScreenController) Main.getCurrentController()).launch_button.setDisable(true);
-                });
                 //int go = 0;
                 while ((byteContent = inputStream.read(data, 0, data.length)) != -1) {
+                    if(Main.getCurrentController() != null && Main.getCurrentController() instanceof MainMenuScreenController) {
+                        Platform.runLater(() -> {
+                            ((MainMenuScreenController) Main.getCurrentController()).version_picker.setDisable(true);
+                            ((MainMenuScreenController) Main.getCurrentController()).progress_bar.setVisible(true);
+                            ((MainMenuScreenController) Main.getCurrentController()).launch_button.setText("Installing...");
+                            ((MainMenuScreenController) Main.getCurrentController()).launch_button.setDisable(true);
+                        });
+                        ((MainMenuScreenController) Main.getCurrentController()).progress_bar.setProgress(downloadProgress);
+                    }
                     /*go++;
                     if(go > 500) {
                         System.out.println(currentByte + " / " + totalSize);
@@ -78,20 +81,18 @@ public class GitHubAPI {
                     fileOS.write(data, 0, byteContent);
                     float progress = ((float) currentByte / downloadSize) * 100.0F;
                     GitHubAPI.downloadProgress = progress / 100.0F;
-                    if(Main.getCurrentController() != null &&
-                      Main.getCurrentController() instanceof MainMenuScreenController) {
-                        ((MainMenuScreenController) Main.getCurrentController()).progress_bar.setProgress(downloadProgress);
-                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            Platform.runLater(() -> {
-                ((MainMenuScreenController) Main.getCurrentController()).version_picker.setDisable(false);
-                ((MainMenuScreenController) Main.getCurrentController()).progress_bar.setVisible(false);
-                ((MainMenuScreenController) Main.getCurrentController()).launch_button.setText("Launch");
-                ((MainMenuScreenController) Main.getCurrentController()).launch_button.setDisable(false);
-            });
+            if(Main.getCurrentController() != null && Main.getCurrentController() instanceof MainMenuScreenController) {
+                Platform.runLater(() -> {
+                    ((MainMenuScreenController) Main.getCurrentController()).version_picker.setDisable(false);
+                    ((MainMenuScreenController) Main.getCurrentController()).progress_bar.setVisible(false);
+                    ((MainMenuScreenController) Main.getCurrentController()).launch_button.setText("Launch");
+                    ((MainMenuScreenController) Main.getCurrentController()).launch_button.setDisable(false);
+                });
+            }
             Platform.runLater(onFinish);
             Thread.currentThread().interrupt();
         }).start();

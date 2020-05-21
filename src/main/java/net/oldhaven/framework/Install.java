@@ -6,6 +6,9 @@ import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import javafx.scene.control.*;
 import net.lingala.zip4j.ZipFile;
+import net.oldhaven.controller.MainMenuScreenController;
+import net.oldhaven.utility.Launcher;
+import net.oldhaven.utility.enums.Version;
 import net.oldhaven.utility.mod.ModType;
 import net.oldhaven.utility.mod.Mods;
 import org.apache.commons.io.FileUtils;
@@ -75,9 +78,9 @@ public class Install {
     public static String getMinecraftPath() {
         String path;
         if ("Windows".equals(getOS()))
-            path = getVersionPath() + VersionHandler.getSelectedVersion().getName() +  "\\";
+            path = getVersionPath() + Version.selectedVersion.getName() +  "\\";
         else
-            path = getVersionPath() + VersionHandler.getSelectedVersion().getName() + "/";
+            path = getVersionPath() + Version.selectedVersion.getName() + "/";
         File file = new File(path);
         if(!file.exists())
             file.mkdirs();
@@ -182,13 +185,17 @@ public class Install {
     }
 
     public static void installDefaultMods() {
+        File optifineZipFile = new File(Install.getMinecraftPath() + "mods/non-fabric/OptiFine.zip");
+        File reiminimapZipFile = new File(Install.getMinecraftPath() + "mods/non-fabric/ReiMinimap.zip");
         try {
-            URL optifineZipURL = new URL("https://www.oldhaven.net/resources/launcher/OptiFine.zip");
-            URL reiminimapZipURL = new URL("https://www.oldhaven.net/resources/launcher/ReiMinimap.zip");
-            File optifineZipFile = new File(Install.getMinecraftPath() + "mods/non-fabric/OptiFine.zip");
-            File reiminimapZipFile = new File(Install.getMinecraftPath() + "mods/non-fabric/ReiMinimap.zip");
-            getFileFromURL(optifineZipURL, optifineZipFile.toString());
-            getFileFromURL(reiminimapZipURL, reiminimapZipFile.toString());
+            if(!optifineZipFile.exists()) {
+                URL optifineZipURL = new URL("https://www.oldhaven.net/resources/launcher/OptiFine.zip");
+                getFileFromURL(optifineZipURL, optifineZipFile.toString());
+            }
+            if(!reiminimapZipFile.exists()) {
+                URL reiminimapZipURL = new URL("https://www.oldhaven.net/resources/launcher/ReiMinimap.zip");
+                getFileFromURL(reiminimapZipURL, reiminimapZipFile.toString());
+            }
         } catch(IOException e) {
             e.printStackTrace();
         }
@@ -222,8 +229,28 @@ public class Install {
         return success;
     }
 
-    public static boolean installAetherMP() {
+    public static void installAetherMP() {
         GitHubAPI gitHubAPI = GitHubAPI.openURL("https://api.github.com/repos/OldHaven-Network/AetherMP/releases");
+        File versionFile = new File(Install.getMinecraftPath() + "mods/version.txt");
+        System.out.println(" ");
+        String tag = gitHubAPI.getTag();
+        try {
+            if (versionFile.exists()) {
+                String old = new String(Files.readAllBytes(versionFile.toPath()));
+                if (tag.equals(old)) {
+                    System.out.println("  No new versions of AetherMP, You have: " + old);
+                    Launcher.launch();
+                    return;
+                }
+                System.out.println("  New version of AetherMP detected! You have: " + old);
+            }
+            PrintWriter out = new PrintWriter(versionFile);
+            out.write(tag);
+            out.close();
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println(" ");
         gitHubAPI.writeToFile(Install.getMainPath() + "temp/aethermp.zip", () -> {
             File aetherMpFile = new File(Install.getMainPath() + "temp/aethermp.zip");
             File tempFolder = new File(Install.getMainPath() + "temp/");
@@ -259,12 +286,12 @@ public class Install {
                         file.delete();
                     }
                 }
+                Launcher.launch();
             } catch (IOException e) {
                 e.printStackTrace();
             }
             tempFolder.delete();
         });
-        return false;
     }
 
     private static String convertFabricResource(String name) {
@@ -354,7 +381,7 @@ public class Install {
                 alert.getButtonTypes().setAll(yes, no);
 
                 Optional<ButtonType> result = alert.showAndWait();
-                if (result.get() == yes) {
+                if (result.isPresent() && result.get() == yes) {
                     Desktop.getDesktop().browse(new URL("https://github.com/OldHaven-Network/BB-Launcher/releases").toURI());
                     System.exit(0);
                 }
@@ -365,54 +392,55 @@ public class Install {
         }
     }
 
-    public static boolean installMegaMod(String modsFolder) {
+    public static void installMegaMod(final String modsFolder) {
         System.out.println(" ");
-        boolean success = false;
+        GitHubAPI gitHubAPI = GitHubAPI.openURL("https://api.github.com/repos/OldHaven-Network/MegaMod-Mixins/releases");
+        final String tag = gitHubAPI.getTag();
+        System.out.println("  Latest MegaMod version: " + tag);
         try {
-            GitHubAPI gitHubAPI = GitHubAPI.openURL("https://api.github.com/repos/OldHaven-Network/MegaMod-Mixins/releases");
-            String tag = gitHubAPI.getTag();
-            System.out.println("  Latest MegaMod version: " + tag);
             File modDir = new File(modsFolder);
-            if(!modDir.exists()) {
+            if (!modDir.exists()) {
                 modDir.mkdir();
             }
-            File file = new File(modsFolder, "megaModVersion.txt");
-            if(file.exists()) {
+            final File mm = new File(modsFolder + "MegaMod-Mixins.jar");
+            final File file = new File(modsFolder, "megaModVersion.txt");
+            if (file.exists()) {
                 String old = new String(Files.readAllBytes(file.toPath()));
-                if(tag.equals(old)) {
+                if (tag.equals(old) && mm.exists()) {
                     System.out.println("  No new versions of MegaMod, You have: " + old);
-                    return true;
+                    return;
                 }
                 System.out.println("  New version of MegaMod detected! You have: " + old);
             }
-            boolean write = false;
-            if(file.exists()) {
-                boolean b = file.delete();
-                if(!b)
-                    System.err.println("Can't delete "+file.getAbsolutePath());
-                else
-                    write = true;
-            } else {
-                boolean b = file.createNewFile();
-                if(!b)
-                    System.err.println("Can't create "+file.getAbsolutePath());
-                else
-                    write = true;
-            }
-            if(write) {
-                PrintWriter out = new PrintWriter(file);
-                out.write(tag);
-                out.close();
-            }
-gitHubAPI.writeToFile(modsFolder + "MegaMod-Mixins.jar", () -> {
-    // do stuff upon finishing
-});
-            success = true;
+            gitHubAPI.writeToFile(modsFolder + "MegaMod-Mixins.jar", () -> {
+                try {
+                    boolean write = false;
+                    if (file.exists()) {
+                        boolean b = file.delete();
+                        if (!b)
+                            System.err.println("Can't delete " + file.getAbsolutePath());
+                        else
+                            write = true;
+                    } else {
+                        boolean b = file.createNewFile();
+                        if (!b)
+                            System.err.println("Can't create " + file.getAbsolutePath());
+                        else
+                            write = true;
+                    }
+                    if (write) {
+                        PrintWriter out = new PrintWriter(file);
+                        out.write(tag);
+                        out.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }
         System.out.println(" ");
-        return success;
     }
 
     public static void setCurrentUser(String s) {

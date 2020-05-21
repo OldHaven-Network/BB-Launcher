@@ -21,13 +21,13 @@
          <children>
             <Pane prefHeight="50.0" prefWidth="635.0" style="-fx-background-color: #FFFFFF;">
                <children>
-                  <Label id="main_button" fx:id="main_button" layoutX="27.0" layoutY="10.0" onMouseEntered="#mainButtonMouseover" onMouseExited="#mainButtonMouseover" style="-fx-font-family: Open Sans; -fx-font-weight: bold; -fx-font-size: 20;" text="MAIN" />
-                  <Label fx:id="settings_button" layoutX="117.0" layoutY="10.0" onMouseClicked="#clickSettingsButton" onMouseEntered="#settingsButtonMouseover" onMouseExited="#settingsButtonMouseover" style="-fx-font-family: Open Sans; -fx-font-weight: bold; -fx-font-size: 20;" text="SETTINGS" />
+                  <Label id="main_button" fx:id="main_button" layoutX="27.0" layoutY="10.0" onMouseEntered="#mainButton_mouseOver" onMouseExited="#mainButton_mouseOver" style="-fx-font-family: Open Sans; -fx-font-weight: bold; -fx-font-size: 20;" text="MAIN" />
+                  <Label fx:id="settings_button" layoutX="117.0" layoutY="10.0" onMouseClicked="#clickSettingsButton" onMouseEntered="#settingsButton_mouseOver" onMouseExited="#settingsButton_mouseOver" style="-fx-font-family: Open Sans; -fx-font-weight: bold; -fx-font-size: 20;" text="SETTINGS" />
                   <Line endX="-45.658203125" layoutX="127.0" layoutY="40.0" startX="-100.0" strokeWidth="2.0" />
-                  <Label fx:id="processinfo_button" layoutX="481.0" layoutY="10.0" onMouseClicked="#clickProcessInfoButton" onMouseEntered="#processInfoButtonMouseover" onMouseExited="#processInfoButtonMouseover" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-font-family: Open Sans;" text="PROCESS INFO" />
+                  <Label fx:id="processinfo_button" layoutX="481.0" layoutY="10.0" onMouseClicked="#clickProcessInfoButton" onMouseEntered="#processInfoButton_mouseOver" onMouseExited="#processInfoButton_mouseOver" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-font-family: Open Sans;" text="PROCESS INFO" />
                </children>
             </Pane>
-            <Button id="launch_button" fx:id="launch_button" layoutX="219.0" layoutY="240.0" mnemonicParsing="false" onMouseClicked="#handleLaunch" prefHeight="67.0" prefWidth="197.0" style="-fx-font-family: Open Sans; -fx-font-weight: bold; -fx-font-size: 28;" text="Launch" />
+            <Button id="launch_button" fx:id="launch_button" layoutX="219.0" layoutY="240.0" mnemonicParsing="false" onMouseClicked="#launchButton_onClick" prefHeight="67.0" prefWidth="197.0" style="-fx-font-family: Open Sans; -fx-font-weight: bold; -fx-font-size: 28;" text="Launch" />
             <ProgressBar fx:id="progress_bar" layoutX="219.0" layoutY="240.0" opacity="0.4" prefHeight="67.0" prefWidth="197.0" progress="0.5" visible="false" />
             <Label id="username" fx:id="username" alignment="CENTER" contentDisplay="CENTER" layoutX="-3.0" layoutY="73.0" prefHeight="30.0" prefWidth="212.0" style="-fx-font-weight: bold;" text="123456789123456" textAlignment="CENTER" textFill="WHITE">
                <font>
@@ -43,7 +43,7 @@
             <Label id="downloading_label" fx:id="downloading_label" alignment="CENTER" layoutX="278.0" layoutY="180.0" text="Downloading..." textAlignment="CENTER" textFill="WHITE" visible="false" />
          </children>
       </AnchorPane>
-      <Label id="close_button" fx:id="close_button" layoutX="678.0" layoutY="4.0" onMouseClicked="#close" onMouseEntered="#closeButtonMouseover" onMouseExited="#closeButtonMouseover" style="-fx-font-weight: bold; -fx-font-size: 16;" text="✕" textFill="WHITE" />
-      <Label id="logout_button" fx:id="logout_button" layoutX="615.0" layoutY="8.0" onMouseClicked="#press_logoutButton" onMouseEntered="#logoutButtonMouseover" onMouseExited="#logoutButtonMouseover" style="-fx-font-family: Open Sans; -fx-font-weight: normal; -fx-font-size: 12;" text="Log out" textFill="WHITE" />
+      <Label id="close_button" fx:id="close_button" layoutX="678.0" layoutY="4.0" onMouseClicked="#close" onMouseEntered="#closeButton_mouseOver" onMouseExited="#closeButton_mouseOver" style="-fx-font-weight: bold; -fx-font-size: 16;" text="✕" textFill="WHITE" />
+      <Label id="logout_button" fx:id="logout_button" layoutX="615.0" layoutY="8.0" onMouseClicked="#logoutButton_onClick" onMouseEntered="#logoutButton_mouseOver" onMouseExited="#logoutButton_mouseOver" style="-fx-font-family: Open Sans; -fx-font-weight: normal; -fx-font-size: 12;" text="Log out" textFill="WHITE" />
    </children>
 </AnchorPane>

@@ -45,6 +45,8 @@ public final class JavaProcess {
             e.printStackTrace();
         }
 
+        //ProcessBuilder builder = new ProcessBuilder(javaBin, "-Xms"+minmem+"m", "-Xms"+maxmem+"m",
+        //        "-Djava.library.path="+libsPath, "-cp", classpath, className, username);
         ProcessBuilder builder = new ProcessBuilder(javaBin, "-Xms"+minmem+"m", "-Xms"+maxmem+"m",
                 "-Djava.library.path="+libsPath, "-cp", classpath, className, "--gameDir", Install.getMinecraftPath(), "--username", username);
         System.out.println(Arrays.toString(new String[]{javaBin, "-Xms" + minmem + "m", "-Xms" + maxmem + "m",

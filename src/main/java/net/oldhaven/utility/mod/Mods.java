@@ -30,16 +30,18 @@ public class Mods {
         Mods.removeAllMods();
         Mods.addModSection("CustomMods");
         JsonObject json = config.getJson();
-        Set<Map.Entry<String, JsonElement>> entrySet = json.entrySet();
-        for(Map.Entry<String,JsonElement> entry : entrySet) {
-            String modName = entry.getKey();
-            if(modName.equalsIgnoreCase("CustomMods"))
-                continue;
-            JsonObject modObj = entry.getValue().getAsJsonObject();
-            String modType = modObj.get("Type").getAsString();
-            String modPath = modObj.get("Path").getAsString();
-            boolean modEnab = modObj.get("Enabled").getAsBoolean();
-            addMod(ModType.valueOf(modType), modName, modPath, modEnab);
+        if(json != null) {
+            Set<Map.Entry<String, JsonElement>> entrySet = json.entrySet();
+            for (Map.Entry<String, JsonElement> entry : entrySet) {
+                String modName = entry.getKey();
+                if (modName.equalsIgnoreCase("CustomMods"))
+                    continue;
+                JsonObject modObj = entry.getValue().getAsJsonObject();
+                String modType = modObj.get("Type").getAsString();
+                String modPath = modObj.get("Path").getAsString();
+                boolean modEnab = modObj.get("Enabled").getAsBoolean();
+                addMod(ModType.valueOf(modType), modName, modPath, modEnab);
+            }
         }
     }
 
