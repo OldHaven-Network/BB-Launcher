@@ -335,7 +335,6 @@ public class LoginScreenController implements Initializable {
                 }
             }
         }
-        System.out.println(validated);
         return validated;
     }
 }

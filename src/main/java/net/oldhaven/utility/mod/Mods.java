@@ -89,6 +89,8 @@ public class Mods {
         return section;
     }
     public static void removeMod(Mod mod) {
+        if(mod == null)
+            return;
         synchronized(mods) {
             mods.remove(mod);
         }

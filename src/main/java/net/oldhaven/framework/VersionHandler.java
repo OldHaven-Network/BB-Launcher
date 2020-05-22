@@ -18,6 +18,7 @@ public class VersionHandler {
         } catch (FileNotFoundException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+        Version.selectedVersion.install();
     }
 
     public static void initializeVersionHandler(){

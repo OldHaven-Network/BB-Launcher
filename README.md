@@ -1,6 +1,7 @@
 # Beyond Beta Launcher
 
-A user-friendly, simple to use launcher for Minecraft Beta 1.7.3.
+**The Beyond Beta Launcher** <br/>
+The most advanced, and yet most simplistic and easy to use launcher for legacy Minecraft.
 
 
 **Note:** *the launcher is in an early stage of development.* All features (including looks, design or otherwise) are subject to change in a more stable release. Please keep this in mind.
@@ -9,15 +10,23 @@ A user-friendly, simple to use launcher for Minecraft Beta 1.7.3.
 
 ## Features
 
-- **Functioning Mojang authentication.** A "premium" Mojang / Minecraft account is required to use the launcher and download resources directly from Mojang. No Mojang code is contained within the launcher itself. This should hopefully prevent some legal trouble with Mojang.
+- **Functioning Mojang authentication.** 
+<br/>A "premium" Mojang / Minecraft account is required to use the launcher and download resources directly from Mojang. No Mojang code is contained within the launcher itself. This should hopefully prevent some legal trouble with Mojang.
 
-- **Multiple account support with automatic login.** Basic account details are stored after logging in (not inluding passwords, which are never stored anywhere). You can erase an account by choosing "Log out and forget" in the main menu after clicking on "Log out". Otherwise, you can select an appropriate account to log in with in the login screen. 
+- **Multiple account support with automatic login.** 
+<br/>Basic account details are stored after logging in (not inluding passwords, which are never stored anywhere). You can erase an account by choosing "Log out and forget" in the main menu after clicking on "Log out". Otherwise, you can select an appropriate account to log in with in the login screen. 
 
-- **Built in mod manager.** Supports all MCP, ModLoader and Fabric mods. Allows you to see all of your installed mods at a glance and add, remove, enable or disable them as you please.
+- **On the fly version switching**
+<br/>Toggle between versions on the fly, supporting many versions of Legacy Minecraft, you can be sure the version you want is on our launcher to use!
 
-- **Customizable launcher background.** Since the launcher's UI is quite simple and you can see the default background in pretty much every menu, you can change it for an extra personalized touch.
+- **Built in mod manager.** 
+<br/>Supports all MCP, ModLoader and Fabric mods. Allows you to see all of your installed mods at a glance and add, remove, enable or disable them as you please.
 
-- **...and more!** While we are not aiming to replace sophisticated launchers such as MultiMC, more features will definitely be added somewhere down the line.
+- **Customizable launcher background.** 
+<br/>Since the launcher's UI is quite simple and you can see the default background in pretty much every menu, you can change it for an extra personalized touch.
+
+- **...and more!** 
+<br/>While we are not aiming to replace sophisticated launchers such as MultiMC, more features will definitely be added somewhere down the line.
 
 ## Installation
 

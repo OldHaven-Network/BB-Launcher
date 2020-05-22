@@ -11,31 +11,21 @@ import java.util.List;
 import java.util.Map;
 
 public enum Version {
-    b173("b1.7.3", "b173.json", () -> {
-        String mainPath = Install.getMinecraftPath();
-        Mods.addModSection("CustomMods");
-        if (Mods.shouldUpdate)
-            Mods.saveMods();
+    b173("b1.7.3", "b173.json", Launcher::launch, Install::installOldHavenb173),
+    AetherMP("AetherMP", "b173.json", Install::installAetherMP, null),
+    a122a("Alpha 1.2.2a", "a122a.json", Launcher::launch, null);
+    //c030_01c("Classic 0.30_01c", "c030_01c.json", Launcher::launch, null);
 
-        Install.installSavedServers(mainPath);
-        Install.installMegaMod(mainPath + "mods/");
-
-        Install.installSavedServers(mainPath);
-        Install.installMegaMod(mainPath + "mods/");
-        Install.installDefaultMods();
-        Launcher.launch();
-    }), AetherMP("AetherMP", "b173.json", Install::installAetherMP),
-    a122a("Alpha 1.2.2a", "a122a.json", Launcher::launch),
-    c030_01c("Classic 0.30_01c", "c030_01c.json", Launcher::launch);
-
-    private Runnable onLaunch;
     private String name;
     private String jsonFile;
+    private Runnable onLaunch;
+    private Runnable onInstall;
     private Map<String/*name*/, File> fabricLibs;
-    Version(String name, String jsonFile, Runnable onLaunch) {
+    Version(String name, String jsonFile, Runnable onLaunch, Runnable onInstall) {
         this.name = name;
-        this.onLaunch = onLaunch;
         this.jsonFile = jsonFile;
+        this.onLaunch = onLaunch;
+        this.onInstall = onInstall;
         this.fabricLibs = new LinkedHashMap<>();
     }
 
@@ -54,6 +44,11 @@ public enum Version {
 
     public String getName() {
         return name;
+    }
+
+    public void install() {
+        if(onInstall != null)
+            onInstall.run();
     }
 
     public void launch() {

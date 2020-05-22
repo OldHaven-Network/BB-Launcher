@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import net.lingala.zip4j.ZipFile;
 import net.oldhaven.utility.Launcher;
 import net.oldhaven.utility.enums.Version;
+import net.oldhaven.utility.mod.Mod;
 import net.oldhaven.utility.mod.ModType;
 import net.oldhaven.utility.mod.Mods;
 import org.apache.commons.io.FileUtils;
@@ -173,24 +174,7 @@ public class Install {
         return getMinecraftPath() + "bin/natives/";
     }
 
-    public static boolean installSavedServers(String baseFolder) {
-        File savedServers = new File(baseFolder, "savedServers.txt");
-        if(!savedServers.exists()) {
-            try {
-                if(savedServers.createNewFile()) {
-                    PrintWriter out = new PrintWriter(savedServers);
-                    out.write("OldHaven|beta.oldhaven.net");
-                    out.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public static void installDefaultMods() {
+    public static void installOldHavenb173() {
         File optifineZipFile = new File(Install.getMinecraftPath() + "mods/non-fabric/OptiFine.zip");
         File reiminimapZipFile = new File(Install.getMinecraftPath() + "mods/non-fabric/ReiMinimap.zip");
         try {
@@ -205,6 +189,79 @@ public class Install {
         } catch(IOException e) {
             e.printStackTrace();
         }
+        Mods.removeMod(Mods.getModByName("OptiFine.zip"));
+        Mods.removeMod(Mods.getModByName("ReiMinimap.zip"));
+        if(Mods.getModByName("Rei's Minimap") == null)
+            Mods.addMod(ModType.NonFabric, "Rei's Minimap", reiminimapZipFile.getPath(), true);
+        if(Mods.getModByName("OptiFine") == null)
+            Mods.addMod(ModType.NonFabric, "OptiFine", optifineZipFile.getPath(), true);
+
+        String modsFolder = Install.getMinecraftPath() + "mods/";
+        System.out.println(" ");
+        GitHubAPI gitHubAPI = GitHubAPI.openURL("https://api.github.com/repos/OldHaven-Network/MegaMod-Mixins/releases");
+        final String tag = gitHubAPI.getTag();
+        System.out.println("  Latest MegaMod version: " + tag);
+        try {
+            File modDir = new File(modsFolder);
+            if (!modDir.exists()) {
+                modDir.mkdir();
+            }
+            final File mm = new File(modsFolder + "MegaMod-Mixins.jar");
+            final File file = new File(modsFolder, "megaModVersion.txt");
+            if (file.exists()) {
+                String old = new String(Files.readAllBytes(file.toPath()));
+                if (tag.equals(old) && mm.exists()) {
+                    System.out.println("  No new versions of MegaMod, You have: " + old);
+                    return;
+                }
+                System.out.println("  New version of MegaMod detected! You have: " + old);
+            }
+            gitHubAPI.writeToFile(modsFolder + "MegaMod-Mixins.jar", () -> {
+                try {
+                    boolean write = false;
+                    if (file.exists()) {
+                        boolean b = file.delete();
+                        if (!b)
+                            System.err.println("Can't delete " + file.getAbsolutePath());
+                        else
+                            write = true;
+                    } else {
+                        boolean b = file.createNewFile();
+                        if (!b)
+                            System.err.println("Can't create " + file.getAbsolutePath());
+                        else
+                            write = true;
+                    }
+                    if (write) {
+                        PrintWriter out = new PrintWriter(file);
+                        out.write(tag);
+                        out.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println(" ");
+
+        String baseFolder = Install.getMinecraftPath();
+        File savedServers = new File(baseFolder, "savedServers.txt");
+        if(!savedServers.exists()) {
+            try {
+                if(savedServers.createNewFile()) {
+                    PrintWriter out = new PrintWriter(savedServers);
+                    out.write("OldHaven|beta.oldhaven.net");
+                    out.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if(Mods.shouldUpdate)
+            Mods.saveMods();
     }
 
     public static void installAetherMP() {
@@ -380,57 +437,6 @@ public class Install {
         } catch (IOException | URISyntaxException e) {
 
         }
-    }
-
-    public static void installMegaMod(final String modsFolder) {
-        System.out.println(" ");
-        GitHubAPI gitHubAPI = GitHubAPI.openURL("https://api.github.com/repos/OldHaven-Network/MegaMod-Mixins/releases");
-        final String tag = gitHubAPI.getTag();
-        System.out.println("  Latest MegaMod version: " + tag);
-        try {
-            File modDir = new File(modsFolder);
-            if (!modDir.exists()) {
-                modDir.mkdir();
-            }
-            final File mm = new File(modsFolder + "MegaMod-Mixins.jar");
-            final File file = new File(modsFolder, "megaModVersion.txt");
-            if (file.exists()) {
-                String old = new String(Files.readAllBytes(file.toPath()));
-                if (tag.equals(old) && mm.exists()) {
-                    System.out.println("  No new versions of MegaMod, You have: " + old);
-                    return;
-                }
-                System.out.println("  New version of MegaMod detected! You have: " + old);
-            }
-            gitHubAPI.writeToFile(modsFolder + "MegaMod-Mixins.jar", () -> {
-                try {
-                    boolean write = false;
-                    if (file.exists()) {
-                        boolean b = file.delete();
-                        if (!b)
-                            System.err.println("Can't delete " + file.getAbsolutePath());
-                        else
-                            write = true;
-                    } else {
-                        boolean b = file.createNewFile();
-                        if (!b)
-                            System.err.println("Can't create " + file.getAbsolutePath());
-                        else
-                            write = true;
-                    }
-                    if (write) {
-                        PrintWriter out = new PrintWriter(file);
-                        out.write(tag);
-                        out.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.out.println(" ");
     }
 
     public static void setCurrentUser(String s) {
