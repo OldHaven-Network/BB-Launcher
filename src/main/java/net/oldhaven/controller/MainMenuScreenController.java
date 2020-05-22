@@ -9,11 +9,6 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import net.lingala.zip4j.ZipFile;
-import net.lingala.zip4j.exception.ZipException;
-import net.lingala.zip4j.model.FileHeader;
-import net.lingala.zip4j.model.ZipParameters;
-import net.lingala.zip4j.model.enums.CompressionLevel;
 import net.oldhaven.Main;
 import net.oldhaven.framework.Install;
 import net.oldhaven.framework.VersionHandler;
@@ -26,12 +21,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import net.fabricmc.loader.launch.knot.KnotClient;
-import net.oldhaven.utility.JavaProcess;
 import net.oldhaven.utility.enums.Version;
-import net.oldhaven.utility.mod.Mod;
-import net.oldhaven.utility.mod.ModSection;
-import net.oldhaven.utility.mod.ModType;
 import net.oldhaven.utility.mod.Mods;
 import org.apache.commons.io.FileUtils;
 
@@ -69,7 +59,9 @@ public class MainMenuScreenController implements Initializable {
             }
         }
 
-        version_picker.getItems().addAll("b1.7.3", "AetherMP");
+        for(Version version : Version.values()) {
+            version_picker.getItems().add(version.getName());
+        }
         version_picker.getSelectionModel().select(Version.selectedVersion.getName());
         version_picker.valueProperty().addListener((obs, oldValue, newValue) -> {
             newValue = newValue.replaceAll("\\.", "");
@@ -198,14 +190,8 @@ public class MainMenuScreenController implements Initializable {
             FileUtils.forceDelete(temp);
         temp.mkdirs();
 
-        // Download Minecraft if it hasn't been done so before.
-        downloading_label.setVisible(true);
-        if(!new File(Install.getBinPath() + "minecraft.jar").exists()) {
-            downloading_label.setText("Installing Minecraft...");
-            Install.installMinecraft();
-        }
+        Install.installMinecraft(Version.selectedVersion);
         Version.selectedVersion.launch();
-        downloading_label.setVisible(false);
     }
 
     @FXML private void close(MouseEvent event){

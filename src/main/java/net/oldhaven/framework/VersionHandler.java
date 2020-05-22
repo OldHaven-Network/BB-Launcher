@@ -8,6 +8,8 @@ public class VersionHandler {
     public static File versionFile = new File(Install.getMainPath() + "currentversion.txt");
     public static void updateSelectedVersion(String newVersion){
         newVersion = newVersion.replaceAll("\\.", "");
+        newVersion = newVersion.replaceAll("Alpha ", "a");
+        newVersion = newVersion.replaceAll("Classic ", "c");
         try {
             Version.selectedVersion = Version.valueOf(newVersion);
             PrintWriter versionWriter = new PrintWriter(versionFile, "UTF-8");
@@ -21,10 +23,12 @@ public class VersionHandler {
     public static void initializeVersionHandler(){
         if(!versionFile.exists() || versionFile.length() == 0){
             try {
+                if(!versionFile.exists())
+                    versionFile.createNewFile();
                 PrintWriter versionWriter = new PrintWriter(versionFile, "UTF-8");
                 versionWriter.println("b1.7.3");
                 versionWriter.close();
-            } catch (FileNotFoundException | UnsupportedEncodingException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }

@@ -1,12 +1,12 @@
 package net.oldhaven.framework;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import javafx.scene.control.*;
 import net.lingala.zip4j.ZipFile;
-import net.oldhaven.controller.MainMenuScreenController;
 import net.oldhaven.utility.Launcher;
 import net.oldhaven.utility.enums.Version;
 import net.oldhaven.utility.mod.ModType;
@@ -19,14 +19,14 @@ import org.json.JSONObject;
 import java.awt.*;
 import java.io.*;
 import java.lang.reflect.Type;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 public class Install {
 
@@ -124,18 +124,24 @@ public class Install {
         return builder.toString();
     }
 
-    public static String getClassPath(boolean fabric) {
-        String aV = "-7.3.1";
+    public static String getClassPath(Version version) {
+        List<File> files = version.getFabricLibs();
+        List<String> fileNames = new ArrayList<>();
+        for(File file : files) {
+            fileNames.add(file.getName());
+        }
+        /*String aV = "-7.3.1";
         String[] fLibs = new String[]{
             "fabric-loader", "asm"+aV, "asm-commons"+aV, "asm-analysis"+aV, "asm-tree"+aV, "asm-util"+aV,
             "gson", "jimfs-1.1", "jsr305-3.0.2", "log4j-api", "log4j-core", "guava-28.2-jre",
             "tiny-remapper-0.2.0.52", "tiny-mappings-parser-0.2.0.11", "sponge-mixin-0.8+build.18",
             "log4j-core", "log4j-api", "fabric-loader-sat4j-2.3.5.4"
-        };
+        };*/
+        String[] fLibs = fileNames.toArray(new String[0]);
         String[] libs = new String[]{
             "lwjgl", "jinput", "lwjgl_util", "json", "minecraft",
         };
-        String fLibsStr = toString(getFabricPath(), fLibs, true, true);
+        String fLibsStr = toString(getFabricPath(), fLibs, true, false);
         String libsStr = toString(getBinPath(), libs, false, true);
         return fLibsStr + libsStr;
     }
@@ -201,34 +207,6 @@ public class Install {
         }
     }
 
-    public static boolean installMinecraft() {
-        boolean success;
-        try {
-            if(!Files.exists(Paths.get(Install.getMainPath() + "temp/")))
-                Files.createDirectory(Paths.get(Install.getMainPath() + "temp/"));
-            if(!Files.exists(Paths.get(Install.getMainPath() + "mods/non-fabric/")))
-                Files.createDirectories(Paths.get(Install.getMinecraftPath() + "mods/non-fabric/"));
-
-            URL clientJarURL = new URL("https://launcher.mojang.com/v1/objects/43db9b498cb67058d2e12d394e6507722e71bb45/client.jar");
-            URL binZipURL = new URL("https://www.oldhaven.net/resources/launcher/bin.zip");
-
-            File clientJarFile = new File(Install.getBinPath() + "minecraft.jar");
-            File binZipFile = new File(Install.getMainPath() + "temp/bin.zip");
-
-            getFileFromURL(clientJarURL, clientJarFile.toString());
-            getFileFromURL(binZipURL, binZipFile.toString());
-
-            ZipFile binZip = new ZipFile(binZipFile);
-            binZip.extractAll(Install.getBinPath());
-
-            success = true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            success = false;
-        }
-        return success;
-    }
-
     public static void installAetherMP() {
         GitHubAPI gitHubAPI = GitHubAPI.openURL("https://api.github.com/repos/OldHaven-Network/AetherMP/releases");
         File versionFile = new File(Install.getMinecraftPath() + "mods/version.txt");
@@ -245,7 +223,9 @@ public class Install {
                     return;
                 }
                 System.out.println("  New version of AetherMP detected! You have: " + old);
-            }
+                gitHubAPI.updateText = "Updating...";
+            } else
+                gitHubAPI.updateText = "Installing...";
             PrintWriter out = new PrintWriter(versionFile);
             out.write(tag);
             out.close();
@@ -305,52 +285,60 @@ public class Install {
         return url;
     }
 
-    public static void installFabric() {
+    private static Gson gson = new Gson();
+    public static void installMinecraft(Version version) {
         try {
-            Files.createDirectories(Paths.get(Install.getBinPath() + "fabric/"));
-
-            URL fabricJsonUrl = new URL("https://meta.fabricmc.net/v2/versions/loader/1.15.2/0.7.10+build.191");
-            URLConnection urlConnection = fabricJsonUrl.openConnection();
-            urlConnection.addRequestProperty("User-Agent", "Mozilla/5.0");
-            InputStream inputStream = urlConnection.getInputStream();
-            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            StringBuilder stringBuffer = new StringBuilder();
-            String s;
-            while((s = bufferedReader.readLine())!= null){
-                stringBuffer.append(s);
+            if(!Files.exists(Paths.get(Install.getMainPath() + "mods/non-fabric/")))
+                Files.createDirectories(Paths.get(Install.getMinecraftPath() + "mods/non-fabric/"));
+            if(!Files.exists(Paths.get(Install.getBinPath() + "lwjgl.jar"))) {
+                URL binZipURL = new URL("https://www.oldhaven.net/resources/launcher/bin.zip");
+                File binZipFile = new File(Install.getMainPath() + "temp/bin.zip");
+                getFileFromURL(binZipURL, binZipFile.toString());
+                ZipFile binZip = new ZipFile(binZipFile);
+                binZip.extractAll(Install.getBinPath());
             }
-            String fabricJsonString = stringBuffer.toString();
-            bufferedReader.close();
-
-            JSONObject fabricJson = new JSONObject(fabricJsonString);
-            JSONArray rawResourceArray = fabricJson.getJSONObject("launcherMeta").getJSONObject("libraries").getJSONArray("common");
-
-            for(int i = 0; i < rawResourceArray.length(); i++) {
-                String rawResource = rawResourceArray.getJSONObject(i).getString("name");
-                String convertedResource = convertFabricResource(rawResource);
-                String[] split = rawResource.split(":");
-                String fileName = split[1] + "-" + split[2] + ".jar";
-                getFileFromURL(new URL(convertedResource), Install.getBinPath() + "fabric/" + fileName);
-            }
-
-            getFileFromURL(new URL("https://repo1.maven.org/maven2/asm/asm-all/3.3.1/asm-all-3.3.1.jar"),
-                    Install.getBinPath() + "fabric/asm-all.jar");
-            getFileFromURL(new URL("https://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.6/gson-2.8.6.jar"),
-                    Install.getBinPath() + "fabric/gson.jar");
-            getFileFromURL(new URL("https://repo1.maven.org/maven2/com/google/guava/guava/28.2-jre/guava-28.2-jre.jar"),
-                    Install.getBinPath() + "fabric/guava-28.2-jre.jar");
-            getFileFromURL(new URL("https://repo1.maven.org/maven2/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar"),
-                    Install.getBinPath() + "fabric/jsr305-3.0.2.jar");
-            getFileFromURL(new URL("https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-api/2.13.1/log4j-api-2.13.1.jar"),
-                    Install.getBinPath() + "fabric/log4j-api.jar");
-            getFileFromURL(new URL("https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.13.1/log4j-core-2.13.1.jar"),
-                    Install.getBinPath() + "fabric/log4j-core.jar");
-            getFileFromURL(new URL("https://www.oldhaven.net/resources/launcher/fabric-loader.jar"),
-                    Install.getBinPath() + "fabric/fabric-loader.jar");
-
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        String bin = Install.getBinPath() + "fabric/";
+        if(!Files.exists(Paths.get(bin)) || !Files.isDirectory(Paths.get(bin))) {
+            try {
+                Files.createDirectories(Paths.get(bin));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        JsonObject jsonObject = gson.fromJson(
+                new InputStreamReader(Install.class.getResourceAsStream("/fabric/"+version.getJsonFile())),
+                JsonObject.class);
+        if(!Files.exists(Paths.get(Install.getBinPath() + "minecraft.jar"))) {
+            JsonObject jarObj = jsonObject.get("mainJar").getAsJsonObject();
+            String mcUrl = jarObj.get("url").getAsString();
+            try {
+                getFileFromURL(new URL(mcUrl), Install.getBinPath() + "minecraft.jar");
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        }
+        JsonArray libs = jsonObject.get("libraries").getAsJsonArray();
+        for(int i=0;i < libs.size();i++) {
+            JsonObject lib = libs.get(i).getAsJsonObject();
+            String compressedPath = lib.get("name").getAsString();
+            String url = lib.get("url").getAsString();
+            String[] split = compressedPath.split(":");
+            String first = split[0].replaceAll("\\.", "/");
+            String second = split[1] + "/" + split[2];
+            String fileName = split[1] + "-" + split[2] + ".jar";
+            String fullUrl = url + first + "/" + second + "/" + fileName;
+            File file = new File(bin+fileName);
+            if(!file.exists()) {
+                try {
+                    getFileFromURL(new URL(fullUrl), bin + fileName);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
+            version.addFabricLib(fileName, file);
         }
     }
 

@@ -1,15 +1,12 @@
 package net.oldhaven.framework;
 
 import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
 import net.oldhaven.Main;
 import net.oldhaven.controller.MainMenuScreenController;
-import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -46,7 +43,9 @@ public class GitHubAPI {
         this.url = url;
     }
 
+    public String updateText = "Installing...";
     public int writeToFile(final String absoluteLoc, final Runnable onFinish) {
+        final String finalUpdateText = updateText;
         new Thread(() -> {
             File file = new File(absoluteLoc);
             if(file.exists()) {
@@ -67,7 +66,7 @@ public class GitHubAPI {
                         Platform.runLater(() -> {
                             ((MainMenuScreenController) Main.getCurrentController()).version_picker.setDisable(true);
                             ((MainMenuScreenController) Main.getCurrentController()).progress_bar.setVisible(true);
-                            ((MainMenuScreenController) Main.getCurrentController()).launch_button.setText("Installing...");
+                            ((MainMenuScreenController) Main.getCurrentController()).launch_button.setText(finalUpdateText);
                             ((MainMenuScreenController) Main.getCurrentController()).launch_button.setDisable(true);
                         });
                         ((MainMenuScreenController) Main.getCurrentController()).progress_bar.setProgress(downloadProgress);

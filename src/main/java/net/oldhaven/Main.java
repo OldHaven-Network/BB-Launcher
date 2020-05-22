@@ -11,6 +11,7 @@ import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.oldhaven.framework.VersionHandler;
+import net.oldhaven.utility.enums.Version;
 import net.oldhaven.utility.lang.Lang;
 import net.oldhaven.utility.mod.Mods;
 import org.apache.commons.io.FileUtils;
@@ -59,8 +60,6 @@ public class Main extends Application {
         VersionHandler.initializeVersionHandler();
         File oldMinecraftFolder = new File(Install.getMainPath() + "minecraft");
         File newMinecraftFolder = new File(Install.getMainPath() + "versions/b173");
-        System.out.println(oldMinecraftFolder.getAbsolutePath());
-        System.out.println(newMinecraftFolder.getAbsolutePath());
         if(oldMinecraftFolder.exists()){
             try {
                 FileUtils.deleteDirectory(newMinecraftFolder);
@@ -87,7 +86,6 @@ public class Main extends Application {
         }
 
         Install.checkLauncherUpdate();
-
         this.loadFXML(primaryStage);
     }
 

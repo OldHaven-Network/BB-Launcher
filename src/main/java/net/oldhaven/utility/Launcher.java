@@ -86,7 +86,7 @@ public class Launcher {
             //FileUtils.deleteDirectory(modTempPath);
             System.out.println("All mods have been injected.");
 
-            System.setProperty("java.class.path", Install.getClassPath(true));
+            System.setProperty("java.class.path", Install.getClassPath(Version.selectedVersion));
             System.setProperty("java.libs.path", Install.getNativesPath());
             new JavaProcess(System.getProperty("java.home")).exec(KnotClient.class);
 
