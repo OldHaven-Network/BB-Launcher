@@ -1,18 +1,16 @@
 package net.oldhaven.utility;
 
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import net.fabricmc.loader.launch.knot.KnotClient;
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.FileHeader;
 import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.model.enums.CompressionLevel;
-import net.oldhaven.Main;
 import net.oldhaven.framework.Install;
-import net.oldhaven.utility.enums.Version;
+import net.oldhaven.utility.enums.Scenes;
+import net.oldhaven.utility.enums.Versions;
 import net.oldhaven.utility.mod.Mod;
 import net.oldhaven.utility.mod.ModType;
 import net.oldhaven.utility.mod.Mods;
@@ -86,15 +84,17 @@ public class Launcher {
             //FileUtils.deleteDirectory(modTempPath);
             System.out.println("All mods have been injected.");
 
-            System.setProperty("java.class.path", Install.getClassPath(Version.selectedVersion));
+            System.setProperty("java.class.path", Install.getClassPath(Versions.selectedVersion));
             System.setProperty("java.libs.path", Install.getNativesPath());
             new JavaProcess(System.getProperty("java.home")).exec(KnotClient.class);
 
-            Parent root = FXMLLoader.load(Version.class.getResource("/fxml/ProcessInfoScreen.fxml"));
-            Stage primaryStage = (Stage) Main.getPrimaryStage().getScene().getWindow();
-            Scene scene = new Scene(root);
-            primaryStage.setScene(scene);
+            Scenes.ProcessInfo.changeTo();
         } catch(IOException e) {
+            if(e.getMessage().startsWith("Unable to delete file")) {
+                Alert alert = new Alert(Alert.AlertType.WARNING, "You need to close Minecraft before launching!", ButtonType.OK);
+                alert.showAndWait();
+                return;
+            }
             e.printStackTrace();
         }
     }

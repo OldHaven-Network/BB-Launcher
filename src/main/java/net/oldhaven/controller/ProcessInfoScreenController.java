@@ -19,6 +19,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import net.oldhaven.utility.JavaProcess;
+import net.oldhaven.utility.enums.Scenes;
 import org.fxmisc.richtext.StyleClassedTextArea;
 
 import java.io.*;
@@ -98,26 +99,14 @@ public class ProcessInfoScreenController implements Initializable {
         executor.scheduleAtFixedRate(helloRunnable, 0, 250, TimeUnit.MILLISECONDS);
     }
 
-    private void changeScene(String sceneResource) {
-        executor.shutdown();
-        try{
-            Parent root = FXMLLoader.load(getClass().getResource(sceneResource));
-            Stage primaryStage = (Stage) close_button.getScene().getWindow();
-            Scene scene = new Scene(root);
-            primaryStage.setScene(scene);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     @FXML
     private void clickMainButton() {
-        changeScene("/fxml/MainMenuScreen.fxml");
+        Scenes.MainMenu.changeTo();
     }
 
     @FXML
     private void clickSettingsButton() {
-        changeScene("/fxml/SettingsScreen.fxml");
+        Scenes.Settings.changeTo();
     }
 
     @FXML

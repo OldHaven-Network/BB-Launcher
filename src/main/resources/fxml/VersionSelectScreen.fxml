@@ -1,0 +1,51 @@
+<?xml versions="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane fx:id="pain" onMouseEntered="#movableWindow" prefHeight="394.0" prefWidth="700.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.oldhaven.controller.VersionSelectScreenController">
+   <children>
+      <Pane fx:id="clipPane" prefHeight="394.0" prefWidth="700.0">
+         <children>
+            <ImageView fx:id="background" cache="true" cacheHint="SPEED" depthTest="ENABLE" fitWidth="${clipPane.width}" managed="false" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" smooth="false">
+               <image>
+                  <Image url="@../images/blur.png" />
+               </image>
+            </ImageView>
+         </children>
+      </Pane>
+      <AnchorPane layoutX="34.0" layoutY="38.0" prefHeight="324.0" prefWidth="635.0" style="-fx-background-color: rgba(0,0,0,0.5)">
+         <children>
+            <Pane prefHeight="324.0" prefWidth="154.0" style="-fx-background-color: #FFFFFF;">
+               <children>
+                  <ListView id="listView" fx:id="listView" prefHeight="324.0" prefWidth="154.0" />
+               </children></Pane>
+            <ProgressBar fx:id="progress_bar" layoutX="219.0" layoutY="240.0" opacity="0.4" prefHeight="67.0" prefWidth="197.0" progress="0.5" visible="false" />
+            <Separator layoutX="154.0" layoutY="271.0" prefHeight="9.0" prefWidth="481.0" />
+            <Button cancelButton="true" layoutX="159.0" layoutY="281.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="99.0" text="Cancel">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Button>
+            <Button disable="true" layoutX="531.0" layoutY="281.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="99.0" text="Select">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Button>
+            <Button disable="true" layoutX="360.0" layoutY="281.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="76.0" text="Delete" textFill="RED">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Button>
+            <Button disable="true" layoutX="442.0" layoutY="281.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="83.0" text="Reinstall" textFill="#0004ff">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Button>
+         </children>
+      </AnchorPane>
+      <Label id="close_button" fx:id="close_button" layoutX="678.0" layoutY="4.0" onMouseClicked="#close" onMouseEntered="#closeButton_mouseOver" onMouseExited="#closeButton_mouseOver" style="-fx-font-weight: bold; -fx-font-size: 16;" text="✕" textFill="WHITE" />
+   </children>
+</AnchorPane>

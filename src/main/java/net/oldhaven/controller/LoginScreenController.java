@@ -1,16 +1,5 @@
 package net.oldhaven.controller;
 
-import com.google.gson.JsonParser;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.fxml.Initializable;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
-import net.chris54721.openmcauthenticator.responses.RefreshResponse;
-import net.oldhaven.Main;
-import net.oldhaven.utility.UserInfo;
-import net.oldhaven.framework.Install;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -18,13 +7,15 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -34,6 +25,11 @@ import net.chris54721.openmcauthenticator.exceptions.InvalidCredentialsException
 import net.chris54721.openmcauthenticator.exceptions.RequestException;
 import net.chris54721.openmcauthenticator.exceptions.UserMigratedException;
 import net.chris54721.openmcauthenticator.responses.AuthenticationResponse;
+import net.chris54721.openmcauthenticator.responses.RefreshResponse;
+import net.oldhaven.Main;
+import net.oldhaven.framework.Install;
+import net.oldhaven.utility.UserInfo;
+import net.oldhaven.utility.enums.Scenes;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
@@ -196,14 +192,7 @@ public class LoginScreenController implements Initializable {
                 file.delete();
         }
 
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/MainMenuScreen.fxml"));
-            Stage primaryStage = (Stage) login_button.getScene().getWindow();
-            Scene scene = new Scene(root);
-            primaryStage.setScene(scene);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Scenes.MainMenu.changeTo();
     }
 
     @FXML

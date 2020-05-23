@@ -8,8 +8,7 @@ import com.google.gson.reflect.TypeToken;
 import javafx.scene.control.*;
 import net.lingala.zip4j.ZipFile;
 import net.oldhaven.utility.Launcher;
-import net.oldhaven.utility.enums.Version;
-import net.oldhaven.utility.mod.Mod;
+import net.oldhaven.utility.enums.Versions;
 import net.oldhaven.utility.mod.ModType;
 import net.oldhaven.utility.mod.Mods;
 import org.apache.commons.io.FileUtils;
@@ -79,9 +78,9 @@ public class Install {
     public static String getMinecraftPath() {
         String path;
         if ("Windows".equals(getOS()))
-            path = getVersionPath() + Version.selectedVersion.getName() +  "\\";
+            path = getVersionPath() + Versions.selectedVersion.getName() +  "\\";
         else
-            path = getVersionPath() + Version.selectedVersion.getName() + "/";
+            path = getVersionPath() + Versions.selectedVersion.getName() + "/";
         File file = new File(path);
         if(!file.exists())
             file.mkdirs();
@@ -125,8 +124,8 @@ public class Install {
         return builder.toString();
     }
 
-    public static String getClassPath(Version version) {
-        List<File> files = version.getFabricLibs();
+    public static String getClassPath(Versions versions) {
+        List<File> files = versions.getFabricLibs();
         List<String> fileNames = new ArrayList<>();
         for(File file : files) {
             fileNames.add(file.getName());
@@ -178,13 +177,18 @@ public class Install {
         File optifineZipFile = new File(Install.getMinecraftPath() + "mods/non-fabric/OptiFine.zip");
         File reiminimapZipFile = new File(Install.getMinecraftPath() + "mods/non-fabric/ReiMinimap.zip");
         try {
-            if(!optifineZipFile.exists()) {
-                URL optifineZipURL = new URL("https://www.oldhaven.net/resources/launcher/OptiFine.zip");
-                getFileFromURL(optifineZipURL, optifineZipFile.toString());
+            Files.createDirectories(Paths.get(Install.getMinecraftPath() + "mods/non-fabric/"));
+            if(Mods.getModByName("OptiFine") == null) {
+                if (!optifineZipFile.exists()) {
+                    URL optifineZipURL = new URL("https://www.oldhaven.net/resources/launcher/OptiFine.zip");
+                    getFileFromURL(optifineZipURL, optifineZipFile.toString());
+                }
             }
-            if(!reiminimapZipFile.exists()) {
-                URL reiminimapZipURL = new URL("https://www.oldhaven.net/resources/launcher/ReiMinimap.zip");
-                getFileFromURL(reiminimapZipURL, reiminimapZipFile.toString());
+            if(Mods.getModByName("Rei's Minimap") == null) {
+                if (!reiminimapZipFile.exists()) {
+                    URL reiminimapZipURL = new URL("https://www.oldhaven.net/resources/launcher/ReiMinimap.zip");
+                    getFileFromURL(reiminimapZipURL, reiminimapZipFile.toString());
+                }
             }
         } catch(IOException e) {
             e.printStackTrace();
@@ -201,23 +205,27 @@ public class Install {
         GitHubAPI gitHubAPI = GitHubAPI.openURL("https://api.github.com/repos/OldHaven-Network/MegaMod-Mixins/releases");
         final String tag = gitHubAPI.getTag();
         System.out.println("  Latest MegaMod version: " + tag);
-        try {
-            File modDir = new File(modsFolder);
-            if (!modDir.exists()) {
-                modDir.mkdir();
-            }
-            final File mm = new File(modsFolder + "MegaMod-Mixins.jar");
-            final File file = new File(modsFolder, "megaModVersion.txt");
-            if (file.exists()) {
+        File modDir = new File(modsFolder);
+        if (!modDir.exists()) {
+            modDir.mkdir();
+        }
+        final File mm = new File(modsFolder + "MegaMod-Mixins.jar");
+        final File file = new File(modsFolder, "megaModVersion.txt");
+        if (file.exists()) {
+            boolean installMegaMod = false;
+            try {
                 String old = new String(Files.readAllBytes(file.toPath()));
                 if (tag.equals(old) && mm.exists()) {
                     System.out.println("  No new versions of MegaMod, You have: " + old);
-                    return;
+                } else {
+                    System.out.println("  New version of MegaMod detected! You have: " + old);
+                    installMegaMod = true;
                 }
-                System.out.println("  New version of MegaMod detected! You have: " + old);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            gitHubAPI.writeToFile(modsFolder + "MegaMod-Mixins.jar", () -> {
-                try {
+            if(installMegaMod) {
+                gitHubAPI.writeToFile(modsFolder + "MegaMod-Mixins.jar", () -> {
                     boolean write = false;
                     if (file.exists()) {
                         boolean b = file.delete();
@@ -226,23 +234,28 @@ public class Install {
                         else
                             write = true;
                     } else {
-                        boolean b = file.createNewFile();
+                        boolean b = false;
+                        try {
+                            b = file.createNewFile();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         if (!b)
                             System.err.println("Can't create " + file.getAbsolutePath());
                         else
                             write = true;
                     }
                     if (write) {
-                        PrintWriter out = new PrintWriter(file);
-                        out.write(tag);
-                        out.close();
+                        try {
+                            PrintWriter out = new PrintWriter(file);
+                            out.write(tag);
+                            out.close();
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
+                });
+            }
         }
         System.out.println(" ");
 
@@ -343,7 +356,7 @@ public class Install {
     }
 
     private static Gson gson = new Gson();
-    public static void installMinecraft(Version version) {
+    public static void installMinecraft(Versions versions) {
         try {
             if(!Files.exists(Paths.get(Install.getMainPath() + "mods/non-fabric/")))
                 Files.createDirectories(Paths.get(Install.getMinecraftPath() + "mods/non-fabric/"));
@@ -366,7 +379,7 @@ public class Install {
             }
         }
         JsonObject jsonObject = gson.fromJson(
-                new InputStreamReader(Install.class.getResourceAsStream("/fabric/"+version.getJsonFile())),
+                new InputStreamReader(Install.class.getResourceAsStream("/fabric/"+ versions.getJsonFile())),
                 JsonObject.class);
         if(!Files.exists(Paths.get(Install.getBinPath() + "minecraft.jar"))) {
             JsonObject jarObj = jsonObject.get("mainJar").getAsJsonObject();
@@ -395,7 +408,7 @@ public class Install {
                     e.printStackTrace();
                 }
             }
-            version.addFabricLib(fileName, file);
+            versions.addFabricLib(fileName, file);
         }
     }
 

@@ -8,8 +8,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.image.Image;
@@ -24,20 +25,18 @@ import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import net.oldhaven.Main;
 import net.oldhaven.framework.Install;
-import net.oldhaven.utility.lang.Lang;
+import net.oldhaven.utility.enums.Scenes;
 import net.oldhaven.utility.mod.Mod;
-import net.oldhaven.utility.mod.ModSection;
 import net.oldhaven.utility.mod.ModType;
 import net.oldhaven.utility.mod.Mods;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.lwjgl.Sys;
 
 import java.awt.*;
 import java.io.*;
 import java.net.URL;
-import java.util.*;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.ResourceBundle;
 
 public class SettingsScreenController implements Initializable {
 
@@ -136,17 +135,6 @@ public class SettingsScreenController implements Initializable {
         });
     }
 
-    private void changeScene(String sceneResource) {
-        try{
-            Parent root = FXMLLoader.load(getClass().getResource(sceneResource));
-            Stage primaryStage = (Stage) close_button.getScene().getWindow();
-            Scene scene = new Scene(root);
-            primaryStage.setScene(scene);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     @FXML
     private void clickAddModButton() {
         FileChooser fileChooser = new FileChooser();
@@ -241,12 +229,12 @@ public class SettingsScreenController implements Initializable {
 
     @FXML
     private void clickMainButton() {
-        changeScene("/fxml/MainMenuScreen.fxml");
+        Scenes.MainMenu.changeTo();
     }
 
     @FXML
     private void clickProcessInfoButton() {
-        changeScene("/fxml/ProcessInfoScreen.fxml");
+        Scenes.ProcessInfo.changeTo();
     }
 
     @FXML

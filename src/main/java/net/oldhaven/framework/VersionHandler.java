@@ -1,6 +1,6 @@
 package net.oldhaven.framework;
 
-import net.oldhaven.utility.enums.Version;
+import net.oldhaven.utility.enums.Versions;
 
 import java.io.*;
 
@@ -8,17 +8,18 @@ public class VersionHandler {
     public static File versionFile = new File(Install.getMainPath() + "currentversion.txt");
     public static void updateSelectedVersion(String newVersion){
         newVersion = newVersion.replaceAll("\\.", "");
+        newVersion = newVersion.replaceAll("Beta ", "b");
         newVersion = newVersion.replaceAll("Alpha ", "a");
         newVersion = newVersion.replaceAll("Classic ", "c");
         try {
-            Version.selectedVersion = Version.valueOf(newVersion);
+            Versions.selectedVersion = Versions.valueOf(newVersion);
             PrintWriter versionWriter = new PrintWriter(versionFile, "UTF-8");
             versionWriter.println(newVersion);
             versionWriter.close();
         } catch (FileNotFoundException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        Version.selectedVersion.install();
+        Versions.selectedVersion.install();
     }
 
     public static void initializeVersionHandler(){
@@ -37,7 +38,7 @@ public class VersionHandler {
             BufferedReader versionReader = new BufferedReader(new FileReader(versionFile));
             String line = versionReader.readLine();
             line = line.replaceAll("\\.", "");
-            Version.selectedVersion = Version.valueOf(line);
+            Versions.selectedVersion = Versions.valueOf(line);
             versionReader.close();
         } catch (IOException e) {
             e.printStackTrace();

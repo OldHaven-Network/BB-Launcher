@@ -11,7 +11,6 @@ import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.oldhaven.framework.VersionHandler;
-import net.oldhaven.utility.enums.Version;
 import net.oldhaven.utility.lang.Lang;
 import net.oldhaven.utility.mod.Mods;
 import org.apache.commons.io.FileUtils;

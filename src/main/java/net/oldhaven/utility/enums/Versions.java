@@ -2,7 +2,6 @@ package net.oldhaven.utility.enums;
 
 import net.oldhaven.framework.Install;
 import net.oldhaven.utility.Launcher;
-import net.oldhaven.utility.mod.Mods;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -10,18 +9,23 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public enum Version {
+public enum Versions {
+    //c030_01c("Classic 0.30_01c", "c030_01c.json", Launcher::launch, null),
+    //a104a("Alpha 1.0.4a", "a104a.json", Launcher::launch, null),
+    a122a("Alpha 1.2.2a", "a122a.json", Launcher::launch, null),
+    b14_01("Beta 1.4_01", "b14_01.json", Launcher::launch, null),
+    b15_01("Beta 1.5_01", "b15_01.json", Launcher::launch, null),
+    b166("Beta 1.6.6", "b166.json", Launcher::launch, null),
     b173("b1.7.3", "b173.json", Launcher::launch, Install::installOldHavenb173),
     AetherMP("AetherMP", "b173.json", Install::installAetherMP, null),
-    a122a("Alpha 1.2.2a", "a122a.json", Launcher::launch, null);
-    //c030_01c("Classic 0.30_01c", "c030_01c.json", Launcher::launch, null);
+    b181("Beta 1.8.1", "b181.json", Launcher::launch, null);
 
     private String name;
     private String jsonFile;
     private Runnable onLaunch;
     private Runnable onInstall;
     private Map<String/*name*/, File> fabricLibs;
-    Version(String name, String jsonFile, Runnable onLaunch, Runnable onInstall) {
+    Versions(String name, String jsonFile, Runnable onLaunch, Runnable onInstall) {
         this.name = name;
         this.jsonFile = jsonFile;
         this.onLaunch = onLaunch;
@@ -55,5 +59,5 @@ public enum Version {
         this.onLaunch.run();
     }
 
-    public static Version selectedVersion;
+    public static Versions selectedVersion;
 }

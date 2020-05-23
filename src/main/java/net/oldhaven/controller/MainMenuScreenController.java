@@ -21,7 +21,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import net.oldhaven.utility.enums.Version;
+import net.oldhaven.utility.enums.Scenes;
+import net.oldhaven.utility.enums.Versions;
 import net.oldhaven.utility.mod.Mods;
 import org.apache.commons.io.FileUtils;
 
@@ -59,10 +60,10 @@ public class MainMenuScreenController implements Initializable {
             }
         }
 
-        for(Version version : Version.values()) {
-            version_picker.getItems().add(version.getName());
+        for(Versions versions : Versions.values()) {
+            version_picker.getItems().add(versions.getName());
         }
-        version_picker.getSelectionModel().select(Version.selectedVersion.getName());
+        version_picker.getSelectionModel().select(Versions.selectedVersion.getName());
         version_picker.valueProperty().addListener((obs, oldValue, newValue) -> {
             newValue = newValue.replaceAll("\\.", "");
             VersionHandler.updateSelectedVersion(newValue);
@@ -184,38 +185,37 @@ public class MainMenuScreenController implements Initializable {
     }
 
     @FXML
-    private void launchButton_onClick() throws IOException {
+    private void launchButton_onClick() {
         File temp = new File(Install.getMainPath() + "temp/");
-        if(temp.exists())
-            FileUtils.forceDelete(temp);
+        if(temp.exists()) {
+            try {
+                FileUtils.forceDelete(temp);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         temp.mkdirs();
 
-        Install.installMinecraft(Version.selectedVersion);
-        Version.selectedVersion.launch();
+        Install.installMinecraft(Versions.selectedVersion);
+        Versions.selectedVersion.launch();
+    }
+
+    @FXML
+    private void selectVersionButton_onClick() {
+        Scenes.VersionSelect.changeTo();
     }
 
     @FXML private void close(MouseEvent event){
         System.exit(0);
     }
 
-    private void changeScene(String sceneResource) {
-        try{
-            Parent root = FXMLLoader.load(getClass().getResource(sceneResource));
-            Stage primaryStage = (Stage) close_button.getScene().getWindow();
-            Scene scene = new Scene(root);
-            primaryStage.setScene(scene);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     @FXML
     private void clickSettingsButton() {
-        changeScene("/fxml/SettingsScreen.fxml");
+        Scenes.Settings.changeTo();
     }
 
     @FXML
     private void clickProcessInfoButton() {
-        changeScene("/fxml/ProcessInfoScreen.fxml");
+        Scenes.ProcessInfo.changeTo();
     }
 }

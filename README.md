@@ -17,7 +17,7 @@ The most advanced, and yet most simplistic and easy to use launcher for legacy M
 <br/>Basic account details are stored after logging in (not inluding passwords, which are never stored anywhere). You can erase an account by choosing "Log out and forget" in the main menu after clicking on "Log out". Otherwise, you can select an appropriate account to log in with in the login screen. 
 
 - **On the fly version switching**
-<br/>Toggle between versions on the fly, supporting many versions of Legacy Minecraft, you can be sure the version you want is on our launcher to use!
+<br/>Toggle between versions on the fly; supporting many versions of Legacy Minecraft, you can be sure the version you want is on our launcher to use!
 
 - **Built in mod manager.** 
 <br/>Supports all MCP, ModLoader and Fabric mods. Allows you to see all of your installed mods at a glance and add, remove, enable or disable them as you please.
