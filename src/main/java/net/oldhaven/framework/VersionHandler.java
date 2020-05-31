@@ -28,7 +28,7 @@ public class VersionHandler {
                 if(!versionFile.exists())
                     versionFile.createNewFile();
                 PrintWriter versionWriter = new PrintWriter(versionFile, "UTF-8");
-                versionWriter.println("b1.7.3");
+                versionWriter.println("Beta 1.7.3");
                 versionWriter.close();
             } catch (IOException e) {
                 e.printStackTrace();

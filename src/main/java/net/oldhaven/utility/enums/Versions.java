@@ -16,7 +16,7 @@ public enum Versions {
     b14_01("Beta 1.4_01", "b14_01.json", Launcher::launch, null),
     b15_01("Beta 1.5_01", "b15_01.json", Launcher::launch, null),
     b166("Beta 1.6.6", "b166.json", Launcher::launch, null),
-    b173("b1.7.3", "b173.json", Launcher::launch, Install::installOldHavenb173),
+    b173("Beta 1.7.3", "b173.json", Launcher::launch, Install::installOldHavenb173),
     AetherMP("AetherMP", "b173.json", Install::installAetherMP, null),
     b181("Beta 1.8.1", "b181.json", Launcher::launch, null);
 

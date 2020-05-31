@@ -193,12 +193,18 @@ public class Install {
         } catch(IOException e) {
             e.printStackTrace();
         }
+
+        // FIXME
+        Mods.addModSection("built-in");
         Mods.removeMod(Mods.getModByName("OptiFine.zip"));
         Mods.removeMod(Mods.getModByName("ReiMinimap.zip"));
-        if(Mods.getModByName("Rei's Minimap") == null)
-            Mods.addMod(ModType.NonFabric, "Rei's Minimap", reiminimapZipFile.getPath(), true);
-        if(Mods.getModByName("OptiFine") == null)
-            Mods.addMod(ModType.NonFabric, "OptiFine", optifineZipFile.getPath(), true);
+        if(Mods.getModSectionByName("built-in").getModByName("Rei's Minimap") == null)
+            Mods.getModSectionByName("built-in").addMod(ModType.NonFabric, "Rei's Minimap", reiminimapZipFile.getPath(), true);
+        if(Mods.getModSectionByName("built-in").getModByName("OptiFine") == null)
+            Mods.getModSectionByName("built-in").addMod(ModType.NonFabric, "OptiFine", optifineZipFile.getPath(), true);
+
+
+
 
         String modsFolder = Install.getMinecraftPath() + "mods/";
         System.out.println(" ");

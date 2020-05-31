@@ -5,10 +5,15 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.StageStyle;
+import javafx.stage.Window;
 import net.oldhaven.Main;
 import net.oldhaven.framework.Install;
 import net.oldhaven.framework.VersionHandler;
@@ -37,7 +42,7 @@ public class MainMenuScreenController implements Initializable {
     double offset_y;
 
     @FXML public ImageView background;
-    @FXML private Label username, downloading_label;
+    @FXML private Label username, downloading_label, selectedversion_label;
     @FXML public Button launch_button;
     @FXML private Label close_button, logout_button;
     @FXML private Label main_button, settings_button, processinfo_button;
@@ -68,6 +73,8 @@ public class MainMenuScreenController implements Initializable {
             newValue = newValue.replaceAll("\\.", "");
             VersionHandler.updateSelectedVersion(newValue);
             Mods.updateConfigLoc();
+            selectedversion_label.setText(version_picker.getSelectionModel().getSelectedItem());
+            selectedversion_label.setMaxWidth(Double.MAX_VALUE);
         });
 
         this.skin.setImage(new Image("https://minotar.net/body/"+UserInfo.getUsername()+"/100.png"));
@@ -76,6 +83,9 @@ public class MainMenuScreenController implements Initializable {
         //AnchorPane.setLeftAnchor(username, 0.0);
         //AnchorPane.setRightAnchor(username, 0.0);
         //username.setAlignment(Pos.CENTER);
+
+        selectedversion_label.setText(version_picker.getSelectionModel().getSelectedItem());
+        selectedversion_label.setMaxWidth(Double.MAX_VALUE);
     }
 
     @FXML
@@ -201,8 +211,98 @@ public class MainMenuScreenController implements Initializable {
     }
 
     @FXML
-    private void selectVersionButton_onClick() {
-        Scenes.VersionSelect.changeTo();
+    private void selectVersionButton_onClick() throws IOException {
+
+        Alert popupWindow = new Alert(Alert.AlertType.NONE);
+        popupWindow.setTitle("Version Manager");
+        popupWindow.setHeaderText(null);
+        popupWindow.initStyle(StageStyle.UTILITY);
+
+        TreeView<String> versionTree1 = new TreeView<>();
+        TreeView<String> versionTree2 = new TreeView<>();
+        TreeItem<String> root1 = new TreeItem<>("Minecraft");
+        TreeItem<String> root2 = new TreeItem<>("Minecraft");
+        TreeItem<String> betaFolder = new TreeItem<>("Beta");
+        TreeItem<String> alphaFolder = new TreeItem<>("Alpha");
+        TreeItem<String> moddedFolder = new TreeItem<>("Modded");
+        root1.getChildren().addAll(alphaFolder, betaFolder, moddedFolder);
+
+        /*
+        This doesn't work!
+        You probably shouldn't bother uncommenting this and sticking these variables back where they belonged.
+        - Dejf
+
+        ImageView alphaImage = new ImageView(new Image(getClass().getResourceAsStream("/images/alpha.png")));
+        ImageView betaImage = new ImageView(new Image(getClass().getResourceAsStream("/images/beta.png")));
+        ImageView unknownImage = new ImageView(new Image(getClass().getResourceAsStream("/images/unknown.png")));
+         */
+
+        for(Versions versions : Versions.values()) {
+            if(versions.getName().toLowerCase().contains("alpha")) {
+                alphaFolder.getChildren().add(new TreeItem<>(versions.getName(), new ImageView(new Image(
+                        getClass().getResourceAsStream("/images/alpha.png")))));
+            } else if (versions.getName().toLowerCase().contains("beta")) {
+                betaFolder.getChildren().add(new TreeItem<>(versions.getName(), new ImageView(new Image(
+                        getClass().getResourceAsStream("/images/beta.png")))));
+            } else {
+                moddedFolder.getChildren().add(new TreeItem<>(versions.getName(), new ImageView(new Image(
+                        getClass().getResourceAsStream("/images/unknown.png")))));
+            }
+        }
+        root2.getChildren().add(new TreeItem<>("c0.31", new ImageView(new Image(
+                getClass().getResourceAsStream("/images/unknown.png")))));
+        versionTree1.setRoot(root1);
+        versionTree2.setRoot(root2);
+
+        Button button1 = new Button("Install selected version");
+        Button button2 = new Button("Uninstall selected version");
+
+        Label label1 = new Label("Available Versions");
+        Label label2 = new Label("Installed Versions");
+
+        GridPane gridPane = new GridPane();
+        //gridPane.setMinSize(200, 400);
+        gridPane.setMaxWidth(Double.MAX_VALUE);
+        gridPane.setMaxHeight(Double.MAX_VALUE);
+        gridPane.setPadding(new Insets(10, 10, 10, 10));
+        gridPane.setVgap(5);
+        gridPane.setHgap(5);
+        gridPane.setAlignment(Pos.CENTER);
+        gridPane.add(label1, 0, 0);
+        gridPane.add(label2, 1, 0);
+        gridPane.add(versionTree1, 0, 1);
+        gridPane.add(versionTree2, 1, 1);
+        gridPane.add(button1, 0, 2);
+        gridPane.add(button2, 1, 2);
+
+        popupWindow.getDialogPane().setContent(gridPane);
+
+        Window window = popupWindow.getDialogPane().getScene().getWindow();
+        window.setOnCloseRequest(event -> window.hide());
+        popupWindow.show();
+
+        /*
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/VersionSelectScreen.fxml"));
+
+        Scene scene = new Scene(root);
+        Stage stage = new Stage();
+        stage.setTitle("Version Manager");
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/icon2.png")));
+        stage.initStyle(StageStyle.UNDECORATED);
+        stage.setScene(scene);
+        scene.setOnMousePressed(event -> {
+            offset_x = event.getSceneX();
+            offset_y = event.getSceneY();
+        });
+
+        scene.setOnMouseDragged(event -> {
+            stage.setX(event.getScreenX() - offset_x);
+            stage.setY(event.getScreenY() - offset_y);
+        });
+        stage.show();
+         */
+
+
     }
 
     @FXML private void close(MouseEvent event){
