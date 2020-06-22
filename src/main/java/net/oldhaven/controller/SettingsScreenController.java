@@ -80,11 +80,22 @@ public class SettingsScreenController implements Initializable {
             if(mod != null) {
                 observable.addListener((obs, oldValue, newValue) -> {
                     mod.setEnabled(newValue);
-                    if(mod.getType().equals(ModType.Fabric)){
-                        File file = new File(Install.getMinecraftPath() + "mods/" + mod.getName());
+                    if(mod.getType().equals(ModType.Fabric)) {
+                        File dir = new File(Install.getMinecraftPath() + "mods/.disabled/");
+                        if(!dir.exists() && !dir.mkdirs()) {
+                            System.err.println("Failed to create directory of " + dir.getAbsolutePath());
+                            return;
+                        }
+                        File file = new File(Install.getMinecraftPath() + "mods/.disabled/" +  mod.getFile().getName());
                         try {
-                            FileUtils.moveFile(newValue ? mod.getFile() : file, newValue ? file : mod.getFile());
-                        } catch(IOException ignored) {}
+                            if(newValue && file.exists()) {
+                                FileUtils.moveFile(file, mod.getFile());
+                            } else if(!newValue && mod.getFile().exists()) {
+                                FileUtils.moveFile(mod.getFile(), file);
+                            }
+                        } catch(IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                     Mods.saveMods();
                 });

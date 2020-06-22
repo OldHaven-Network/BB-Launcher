@@ -62,14 +62,15 @@ public class GitHubAPI {
                 int currentByte = 0;
                 //int go = 0;
                 while ((byteContent = inputStream.read(data, 0, data.length)) != -1) {
-                    if(Main.getCurrentController() != null && Main.getCurrentController() instanceof MainMenuScreenController) {
+                    if(Main.getCurrentController() != null && (Main.getCurrentController() instanceof MainMenuScreenController)) {
+                        final MainMenuScreenController mmsc = ((MainMenuScreenController) Main.getCurrentController());
                         Platform.runLater(() -> {
-                            ((MainMenuScreenController) Main.getCurrentController()).version_picker.setDisable(true);
-                            ((MainMenuScreenController) Main.getCurrentController()).progress_bar.setVisible(true);
-                            ((MainMenuScreenController) Main.getCurrentController()).launch_button.setText(finalUpdateText);
-                            ((MainMenuScreenController) Main.getCurrentController()).launch_button.setDisable(true);
+                            mmsc.version_picker.setDisable(true);
+                            mmsc.progress_bar.setVisible(true);
+                            mmsc.launch_button.setText(finalUpdateText);
+                            mmsc.launch_button.setDisable(true);
                         });
-                        ((MainMenuScreenController) Main.getCurrentController()).progress_bar.setProgress(downloadProgress);
+                        mmsc.progress_bar.setProgress(downloadProgress);
                     }
                     /*go++;
                     if(go > 500) {
@@ -81,15 +82,18 @@ public class GitHubAPI {
                     float progress = ((float) currentByte / downloadSize) * 100.0F;
                     GitHubAPI.downloadProgress = progress / 100.0F;
                 }
+                fileOS.close();
+                inputStream.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if(Main.getCurrentController() != null && Main.getCurrentController() instanceof MainMenuScreenController) {
+            if(Main.getCurrentController() != null && (Main.getCurrentController() instanceof MainMenuScreenController)) {
+                final MainMenuScreenController mmsc = ((MainMenuScreenController) Main.getCurrentController());
                 Platform.runLater(() -> {
-                    ((MainMenuScreenController) Main.getCurrentController()).version_picker.setDisable(false);
-                    ((MainMenuScreenController) Main.getCurrentController()).progress_bar.setVisible(false);
-                    ((MainMenuScreenController) Main.getCurrentController()).launch_button.setText("Launch");
-                    ((MainMenuScreenController) Main.getCurrentController()).launch_button.setDisable(false);
+                    mmsc.version_picker.setDisable(false);
+                    mmsc.progress_bar.setVisible(false);
+                    mmsc.launch_button.setText("Launch");
+                    mmsc.launch_button.setDisable(false);
                 });
             }
             Platform.runLater(onFinish);

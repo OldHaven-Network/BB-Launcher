@@ -1,18 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ProgressBar?>
-<?import javafx.scene.control.Tooltip?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.shape.Line?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="pain" onMouseEntered="#movableWindow" prefHeight="394.0" prefWidth="700.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.oldhaven.controller.MainMenuScreenController">
+<AnchorPane fx:id="pain" onMouseEntered="#movableWindow" prefHeight="394.0" prefWidth="700.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.oldhaven.controller.MainMenuScreenController">
    <children>
       <Pane fx:id="clipPane" prefHeight="394.0" prefWidth="700.0">
          <children>
@@ -31,7 +25,6 @@
                   <Label fx:id="settings_button" layoutX="117.0" layoutY="10.0" onMouseClicked="#clickSettingsButton" onMouseEntered="#settingsButton_mouseOver" onMouseExited="#settingsButton_mouseOver" style="-fx-font-family: Open Sans; -fx-font-weight: bold; -fx-font-size: 20;" text="SETTINGS" />
                   <Line endX="-45.658203125" layoutX="127.0" layoutY="40.0" startX="-100.0" strokeWidth="2.0" />
                   <Label fx:id="processinfo_button" layoutX="481.0" layoutY="10.0" onMouseClicked="#clickProcessInfoButton" onMouseEntered="#processInfoButton_mouseOver" onMouseExited="#processInfoButton_mouseOver" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-font-family: Open Sans;" text="PROCESS INFO" />
-                  <Label fx:id="settings_button1" layoutX="242.0" layoutY="10.0" onMouseClicked="#clickSettingsButton" onMouseEntered="#settingsButton_mouseOver" onMouseExited="#settingsButton_mouseOver" style="-fx-font-family: Open Sans; -fx-font-weight: bold; -fx-font-size: 20;" text="VERSIONS" />
                </children>
             </Pane>
             <Button id="launch_button" fx:id="launch_button" layoutX="219.0" layoutY="240.0" mnemonicParsing="false" onMouseClicked="#launchButton_onClick" prefHeight="67.0" prefWidth="197.0" style="-fx-font-family: Open Sans; -fx-font-weight: bold; -fx-font-size: 28;" text="Launch" />

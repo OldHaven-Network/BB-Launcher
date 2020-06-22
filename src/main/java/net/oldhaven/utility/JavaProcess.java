@@ -1,5 +1,6 @@
 package net.oldhaven.utility;
 
+import com.google.gson.JsonArray;
 import net.oldhaven.framework.Arguments;
 import net.oldhaven.framework.Install;
 
@@ -14,9 +15,9 @@ public final class JavaProcess {
     private static Class lastArg;
     private static JavaProcess jProc;
     private static Process process;
+    private JsonArray args = null;
 
-
-    public JavaProcess(String javaHome) {
+    public JavaProcess(String javaHome, JsonArray args) {
         jProc = this;
         this.javaHome = javaHome;
     }
@@ -51,7 +52,13 @@ public final class JavaProcess {
         //ProcessBuilder builder = new ProcessBuilder(javaBin, "-Xms"+minmem+"m", "-Xms"+maxmem+"m",
         //        "-Djava.library.path="+libsPath, "-cp", classpath, className, username);
         Arguments arguments = new Arguments();
-        arguments.add(javaBin, "-Xms"+minmem+"m", "-Xms"+maxmem+"m", "-Djava.library.path="+libsPath, "-cp", classpath, className);
+        arguments.add(javaBin, "-Xms"+minmem+"m", "-Xms"+maxmem+"m", "-Djava.library.path="+libsPath);
+        if(args != null) {
+            for(int i = 0; i < args.size(); i++) {
+                arguments.add(args.get(i).getAsString());
+            }
+        }
+        arguments.add("-cp", classpath, className);
         arguments.add("--gameDir", Install.getMinecraftPath());
         arguments.add("--username", username);
         String token = UserInfo.getAccessToken();

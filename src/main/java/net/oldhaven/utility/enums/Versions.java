@@ -13,6 +13,7 @@ public enum Versions {
     //c030_01c("Classic 0.30_01c", "c030_01c.json", Launcher::launch, null),
     //a104a("Alpha 1.0.4a", "a104a.json", Launcher::launch, null),
     a122a("Alpha 1.2.2a", "a122a.json", Launcher::launch, null),
+    AlphaPlace("AlphaPlace", "a126.json", Launcher::launch, null),
     b14_01("Beta 1.4_01", "b14_01.json", Launcher::launch, null),
     b15_01("Beta 1.5_01", "b15_01.json", Launcher::launch, null),
     b166("Beta 1.6.6", "b166.json", Launcher::launch, null),

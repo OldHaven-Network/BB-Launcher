@@ -1,12 +1,13 @@
 package net.oldhaven.framework;
 
 import net.oldhaven.utility.enums.Versions;
+import net.oldhaven.utility.mod.Mods;
 
 import java.io.*;
 
 public class VersionHandler {
     public static File versionFile = new File(Install.getMainPath() + "currentversion.txt");
-    public static void updateSelectedVersion(String newVersion){
+    public static void updateSelectedVersion(String newVersion) {
         newVersion = newVersion.replaceAll("\\.", "");
         newVersion = newVersion.replaceAll("Beta ", "b");
         newVersion = newVersion.replaceAll("Alpha ", "a");
@@ -19,6 +20,7 @@ public class VersionHandler {
         } catch (FileNotFoundException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+        Mods.updateConfigLoc();
         Versions.selectedVersion.install();
     }
 

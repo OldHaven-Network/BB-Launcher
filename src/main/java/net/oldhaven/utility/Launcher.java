@@ -1,5 +1,6 @@
 package net.oldhaven.utility;
 
+import com.google.gson.JsonArray;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import net.fabricmc.loader.launch.knot.KnotClient;
@@ -25,6 +26,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Launcher {
+    private static JsonArray args = null;
+    public static void setArgs(JsonArray strArgs) {
+        args = strArgs;
+    }
     public static void launch() {
         try {
             // Back up MC to minecraft.old if that hasn't been done yet. If it has, get fresh MC from minecraft.old to prepare it for injection.
@@ -86,7 +91,7 @@ public class Launcher {
 
             System.setProperty("java.class.path", Install.getClassPath(Versions.selectedVersion));
             System.setProperty("java.libs.path", Install.getNativesPath());
-            new JavaProcess(System.getProperty("java.home")).exec(KnotClient.class);
+            new JavaProcess(System.getProperty("java.home"), args).exec(KnotClient.class);
 
             Scenes.ProcessInfo.changeTo();
         } catch(IOException e) {

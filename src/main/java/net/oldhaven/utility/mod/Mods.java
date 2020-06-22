@@ -37,10 +37,12 @@ public class Mods {
                 if (modName.equalsIgnoreCase("CustomMods"))
                     continue;
                 JsonObject modObj = entry.getValue().getAsJsonObject();
-                String modType = modObj.get("Type").getAsString();
-                String modPath = modObj.get("Path").getAsString();
-                boolean modEnab = modObj.get("Enabled").getAsBoolean();
-                addMod(ModType.valueOf(modType), modName, modPath, modEnab);
+                if(modObj.get("Type") != null && modObj.get("Path") != null && modObj.get("Enabled") != null) {
+                    String modType = modObj.get("Type").getAsString();
+                    String modPath = modObj.get("Path").getAsString();
+                    boolean modEnab = modObj.get("Enabled").getAsBoolean();
+                    addMod(ModType.valueOf(modType), modName, modPath, modEnab);
+                }
             }
         }
     }

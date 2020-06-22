@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import net.lingala.zip4j.ZipFile;
 import net.oldhaven.utility.Launcher;
 import net.oldhaven.utility.enums.Versions;
+import net.oldhaven.utility.mod.Mod;
 import net.oldhaven.utility.mod.ModType;
 import net.oldhaven.utility.mod.Mods;
 import org.apache.commons.io.FileUtils;
@@ -194,17 +195,15 @@ public class Install {
             e.printStackTrace();
         }
 
-        // FIXME
-        Mods.addModSection("built-in");
         Mods.removeMod(Mods.getModByName("OptiFine.zip"));
         Mods.removeMod(Mods.getModByName("ReiMinimap.zip"));
-        if(Mods.getModSectionByName("built-in").getModByName("Rei's Minimap") == null)
-            Mods.getModSectionByName("built-in").addMod(ModType.NonFabric, "Rei's Minimap", reiminimapZipFile.getPath(), true);
-        if(Mods.getModSectionByName("built-in").getModByName("OptiFine") == null)
-            Mods.getModSectionByName("built-in").addMod(ModType.NonFabric, "OptiFine", optifineZipFile.getPath(), true);
-
-
-
+        boolean save = false;
+        if(Mods.getModByName("Reis Minimap") == null) {
+            Mods.addMod(ModType.NonFabric, "Reis Minimap", reiminimapZipFile.getPath(), true);save=true;}
+        if(Mods.getModByName("OptiFine") == null){
+            Mods.addMod(ModType.NonFabric, "OptiFine", optifineZipFile.getPath(), false);save=true;}
+        if(save)
+            Mods.saveMods();
 
         String modsFolder = Install.getMinecraftPath() + "mods/";
         System.out.println(" ");
@@ -212,15 +211,14 @@ public class Install {
         final String tag = gitHubAPI.getTag();
         System.out.println("  Latest MegaMod version: " + tag);
         File modDir = new File(modsFolder);
-        if (!modDir.exists()) {
+        if (!modDir.exists())
             modDir.mkdir();
-        }
         final File mm = new File(modsFolder + "MegaMod-Mixins.jar");
-        final File file = new File(modsFolder, "megaModVersion.txt");
-        if (file.exists()) {
-            boolean installMegaMod = false;
+        final File mmVersionFile = new File(modsFolder, "megaModVersion.txt");
+        boolean installMegaMod = false;
+        if(mmVersionFile.exists()) {
             try {
-                String old = new String(Files.readAllBytes(file.toPath()));
+                String old = new String(Files.readAllBytes(mmVersionFile.toPath()));
                 if (tag.equals(old) && mm.exists()) {
                     System.out.println("  No new versions of MegaMod, You have: " + old);
                 } else {
@@ -230,38 +228,46 @@ public class Install {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if(installMegaMod) {
-                gitHubAPI.writeToFile(modsFolder + "MegaMod-Mixins.jar", () -> {
-                    boolean write = false;
-                    if (file.exists()) {
-                        boolean b = file.delete();
-                        if (!b)
-                            System.err.println("Can't delete " + file.getAbsolutePath());
-                        else
-                            write = true;
-                    } else {
-                        boolean b = false;
-                        try {
-                            b = file.createNewFile();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        if (!b)
-                            System.err.println("Can't create " + file.getAbsolutePath());
-                        else
-                            write = true;
+        } else {
+            Mod mod;
+            if((mod=Mods.getModByName("MegaMod")) != null)
+                Mods.removeMod(mod);
+            installMegaMod = true;
+        }
+        if(installMegaMod) {
+            gitHubAPI.writeToFile(modsFolder + "MegaMod-Mixins.jar", () -> {
+                boolean write = false;
+                if (mmVersionFile.exists()) {
+                    boolean b = mmVersionFile.delete();
+                    if (!b)
+                        System.err.println("Can't delete " + mmVersionFile.getAbsolutePath());
+                    else
+                        write = true;
+                } else {
+                    boolean b = false;
+                    try {
+                        b = mmVersionFile.createNewFile();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                    if (write) {
-                        try {
-                            PrintWriter out = new PrintWriter(file);
-                            out.write(tag);
-                            out.close();
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        }
+                    if (!b)
+                        System.err.println("Can't create " + mmVersionFile.getAbsolutePath());
+                    else
+                        write = true;
+                }
+                if (write) {
+                    try {
+                        PrintWriter out = new PrintWriter(mmVersionFile);
+                        out.write(tag);
+                        out.close();
+
+                        Mods.addMod(ModType.Fabric, "MegaMod", mm.getPath(), true);
+                        Mods.saveMods();
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
                     }
-                });
-            }
+                }
+            });
         }
         System.out.println(" ");
 
@@ -387,6 +393,12 @@ public class Install {
         JsonObject jsonObject = gson.fromJson(
                 new InputStreamReader(Install.class.getResourceAsStream("/fabric/"+ versions.getJsonFile())),
                 JsonObject.class);
+        if(jsonObject.get("args") != null) {
+            JsonArray argArray = jsonObject.getAsJsonArray("args");
+            Launcher.setArgs(argArray);
+        } else {
+            Launcher.setArgs(null);
+        }
         if(!Files.exists(Paths.get(Install.getBinPath() + "minecraft.jar"))) {
             JsonObject jarObj = jsonObject.get("mainJar").getAsJsonObject();
             String mcUrl = jarObj.get("url").getAsString();
