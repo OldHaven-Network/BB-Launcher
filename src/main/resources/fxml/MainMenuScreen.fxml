@@ -36,7 +36,7 @@
             </Label>
             <ImageView id="skin" fx:id="skin" fitHeight="200.0" fitWidth="100.0" layoutX="53.0" layoutY="103.0" pickOnBounds="true" />
             <Label alignment="CENTER" layoutX="69.0" layoutY="64.0" text="Logged in as" textAlignment="CENTER" textFill="WHITE" />
-            <Label alignment="CENTER" layoutX="587.0" layoutY="295.0" style="-fx-font-weight: bold;" text="v0.2.1" textAlignment="CENTER" textFill="WHITE" />
+            <Label alignment="CENTER" layoutX="587.0" layoutY="295.0" style="-fx-font-weight: bold;" text="v0.3.0" textAlignment="CENTER" textFill="WHITE" />
             <Label id="downloading_label" fx:id="downloading_label" alignment="CENTER" layoutX="278.0" layoutY="180.0" text="Downloading..." textAlignment="CENTER" textFill="WHITE" visible="false" />
             <Button layoutX="219.0" layoutY="207.0" mnemonicParsing="false" onAction="#selectVersionButton_onClick" prefHeight="25.0" prefWidth="197.0" text="Open version manager" />
             <Label fx:id="selectedversion_label" alignment="CENTER" contentDisplay="CENTER" layoutX="219.0" layoutY="176.0" prefHeight="17.0" prefWidth="197.0" style="-fx-font-weight: bold;" text="Beta 1.7.3" textAlignment="CENTER" textFill="WHITE">
