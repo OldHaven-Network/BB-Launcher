@@ -57,12 +57,23 @@ public class Main extends Application {
         }
 
         VersionHandler.initializeVersionHandler();
-        File oldMinecraftFolder = new File(Install.getMainPath() + "minecraft");
-        File newMinecraftFolder = new File(Install.getMainPath() + "versions/b173");
-        if(oldMinecraftFolder.exists()){
+        File olderMinecraftFolder = new File(Install.getMainPath() + "minecraft");
+        File oldMinecraftFolder = new File(Install.getMainPath() + "versions/b173");
+        File newMinecraftFolder = new File(Install.getMainPath() + "versions/Beta 1.7.3");
+
+        if(oldMinecraftFolder.exists()) {
             try {
                 FileUtils.deleteDirectory(newMinecraftFolder);
                 FileUtils.moveDirectory(oldMinecraftFolder, newMinecraftFolder);
+                FileUtils.deleteDirectory(oldMinecraftFolder);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if(olderMinecraftFolder.exists()) {
+            try {
+                FileUtils.deleteDirectory(newMinecraftFolder);
+                FileUtils.moveDirectory(olderMinecraftFolder, newMinecraftFolder);
+                FileUtils.deleteDirectory(olderMinecraftFolder);
             } catch (IOException e) {
                 e.printStackTrace();
             }

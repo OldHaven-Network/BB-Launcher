@@ -2,8 +2,10 @@ package net.oldhaven.utility.enums;
 
 import net.oldhaven.framework.Install;
 import net.oldhaven.utility.Launcher;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -54,6 +56,21 @@ public enum Versions {
     public void install() {
         if(onInstall != null)
             onInstall.run();
+    }
+
+    public void uninstall() {
+        try {
+            FileUtils.forceDelete(new File(Install.getMainPath() + "versions/" + name));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean isInstalled() {
+        if(new File(Install.getMainPath() + "versions/" + name).exists())
+            return true;
+        else
+            return false;
     }
 
     public void launch() {

@@ -4,10 +4,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -30,7 +34,9 @@ import net.oldhaven.utility.enums.Scenes;
 import net.oldhaven.utility.enums.Versions;
 import net.oldhaven.utility.mod.Mods;
 import org.apache.commons.io.FileUtils;
+import org.lwjgl.Sys;
 
+import java.awt.*;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
@@ -65,18 +71,6 @@ public class MainMenuScreenController implements Initializable {
             }
         }
 
-        for(Versions versions : Versions.values()) {
-            version_picker.getItems().add(versions.getName());
-        }
-        version_picker.getSelectionModel().select(Versions.selectedVersion.getName());
-        version_picker.valueProperty().addListener((obs, oldValue, newValue) -> {
-            newValue = newValue.replaceAll("\\.", "");
-            VersionHandler.updateSelectedVersion(newValue);
-            Mods.updateConfigLoc();
-            selectedversion_label.setText(version_picker.getSelectionModel().getSelectedItem());
-            selectedversion_label.setMaxWidth(Double.MAX_VALUE);
-        });
-
         this.skin.setImage(new Image("https://minotar.net/body/"+UserInfo.getUsername()+"/100.png"));
         username.setText(UserInfo.getUsername());
         username.setMaxWidth(Double.MAX_VALUE);
@@ -84,8 +78,9 @@ public class MainMenuScreenController implements Initializable {
         //AnchorPane.setRightAnchor(username, 0.0);
         //username.setAlignment(Pos.CENTER);
 
-        selectedversion_label.setText(version_picker.getSelectionModel().getSelectedItem());
+        selectedversion_label.setText(Versions.selectedVersion.getName());
         selectedversion_label.setMaxWidth(Double.MAX_VALUE);
+        Mods.updateConfigLoc();
     }
 
     @FXML
@@ -241,18 +236,31 @@ public class MainMenuScreenController implements Initializable {
             if(versions.getName().toLowerCase().contains("alpha")) {
                 alphaFolder.getChildren().add(new TreeItem<>(versions.getName(), new ImageView(new Image(
                         getClass().getResourceAsStream("/images/alpha.png")))));
+                if(versions.isInstalled()){
+                    root2.getChildren().add(new TreeItem<>(versions.getName(), new ImageView(new Image(
+                            getClass().getResourceAsStream("/images/alpha.png")))));
+                }
             } else if (versions.getName().toLowerCase().contains("beta")) {
                 betaFolder.getChildren().add(new TreeItem<>(versions.getName(), new ImageView(new Image(
                         getClass().getResourceAsStream("/images/beta.png")))));
+                if(versions.isInstalled()){
+                    root2.getChildren().add(new TreeItem<>(versions.getName(), new ImageView(new Image(
+                            getClass().getResourceAsStream("/images/beta.png")))));
+                }
             } else {
                 moddedFolder.getChildren().add(new TreeItem<>(versions.getName(), new ImageView(new Image(
                         getClass().getResourceAsStream("/images/unknown.png")))));
+                if(versions.isInstalled()){
+                    root2.getChildren().add(new TreeItem<>(versions.getName(), new ImageView(new Image(
+                            getClass().getResourceAsStream("/images/unknown.png")))));
+                }
             }
         }
-        root2.getChildren().add(new TreeItem<>("c0.31", new ImageView(new Image(
-                getClass().getResourceAsStream("/images/unknown.png")))));
+
         versionTree1.setRoot(root1);
         versionTree2.setRoot(root2);
+        root1.setExpanded(true);
+        root2.setExpanded(true);
 
         Button button1 = new Button("Install selected version");
         Button button2 = new Button("Uninstall selected version");
@@ -280,6 +288,49 @@ public class MainMenuScreenController implements Initializable {
         Window window = popupWindow.getDialogPane().getScene().getWindow();
         window.setOnCloseRequest(event -> window.hide());
         popupWindow.show();
+
+        button1.setOnAction(event -> {
+            String version = versionTree1.getSelectionModel().getSelectedItem().getValue();
+            if(version.toLowerCase().contains("alpha")) {
+                root2.getChildren().add(new TreeItem<>(version, new ImageView(new Image(
+                            getClass().getResourceAsStream("/images/alpha.png")))));
+            } else if (version.toLowerCase().contains("beta")) {
+                root2.getChildren().add(new TreeItem<>(version, new ImageView(new Image(
+                            getClass().getResourceAsStream("/images/beta.png")))));
+            } else {
+                root2.getChildren().add(new TreeItem<>(version, new ImageView(new Image(
+                            getClass().getResourceAsStream("/images/unknown.png")))));
+            }
+            VersionHandler.updateSelectedVersion(version);
+            Mods.updateConfigLoc();
+            selectedversion_label.setText(versionTree2.getSelectionModel().getSelectedItem().getValue());
+            selectedversion_label.setMaxWidth(Double.MAX_VALUE);
+        });
+
+        button2.setOnAction(event -> {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Uninstall");
+            alert.setHeaderText("You are about to uninstall " + Versions.selectedVersion.getName() + ".");
+            alert.setContentText("All game files for this version will be lost.\nTHIS ACTION CANNOT BE UNDONE!" +
+                    "\nWould you like to proceed with uninstalling this version?");
+
+            ButtonType yes = new ButtonType("Yes", ButtonBar.ButtonData.YES);
+            ButtonType no = new ButtonType("No", ButtonBar.ButtonData.NO);
+            alert.getButtonTypes().setAll(yes, no);
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == yes) {
+                root2.getChildren().remove(versionTree2.getSelectionModel().getSelectedItem());
+                Versions.selectedVersion.uninstall();
+            }
+        });
+
+        versionTree2.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            VersionHandler.updateSelectedVersion(newValue.getValue());
+            Mods.updateConfigLoc();
+            selectedversion_label.setText(versionTree2.getSelectionModel().getSelectedItem().getValue());
+            selectedversion_label.setMaxWidth(Double.MAX_VALUE);
+        });
 
         /*
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/VersionSelectScreen.fxml"));
