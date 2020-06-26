@@ -202,6 +202,11 @@ public class MainMenuScreenController implements Initializable {
         temp.mkdirs();
 
         Install.installMinecraft(Versions.selectedVersion);
+        if(Versions.selectedVersion == Versions.b173)
+            Install.installOldHavenb173();
+        if(Versions.selectedVersion == Versions.AetherMP)
+            Install.installAetherMP();
+        Mods.updateConfigLoc();
         Versions.selectedVersion.launch();
     }
 

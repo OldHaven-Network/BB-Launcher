@@ -65,7 +65,6 @@ public class GitHubAPI {
                     if(Main.getCurrentController() != null && (Main.getCurrentController() instanceof MainMenuScreenController)) {
                         final MainMenuScreenController mmsc = ((MainMenuScreenController) Main.getCurrentController());
                         Platform.runLater(() -> {
-                            mmsc.version_picker.setDisable(true);
                             mmsc.progress_bar.setVisible(true);
                             mmsc.launch_button.setText(finalUpdateText);
                             mmsc.launch_button.setDisable(true);

@@ -56,7 +56,6 @@ public class Main extends Application {
             }
         }
 
-        VersionHandler.initializeVersionHandler();
         File olderMinecraftFolder = new File(Install.getMainPath() + "minecraft");
         File oldMinecraftFolder = new File(Install.getMainPath() + "versions/b173");
         File newMinecraftFolder = new File(Install.getMainPath() + "versions/Beta 1.7.3");
@@ -79,9 +78,11 @@ public class Main extends Application {
             }
         }
 
+        VersionHandler.initializeVersionHandler();
+        Mods.updateConfigLoc();
         System.out.println("Hello there, General Kenobi");
         this.createFolders();
-        Mods.updateConfigLoc();
+
         // Moved Minecraft installation to after login so unauthorized users cannot download Mojang files without logging in.
         File settingsFile = new File(Install.getMainPath() + "settings.txt");
         if(!settingsFile.exists()){
@@ -145,7 +146,7 @@ public class Main extends Application {
             if(failedCreate)
                 System.err.println("Failed to create a folder");
         } catch (NullPointerException e) {
-            System.exit(0);
+            e.printStackTrace();
         }
     }
 }

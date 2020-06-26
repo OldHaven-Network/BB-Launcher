@@ -27,10 +27,14 @@ public class VersionHandler {
     public static void initializeVersionHandler(){
         if(!versionFile.exists() || versionFile.length() == 0){
             try {
-                if(!versionFile.exists())
+                if(!versionFile.exists()) {
+                    if(!new File(Install.getMainPath()).exists());
+                        new File(Install.getMainPath()).mkdirs();
                     versionFile.createNewFile();
+                }
                 PrintWriter versionWriter = new PrintWriter(versionFile, "UTF-8");
-                versionWriter.println("Beta 1.7.3");
+                versionWriter.println("b173");
+                updateSelectedVersion("Beta 1.7.3");
                 versionWriter.close();
             } catch (IOException e) {
                 e.printStackTrace();
