@@ -1,11 +1,5 @@
-package net.oldhaven.controller;
+package net.oldhaven.controller.templates;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -18,40 +12,26 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
-import net.oldhaven.Main;
 import net.oldhaven.framework.Install;
 import net.oldhaven.framework.VersionHandler;
 import net.oldhaven.utility.UserInfo;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.paint.Color;
-import javafx.stage.Stage;
-import net.oldhaven.utility.enums.Scenes;
+import net.oldhaven.utility.enums.Scene;
 import net.oldhaven.utility.enums.Versions;
+import net.oldhaven.utility.lang.Lang;
 import net.oldhaven.utility.mod.Mods;
 import org.apache.commons.io.FileUtils;
-import org.lwjgl.Sys;
 
-import java.awt.*;
 import java.io.*;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 
 public class MainMenuScreenController implements Initializable {
-    double offset_x;
-    double offset_y;
-
-    @FXML public ImageView background;
-    @FXML private Label username, downloading_label, selectedversion_label;
-    @FXML public Button launch_button;
+    @FXML private Label username, downloading_label, selectedversion_label, selectedver_labelNA, loggedin_label;
+    @FXML public Button launch_button, versionman_button;
     @FXML private Label close_button, logout_button;
-    @FXML private Label main_button, settings_button, processinfo_button;
     @FXML public AnchorPane pain;
     @FXML public Pane clipPane;
     @FXML public ImageView skin;
@@ -60,17 +40,10 @@ public class MainMenuScreenController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Main.setCurrentController(this);
-        File[] fileArray = new File(Install.getMainPath()).listFiles();
-        assert fileArray != null;
-        for(File file : fileArray) {
-            if(file.getAbsolutePath().contains("launcherbg")) {
-                Image image = new Image(file.toURI().toString());
-                background.setImage(image);
-                background.fitWidthProperty().bind(clipPane.widthProperty());
-            }
-        }
-
+        launch_button.setText(Lang.MAIN_LAUNCH.translate());
+        loggedin_label.setText(Lang.MAIN_LOGIN.translate());
+        selectedver_labelNA.setText(Lang.MAIN_VERSION_SELECTED.translate());
+        versionman_button.setText(Lang.MAIN_VERSION_MANAGER.translate());
         this.skin.setImage(new Image("https://minotar.net/body/"+UserInfo.getUsername()+"/100.png"));
         username.setText(UserInfo.getUsername());
         username.setMaxWidth(Double.MAX_VALUE);
@@ -81,112 +54,6 @@ public class MainMenuScreenController implements Initializable {
         selectedversion_label.setText(Versions.selectedVersion.getName());
         selectedversion_label.setMaxWidth(Double.MAX_VALUE);
         Mods.updateConfigLoc();
-    }
-
-    @FXML
-    private void movableWindow(){
-        Scene scene = launch_button.getScene();
-        Stage stage = (Stage) launch_button.getScene().getWindow();
-        scene.setOnMousePressed(event -> {
-            offset_x = event.getSceneX();
-            offset_y = event.getSceneY();
-        });
-
-        scene.setOnMouseDragged(event -> {
-            stage.setX(event.getScreenX() - offset_x);
-            stage.setY(event.getScreenY() - offset_y);
-        });
-    }
-
-
-
-    @FXML
-    private void logoutButton_onClick() throws IOException {
-
-        // Show the user a dialog box to help him decide.
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Logout");
-        alert.setHeaderText("Are you sure you want to log out?");
-        alert.setContentText("If you also want to erase your account details, click \"Logout and forget\".");
-
-        ButtonType logoutAndForget = new ButtonType("Logout and forget", ButtonBar.ButtonData.LEFT);
-        ButtonType logout = new ButtonType("Logout", ButtonBar.ButtonData.OTHER);
-        ButtonType cancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
-
-        alert.getButtonTypes().setAll(logoutAndForget, logout, cancel);
-
-        // Get the button pressed.
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == logoutAndForget){
-            // Read JSON to JsonObject, remove user's account, pretty print JSON back to players.json, clear current user, switch to login scene.
-            try {
-                JsonObject jsonObject = (JsonObject) JsonParser.parseReader(new FileReader(Install.getMainPath() + "players.json"));
-                jsonObject.remove(UserInfo.getUsername());
-                Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                Writer writer = Files.newBufferedWriter(Paths.get(Install.getMainPath() + "players.json"));
-                gson.toJson(jsonObject, writer);
-                writer.close();
-                Install.setCurrentUser(null);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/LoginScreen.fxml"));
-            Stage primaryStage = (Stage) username.getScene().getWindow();
-            Scene scene = new Scene(root);
-            primaryStage.setScene(scene);
-        } else if (result.get() == logout) {
-            // Only switch to login scene.
-            Install.setCurrentUser(null);
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/LoginScreen.fxml"));
-            Stage primaryStage = (Stage) username.getScene().getWindow();
-            Scene scene = new Scene(root);
-            primaryStage.setScene(scene);
-        }
-    }
-
-    @FXML
-    private void closeButton_mouseOver(MouseEvent event){
-        if(event.getEventType().getName().equals("MOUSE_ENTERED")) {
-            close_button.setTextFill(Color.web("#646464", 1));
-        } else if(event.getEventType().getName().equals("MOUSE_EXITED")) {
-            close_button.setTextFill(Color.web("#FFFFFF", 1));
-        }
-    }
-
-    @FXML
-    private void logoutButton_mouseOver(MouseEvent event){
-        if(event.getEventType().getName().equals("MOUSE_ENTERED")) {
-            logout_button.setTextFill(Color.web("#646464", 1));
-        } else if(event.getEventType().getName().equals("MOUSE_EXITED")) {
-            logout_button.setTextFill(Color.web("#FFFFFF", 1));
-        }
-    }
-
-    @FXML
-    private void mainButton_mouseOver(MouseEvent event){
-        if(event.getEventType().getName().equals("MOUSE_ENTERED")) {
-            main_button.setTextFill(Color.web("#646464", 1));
-        } else if(event.getEventType().getName().equals("MOUSE_EXITED")) {
-            main_button.setTextFill(Color.web("#000000", 1));
-        }
-    }
-
-    @FXML
-    private void settingsButton_mouseOver(MouseEvent event){
-        if(event.getEventType().getName().equals("MOUSE_ENTERED")) {
-            settings_button.setTextFill(Color.web("#646464", 1));
-        } else if(event.getEventType().getName().equals("MOUSE_EXITED")) {
-            settings_button.setTextFill(Color.web("#000000", 1));
-        }
-    }
-
-    @FXML
-    private void processInfoButton_mouseOver(MouseEvent event){
-        if(event.getEventType().getName().equals("MOUSE_ENTERED")) {
-            processinfo_button.setTextFill(Color.web("#646464", 1));
-        } else if(event.getEventType().getName().equals("MOUSE_EXITED")) {
-            processinfo_button.setTextFill(Color.web("#000000", 1));
-        }
     }
 
     @FXML
@@ -319,8 +186,8 @@ public class MainMenuScreenController implements Initializable {
             alert.setContentText("All game files for this version will be lost.\nTHIS ACTION CANNOT BE UNDONE!" +
                     "\nWould you like to proceed with uninstalling this version?");
 
-            ButtonType yes = new ButtonType("Yes", ButtonBar.ButtonData.YES);
-            ButtonType no = new ButtonType("No", ButtonBar.ButtonData.NO);
+            ButtonType yes = new ButtonType(Lang.ALERT_BUTTONS_YES.translate(), ButtonBar.ButtonData.YES);
+            ButtonType no = new ButtonType(Lang.ALERT_BUTTONS_NO.translate(), ButtonBar.ButtonData.NO);
             alert.getButtonTypes().setAll(yes, no);
 
             Optional<ButtonType> result = alert.showAndWait();
@@ -367,11 +234,11 @@ public class MainMenuScreenController implements Initializable {
 
     @FXML
     private void clickSettingsButton() {
-        Scenes.Settings.changeTo();
+        Scene.Settings.changeTo();
     }
 
     @FXML
     private void clickProcessInfoButton() {
-        Scenes.ProcessInfo.changeTo();
+        Scene.ProcessInfo.changeTo();
     }
 }

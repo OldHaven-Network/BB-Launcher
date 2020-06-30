@@ -1,8 +1,8 @@
 package net.oldhaven.framework;
 
 import javafx.application.Platform;
-import net.oldhaven.Main;
-import net.oldhaven.controller.MainMenuScreenController;
+import net.oldhaven.BBLauncher;
+import net.oldhaven.controller.templates.MainMenuScreenController;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -62,8 +62,8 @@ public class GitHubAPI {
                 int currentByte = 0;
                 //int go = 0;
                 while ((byteContent = inputStream.read(data, 0, data.length)) != -1) {
-                    if(Main.getCurrentController() != null && (Main.getCurrentController() instanceof MainMenuScreenController)) {
-                        final MainMenuScreenController mmsc = ((MainMenuScreenController) Main.getCurrentController());
+                    if(BBLauncher.getCurrentController() != null && (BBLauncher.getCurrentController() instanceof MainMenuScreenController)) {
+                        final MainMenuScreenController mmsc = ((MainMenuScreenController) BBLauncher.getCurrentController());
                         Platform.runLater(() -> {
                             mmsc.progress_bar.setVisible(true);
                             mmsc.launch_button.setText(finalUpdateText);
@@ -86,8 +86,8 @@ public class GitHubAPI {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if(Main.getCurrentController() != null && (Main.getCurrentController() instanceof MainMenuScreenController)) {
-                final MainMenuScreenController mmsc = ((MainMenuScreenController) Main.getCurrentController());
+            if(BBLauncher.getCurrentController() != null && (BBLauncher.getCurrentController() instanceof MainMenuScreenController)) {
+                final MainMenuScreenController mmsc = ((MainMenuScreenController) BBLauncher.getCurrentController());
                 Platform.runLater(() -> {
                     mmsc.version_picker.setDisable(false);
                     mmsc.progress_bar.setVisible(false);

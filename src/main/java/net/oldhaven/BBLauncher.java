@@ -6,19 +6,27 @@ import net.oldhaven.framework.Install;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.oldhaven.framework.VersionHandler;
+import net.oldhaven.utility.enums.Scene;
 import net.oldhaven.utility.lang.Lang;
 import net.oldhaven.utility.mod.Mods;
+import net.oldhaven.utility.settings.Settings;
 import org.apache.commons.io.FileUtils;
 
 import java.awt.*;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
-public class Main extends Application {
+public class BBLauncher extends Application {
 
     private double offset_x;
     private double offset_y;
@@ -42,11 +50,13 @@ public class Main extends Application {
         return primaryStage;
     }
 
+    public static Settings settings;
+
     @Override
     public void start(Stage primaryStage) {
         if(Install.isOSUnknown()){
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle(Lang.ALERT_ERROR.translate());
+            alert.setTitle(Lang.ALERT_TYPES_ERROR.translate());
             alert.setHeaderText(Lang.OS_UNKNOWN.translate());
             alert.setContentText(Lang.OS_SUPPORTED.translate());
             alert.showAndWait();
@@ -78,39 +88,46 @@ public class Main extends Application {
             }
         }
 
+        File optionsFile = new File(Install.getMainPath() + "settings.ini");
+        File oldSettingsFile = new File(Install.getMainPath() + "settings.txt");
+        if(oldSettingsFile.exists())
+            oldSettingsFile.delete();
+        settings = new Settings();
+        settings.optionsFile = optionsFile;
+        settings.readSettings();
+
         VersionHandler.initializeVersionHandler();
         Mods.updateConfigLoc();
         System.out.println("Hello there, General Kenobi");
         this.createFolders();
 
-        // Moved Minecraft installation to after login so unauthorized users cannot download Mojang files without logging in.
-        File settingsFile = new File(Install.getMainPath() + "settings.txt");
-        if(!settingsFile.exists()){
-            try {
-                PrintWriter settingsWriter = new PrintWriter(settingsFile, "UTF-8");
-                settingsWriter.println("1024"); // Maximum allocated memory
-                settingsWriter.println("256"); // Minimum allocated memory
-                settingsWriter.close();
-            } catch (FileNotFoundException | UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-        }
-
         Install.checkLauncherUpdate();
         this.loadFXML(primaryStage);
+    }
+
+    private static Map<Scene, ScheduledExecutorService> sceneExecutors = new HashMap<>();
+    public static void createRunnableWithScene(Scene scene, Runnable runnable, long initalDelay, long period, TimeUnit timeUnit) {
+        if(!sceneExecutors.containsKey(scene))
+            sceneExecutors.put(scene, Executors.newScheduledThreadPool(1));
+        sceneExecutors.get(scene).scheduleAtFixedRate(runnable, initalDelay, period, timeUnit);
+    }
+    public static void cancelRunnablesWithScene(Scene scene) {
+        if(!sceneExecutors.containsKey(scene))
+            return;
+        sceneExecutors.get(scene).shutdown();
     }
 
     private void loadFXML(Stage primaryStage) {
         Parent root;
         try {
-            root = FXMLLoader.load(getClass().getResource("/fxml/LoginScreen.fxml"));
+            root = FXMLLoader.load(getClass().getResource("/fxml/main.fxml"));
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
             return;
         }
         primaryStage.initStyle(StageStyle.UNDECORATED);
-        Scene scene = new Scene(root);
+        javafx.scene.Scene scene = new javafx.scene.Scene(root);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Beyond Beta Launcher");
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/icon2.png")));
@@ -125,7 +142,7 @@ public class Main extends Application {
             primaryStage.setY(event.getScreenY() - offset_y);
         });
 
-        Main.primaryStage = primaryStage;
+        BBLauncher.primaryStage = primaryStage;
     }
 
     private void createFolders() {

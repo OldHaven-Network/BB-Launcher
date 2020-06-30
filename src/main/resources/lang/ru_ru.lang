@@ -1,0 +1,61 @@
+language.name=Русский
+language.translator=mine_diver
+language.region=RU
+language.code=ru_RU
+language.self=Язык
+language.unknown=Неизвестный ключ %1% в языковом файле %2%
+
+brand.name=OldHaven Network
+
+os.unknown=Вы используете неизвестную операционную систему.
+os.supported=В поддерживаемые операционные системы входит Windows, Mac OS X и Linux.
+
+console.megamod.none=Новые версии MegaMod не найдены
+console.megamod.latest=Новейшая версия MegaMod: %1%
+
+alert.types.error=Ошибка
+alert.types.warning=Предупреждение
+alert.mcrunning.header=alert.types.warning
+alert.mcrunning.footer=Вам нужно закрыть Minecraft перед запуском!
+alert.buttons.cancel=Отмена
+alert.buttons.yes=Да
+alert.buttons.no=Нет
+alert.buttons.ok=ОК
+
+login.self=Вход
+login.text=Войдите со своего Mojang аккаунта
+login.field.username=Имя пользователя / E-mail
+login.field.password=Пароль
+login.savedacc=Выберите сохранённый аккаунт...
+login.remember=Запомнить мой аккаунт
+login.error=Неверные данные для входа!
+
+main.self=Главная
+main.login=Вход выполнен с
+main.version.selected=Выбранная версия
+main.version.manager=Открыть менеджер версий
+main.launch=Запуск
+
+mods.self=Менеджер Модов
+mods.buttons.add=Добавить Мод...
+mods.buttons.remove=Удалить Мод...
+mods.types.modloader=ModLoader
+mods.types.fabric=Fabric
+mods.types.mcp=MCP
+mods.types.nonfabric=NonFabric
+mods.path=Путь к выбранному моду
+mods.type=Тип мода
+
+settings.self=Основные Настройки
+settings.memory.max=Максимальная Память (МБ)
+settings.memory.min=Минимальная Память (МБ)
+settings.background.change=Изменить фон лаунчера
+settings.background.reset=Сбросить фон лаунчера
+settings.openfolder=Открыть папку лаунчера
+
+process.self=Информация о Процессе
+process.buttons.restart=Перезапустить Minecraft
+process.buttons.kill=Принудительно выключить Minecraft
+process.buttons.clearlog=Очистить Лог
+process.log.max=Максимальное количество Строк Лога
+

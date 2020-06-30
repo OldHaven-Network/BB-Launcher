@@ -1,0 +1,60 @@
+language.name=Nederlands
+language.translator=portalsam
+language.region=NL
+language.code=dut_NL
+language.self=Taal
+language.unknown=Onbekend sleutel %1% in taalbestand %2%
+
+brand.name=OldHaven Netwerk
+
+os.unknown=Je bent gebruikt een onbekend besturingssysteem.
+os.supported=Ondersteunde besturingssystemen zijn Windows, Mac OS X en Linux.
+
+console.megamod.none=Geen nieuwe versies van MegaMod gevonden.
+console.megamod.latest=Nieuwste MegaMod-versie: %1%
+
+alert.types.error=Fout
+alert.types.warning=Waarschuwing
+alert.mcrunning.header=alert.typen.waarschuwing
+alert.mcrunning.footer=Je moet Minecraft sluiten voor lanceren!
+alert.buttons.cancel=Annuleren
+alert.buttons.yes=Ja
+alert.buttons.no=Nee
+alert.buttons.ok=OK
+
+login.self=Login
+login.text=Login met uw Mojang-account.
+login.field.username=Gebruikersnaam  / Mail
+login.field.password=Wachtwoord
+login.savedacc=Uitkiezen een opgeslagen account....
+login.remember=Mijn account onthouden.
+login.error=Ongeldige referenties!
+
+main.self=Voornaamste
+main.login=Ingelogd als
+main.version.selected=Geselecteerde versie
+main.version.manager=Openen versiemanager
+main.launch=Lanceren
+
+mods.self=Mod Manager
+mods.buttons.add=Mod toevoegen...
+mods.buttons.remove=Mod wegnemen...
+mods.types.modloader=ModLoader
+mods.types.fabric=Fabric
+mods.types.mcp=MCP
+mods.types.nonfabric=NietFabric
+mods.path=Geselecteerd mod pad.
+mods.type=Mod type
+
+settings.self=Algemene Instellingen
+settings.memory.max=Maximaal Geheugen(MB)
+settings.memory.min=Minimum Geheugen(MB)
+settings.background.change=Achtergrond startprogramma wijzigen
+settings.background.reset=Achtergrond startprogramma resetten
+settings.openfolder=Startprogramma-map openen
+
+process.self=Procesgegevens
+process.buttons.restart=Opnieuw starten Minecraft
+process.buttons.kill=Stopzetten Minecraft
+process.buttons.clearlog=Logboek wissen
+process.log.max=Maximaal logboek lijnen

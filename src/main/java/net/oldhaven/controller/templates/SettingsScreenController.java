@@ -1,34 +1,28 @@
-package net.oldhaven.controller;
+package net.oldhaven.controller.templates;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
-import net.oldhaven.Main;
 import net.oldhaven.framework.Install;
-import net.oldhaven.utility.enums.Scenes;
+import net.oldhaven.utility.lang.Lang;
 import net.oldhaven.utility.mod.Mod;
 import net.oldhaven.utility.mod.ModType;
 import net.oldhaven.utility.mod.Mods;
+import net.oldhaven.utility.settings.LaunchSettings;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
@@ -44,26 +38,27 @@ public class SettingsScreenController implements Initializable {
     private double offset_y;
 
     @FXML private ListView<String> modview;
-    @FXML private Label close_button;
-    @FXML private Label main_button, settings_button, processinfo_button;
+    @FXML private Tooltip fabricTooltip;
     @FXML private TextField selectedmodpath, selectedmodtype, minmem_field, maxmem_field;
+    @FXML private Button addmod_button, removemod_button, resetbgbutton, launcherbg_button, launcherfolder_button;
     @FXML private ImageView background;
+    @FXML private Label maxmem_label, minmem_label, mod_self, settings_self;
     @FXML public AnchorPane pain;
     @FXML public Pane clipPane;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Main.setCurrentController(this);
-        File[] fileArray = new File(Install.getMainPath()).listFiles();
-        assert fileArray != null;
-        for(File file : fileArray) {
-            if(file.getAbsolutePath().contains("launcherbg")) {
-                Image image = new Image(file.toURI().toString());
-                background.setImage(image);
-                background.fitWidthProperty().bind(clipPane.widthProperty());
-            }
-        }
-
+        settings_self.setText(Lang.SETTINGS_SELF.translate());
+        mod_self.setText(Lang.MODS_SELF.translate());
+        addmod_button.setText(Lang.MODS_BUTTONS_ADD.translate());
+        removemod_button.setText(Lang.MODS_BUTTONS_REMOVE.translate());
+        resetbgbutton.setText(Lang.SETTINGS_BACKGROUND_RESET.translate());
+        launcherbg_button.setText(Lang.SETTINGS_BACKGROUND_CHANGE.translate());
+        launcherfolder_button.setText(Lang.SETTINGS_OPENFOLDER.translate());
+        selectedmodpath.setPromptText(Lang.MODS_PATH.translate());
+        selectedmodtype.setPromptText(Lang.MODS_TYPE.translate());
+        maxmem_label.setText(Lang.SETTINGS_MEMORY_MAX.translate());
+        minmem_label.setText(Lang.SETTINGS_MEMORY_MIN.translate());
         ArrayList<String> stringBuilder = new ArrayList<>();
         for(Mod mod : Mods.getMods()) {
             String req = !mod.canDisable() ? "* " : "";
@@ -118,19 +113,8 @@ public class SettingsScreenController implements Initializable {
         });
 
 
-        File settingsFile = new File(Install.getMainPath() + "settings.txt");
-
-        try {
-            BufferedReader settingsReader = new BufferedReader(new FileReader(settingsFile));
-            maxmem_field.setText(settingsReader.readLine());
-            minmem_field.setText(settingsReader.readLine());
-            settingsReader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        doMemOption(settingsFile, maxmem_field);
-        doMemOption(settingsFile, minmem_field);
+        maxmem_field.setText(LaunchSettings.MEMORY_MAX.getAsString());
+        minmem_field.setText(LaunchSettings.MEMORY_MIN.getAsString());
     }
 
     private void doMemOption(final File settingsFile, final TextField mem_field) {
@@ -151,9 +135,11 @@ public class SettingsScreenController implements Initializable {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select mod to add...");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Mod for Minecraft", "*.jar", "*.zip"));
-        File file = fileChooser.showOpenDialog(close_button.getScene().getWindow());
+        File file = fileChooser.showOpenDialog(modview.getScene().getWindow());
 
         ZipFile modZipFile = new ZipFile(file);
+        if(file == null)
+            return;
         String nonFabricModPath = Install.getMinecraftPath() + "mods-inactive/" + file.getName();
         try {
             if(modZipFile.getFileHeader("fabric.mod.json") != null) {
@@ -202,7 +188,7 @@ public class SettingsScreenController implements Initializable {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select mod to add...");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image files", "*.jpg", "*.jpeg", "*.png", "*.gif"));
-        File file = fileChooser.showOpenDialog(close_button.getScene().getWindow());
+        File file = fileChooser.showOpenDialog(modview.getScene().getWindow());
 
         File newImage = new File(Install.getMainPath() + "launcherbg." + FilenameUtils.getExtension(file.getAbsolutePath()));
         try {
@@ -236,71 +222,5 @@ public class SettingsScreenController implements Initializable {
     @FXML
     private void clickLauncherFolderButton() throws IOException {
         Desktop.getDesktop().open(new File(Install.getMainPath()));
-    }
-
-    @FXML
-    private void clickMainButton() {
-        Scenes.MainMenu.changeTo();
-    }
-
-    @FXML
-    private void clickProcessInfoButton() {
-        Scenes.ProcessInfo.changeTo();
-    }
-
-    @FXML
-    private void movableWindow(){
-        Scene scene = close_button.getScene();
-        Stage stage = (Stage) close_button.getScene().getWindow();
-        scene.setOnMousePressed(event -> {
-            offset_x = event.getSceneX();
-            offset_y = event.getSceneY();
-        });
-
-        scene.setOnMouseDragged(event -> {
-            stage.setX(event.getScreenX() - offset_x);
-            stage.setY(event.getScreenY() - offset_y);
-        });
-    }
-
-    @FXML
-    private void closeButtonMouseover(MouseEvent event){
-        if(event.getEventType().getName().equals("MOUSE_ENTERED")) {
-            close_button.setTextFill(Color.web("#646464", 1));
-        } else if(event.getEventType().getName().equals("MOUSE_EXITED")) {
-            close_button.setTextFill(Color.web("#FFFFFF", 1));
-        }
-    }
-
-    @FXML
-    private void mainButtonMouseover(MouseEvent event){
-        if(event.getEventType().getName().equals("MOUSE_ENTERED")) {
-            main_button.setTextFill(Color.web("#646464", 1));
-        } else if(event.getEventType().getName().equals("MOUSE_EXITED")) {
-            main_button.setTextFill(Color.web("#000000", 1));
-        }
-    }
-
-    @FXML
-    private void settingsButtonMouseover(MouseEvent event){
-        if(event.getEventType().getName().equals("MOUSE_ENTERED")) {
-            settings_button.setTextFill(Color.web("#646464", 1));
-        } else if(event.getEventType().getName().equals("MOUSE_EXITED")) {
-            settings_button.setTextFill(Color.web("#000000", 1));
-        }
-    }
-
-    @FXML
-    private void processInfoButtonMouseover(MouseEvent event){
-        if(event.getEventType().getName().equals("MOUSE_ENTERED")) {
-            processinfo_button.setTextFill(Color.web("#646464", 1));
-        } else if(event.getEventType().getName().equals("MOUSE_EXITED")) {
-            processinfo_button.setTextFill(Color.web("#000000", 1));
-        }
-    }
-
-    @FXML
-    private void close(MouseEvent event){
-        System.exit(0);
     }
 }

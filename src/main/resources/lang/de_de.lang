@@ -1,0 +1,59 @@
+language.name=Deutsch
+language.translator=Janno288
+language.region=DE
+language.code=de_DE
+language.self=Language
+language.unknown=Unbekannter Schlüssel% 1% in der Lang-Datei% 2%
+brand.name=OldHaven Netzwerk
+
+os.unknown=Sie haben ein unbekanntes Betriebssystem.
+os.supported=Unterstützte Betriebssysteme sind Windows, Mac OS X und Linux.
+
+console.megamod.none=Keine neuen Versionen von 'Megamod' wurden gefunden
+console.megamod.latest=Letzte 'Megamod' Version: %1%
+
+alert.types.error=Fehler
+alert.types.warning=Warnung
+alert.mcrunning.header=alert.types.warnung
+alert.mcrunning.footer=Minecraft muss zuerst geschlossen werden.
+alert.buttons.cancel=Abbrechen
+alert.buttons.yes=Ja
+alert.buttons.no=Nein
+alert.buttons.ok=OK
+
+login.self=Anmeldung
+login.text=Bitte melden sie sich mit ihrem Mojang(Minecraft) Konto ein.
+login.field.username=Benutzername / E-mail
+login.field.password=Passwort
+login.savedacc=Wählen sie einen Konto...
+login.remember=Meine Anmeldedaten erinnern
+login.error=Ungültige Anmeldedaten!
+
+main.self=Main
+main.login=Sie Angemeldet als
+main.version.selected=Ausgewählte Version
+main.version.manager=Versionsmanager
+main.launch=Start
+
+mods.self=Modifikations Manager
+mods.buttons.add=Füge eine Modifikation hinzufügen...
+mods.buttons.remove=Eine Modifikation entfernen...
+mods.types.modloader=Modifikations Loader
+mods.types.fabric=Fabric
+mods.types.mcp=MCP
+mods.types.nonfabric=Nicht Fabric
+mods.path=Standort(auf ihem PC) der Modifikation
+mods.type=Modifikationsart
+
+settings.self=Allgemeine Einstellungen
+settings.memory.max=Maximaler Arbeitspeicher (MB)
+settings.memory.min=Minimaler Arbeitspeicher (MB)
+settings.background.change=benutzerdefinierter Hintergrund
+settings.background.reset=Hintergrund zurücksetzen
+settings.openfolder=Öffne den Launcher-Ordner
+
+process.self=Prozessinformationen
+process.buttons.restart=Minecraft Neustarten
+process.buttons.kill=Ende Minecraft Prozess
+process.buttons.clearlog=Log löschen
+process.log.max=Maximale Logzeilen

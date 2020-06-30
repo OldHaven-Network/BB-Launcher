@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.fxmisc.flowless.*?>
+<?import org.fxmisc.richtext.*?>
+
+<AnchorPane fx:id="pain" prefHeight="323.0" prefWidth="635.0" style="-fx-background-color: rgba(0,0,0,0.5);" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.oldhaven.controller.templates.ProcessInfoScreenController">
+   <AnchorPane prefHeight="324.0" prefWidth="635.0">
+      <Button layoutX="10.0" layoutY="289.0" mnemonicParsing="false" onMouseClicked="#restartMinecraftButton" prefHeight="25.0" prefWidth="131.0" style="-fx-font-weight: bold;" text="Restart Minecraft">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+      <Button layoutX="149.0" layoutY="289.0" mnemonicParsing="false" onMouseClicked="#killMinecraftButton" prefHeight="25.0" prefWidth="131.0" style="-fx-font-weight: bold;" text="Kill Minecraft">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+      <VirtualizedScrollPane hbarPolicy="NEVER" layoutX="10.0" layoutY="60.0" prefHeight="221.0" prefWidth="617.0">
+         <content>
+            <StyleClassedTextArea id="process_text" fx:id="process_text" prefHeight="221.0" prefWidth="617.0" />
+         </content>
+      </VirtualizedScrollPane>
+      <TextField id="loglines_textfield" fx:id="loglines_textfield" layoutX="458.0" layoutY="289.0" prefHeight="25.0" prefWidth="55.0" text="10000" />
+      <Label layoutX="520.0" layoutY="293.0" text="Maximum log lines" textFill="WHITE" />
+      <Button fx:id="clearlog_button" layoutX="288.0" layoutY="289.0" mnemonicParsing="false" onMouseClicked="#clearButton" prefHeight="25.0" prefWidth="131.0" text="Clear log">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+   </AnchorPane>
+</AnchorPane>

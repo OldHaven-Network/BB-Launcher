@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="pain" prefHeight="313.0" prefWidth="622.0"
+            style="-fx-background-color: rgba(0,0,0,0.5)" xmlns="http://javafx.com/javafx/10.0.2-internal"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.oldhaven.controller.templates.SettingsScreenController">
+   <AnchorPane layoutY="4.0" prefHeight="324.0" prefWidth="635.0">
+      <ListView id="modview" fx:id="modview" layoutX="14.0" layoutY="101.0" prefHeight="175.0" prefWidth="345.0"/>
+      <Button id="addmod_button" fx:id="addmod_button" layoutX="180.0" layoutY="63.0" mnemonicParsing="false"
+              onMouseClicked="#clickAddModButton" prefHeight="25.0" prefWidth="87.0" text="Add mod..."/>
+      <Button id="removemod_button" fx:id="removemod_button" layoutX="272.0" layoutY="63.0" mnemonicParsing="false"
+              onMouseClicked="#clickRemoveModButton" prefHeight="25.0" prefWidth="87.0" text="Remove mod"/>
+      <TextField id="selectedmodpath" fx:id="selectedmodpath" alignment="TOP_LEFT" editable="false" layoutX="14.0"
+                 layoutY="285.0" prefHeight="25.0" prefWidth="253.0" promptText="Selected mod path"/>
+      <Label fx:id="mod_self" layoutX="14.0" layoutY="63.0" style="-fx-font-size: 16;" text="Mod manager" textFill="WHITE"/>
+      <Label fx:id="settings_self" layoutX="393.0" layoutY="63.0" style="-fx-font-size: 16;" text="General settings" textFill="WHITE"/>
+      <TextField id="selectedmodtype" fx:id="selectedmodtype" alignment="TOP_LEFT" editable="false" layoutX="272.0"
+                 layoutY="285.0" prefHeight="25.0" prefWidth="87.0" promptText="Mod type"/>
+      <TextField fx:id="maxmem_field" layoutX="393.0" layoutY="101.0" prefHeight="25.0" prefWidth="44.0"/>
+      <Label fx:id="maxmem_label" layoutX="449.0" layoutY="105.0" text="Maximum memory (MB)" textFill="WHITE"/>
+      <TextField fx:id="minmem_field" layoutX="393.0" layoutY="134.0" prefHeight="25.0" prefWidth="44.0"/>
+      <Label fx:id="minmem_label" layoutX="449.0" layoutY="138.0" text="Minimum memory (MB)" textFill="WHITE"/>
+      <Button id="launcherbgbutton" fx:id="launcherbg_button" layoutX="393.0" layoutY="191.0" mnemonicParsing="false"
+              onMouseClicked="#clickChangeBackgroundButton" prefHeight="25.0" prefWidth="227.0"
+              text="Change launcher background..."/>
+      <Button id="launcherfolderbutton" fx:id="launcherfolder_button" layoutX="393.0" layoutY="265.0"
+              mnemonicParsing="false" onMouseClicked="#clickLauncherFolderButton" prefHeight="25.0" prefWidth="227.0"
+              style="-fx-font-weight: bold;" text="Open launcher folder"/>
+      <Label layoutX="341.0" layoutY="289.0" style="-fx-font-weight: bold;" text="(?)">
+         <tooltip>
+            <Tooltip fx:id="fabricTooltip"
+                    text="FABRIC - Special mods designed for FabricMC.&#10;NON-FABRIC - Standard ModLoader and MCP mods.&#10;Note that ModLoader needs to be installed and enabled if you wish to use ModLoader mods."
+                    wrapText="true"/>
+         </tooltip>
+      </Label>
+      <Button id="resetbgbutton" fx:id="resetbgbutton" layoutX="393.0" layoutY="224.0" mnemonicParsing="false"
+              onMouseClicked="#clickResetLauncherBackground" prefHeight="25.0" prefWidth="227.0"
+              text="Reset launcher background"/>
+   </AnchorPane>
+</AnchorPane>

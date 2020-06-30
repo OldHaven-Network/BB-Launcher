@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+
+<AnchorPane onMouseMoved="#movableWindow" prefHeight="394.0" prefWidth="700.0" style="-fx-background-color: #FFFFFF;" stylesheets="@./main.css" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.oldhaven.controller.MainScreenController">
+    <Pane fx:id="clipPane" prefHeight="394.0" prefWidth="700.0">
+        <ImageView fx:id="background" cache="true" cacheHint="SPEED" depthTest="ENABLE" fitWidth="${clipPane.width}" managed="false" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" smooth="false">
+            <image>
+                <Image url="@../images/blur.png" />
+            </image>
+        </ImageView>
+       <Label id="logout_button" fx:id="logout_button" layoutX="627.0" layoutY="9.0" onMouseClicked="#logoutButton_onClick" onMouseEntered="#logoutButton_mouseOver" onMouseExited="#logoutButton_mouseOver" style="-fx-font-family: Open Sans; -fx-font-weight: normal; -fx-font-size: 12;" text="Log out" textFill="WHITE" />
+      <Label id="logout_button" fx:id="language_button" layoutX="34.0" layoutY="9.0" onMouseClicked="#languageButton_onClick" onMouseEntered="#logoutButton_mouseOver" onMouseExited="#logoutButton_mouseOver" style="-fx-font-family: Open Sans; -fx-font-weight: normal; -fx-font-size: 12;" text="Language" textFill="WHITE" />
+    </Pane>
+    <AnchorPane layoutX="34.0" layoutY="38.0" prefHeight="324.0" prefWidth="635.0" style="-fx-background-color: rgba(0,0,0,0.5)">
+        <Pane fx:id="topbar" prefHeight="50.0" prefWidth="635.0" style="-fx-background-color: #FFFFFF;">
+            <Label id="main_button" fx:id="main_button" layoutX="27.0" layoutY="10.0" onMouseClicked="#clickMainButton" onMouseEntered="#mainButtonMouseover" onMouseExited="#mainButtonMouseover" style="-fx-font-family: Open Sans; -fx-font-weight: bold; -fx-font-size: 20;" text="MAIN" />
+            <Label fx:id="settings_button" layoutX="117.0" layoutY="10.0" onMouseClicked="#clickSettingsButton" onMouseEntered="#settingsButtonMouseover" onMouseExited="#settingsButtonMouseover" style="-fx-font-family: Open Sans; -fx-font-weight: bold; -fx-font-size: 20;" text="SETTINGS" />
+            <Line fx:id="line_processInfo" endX="38.27734375" layoutX="582.0" layoutY="40.0" startX="-100.0" strokeWidth="2.0" />
+            <Label fx:id="processInfo_button" layoutX="481.0" layoutY="10.0" onMouseClicked="#clickProcessInfoButton" onMouseEntered="#processInfoButtonMouseover" onMouseExited="#processInfoButtonMouseover" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-font-family: Open Sans;" text="PROCESS INFO" />
+         <Line fx:id="line_settings" endX="-8.138671875" layoutX="218.0" layoutY="40.0" startX="-100.0" strokeWidth="2.0" />
+         <Line fx:id="line_main" endX="-45.658203125" layoutX="128.0" layoutY="40.0" startX="-100.0" strokeWidth="2.0" />
+        </Pane>
+        <Pane fx:id="content">
+        </Pane>
+    </AnchorPane>
+    <Label id="close_button" fx:id="close_button" layoutX="678.0" layoutY="4.0" onMouseClicked="#close" onMouseEntered="#closeButtonMouseover" onMouseExited="#closeButtonMouseover" style="-fx-font-weight: bold; -fx-font-size: 16;" text="✕" textFill="WHITE" />
+</AnchorPane>

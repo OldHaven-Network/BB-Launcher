@@ -1,28 +1,60 @@
 language.name=English
-language.regin=US
+language.translator=cutezyash
+language.region=US
 language.code=en_US
+language.self=Language
+language.unknown=Unknown key %1% in lang file %2%
 
 brand.name=OldHaven Network
-
-lang.unknown=Unknown key %1% in lang file %2%
-
-megamod.none=No new versions of MegaMod found
-megamod.latest=Latest MegaMod version: %1%
-
-alert.error=Error
-
-screen.login.userPrompt=UserName / E-mail
-screen.login.passPrompt=Password
-screen.login.savedAcc=Choose saved account...
-screen.login.login=Login
 
 os.unknown=You are running an unknown operating system.
 os.supported=Supported operating systems include Windows, Mac OS X and Linux.
 
-mods.modloader=ModLoader
-mods.fabric=Fabric
-mods.mcp=MCP
-mods.nonfabric=NonFabric
+console.megamod.none=No new versions of MegaMod found
+console.megamod.latest=Latest MegaMod version: %1%
 
-button.ok=OK
-button.cancel=Cancel
+alert.types.error=Error
+alert.types.warning=Warning
+alert.mcrunning.header=alert.types.warning
+alert.mcrunning.footer=You need to close Minecraft before launching!
+alert.buttons.cancel=Cancel
+alert.buttons.yes=Yes
+alert.buttons.no=No
+alert.buttons.ok=OK
+
+login.self=Login
+login.text=Login with your Mojang account
+login.field.username=Username / E-mail
+login.field.password=Password
+login.savedacc=Choose saved account...
+login.remember=Remember my account
+login.error=Invalid credentials!
+
+main.self=Main
+main.login=Logged in as
+main.version.selected=Selected version
+main.version.manager=Open version manager
+main.launch=Launch
+
+mods.self=Mod Manager
+mods.buttons.add=Add Mod...
+mods.buttons.remove=Remove Mod...
+mods.types.modloader=ModLoader
+mods.types.fabric=Fabric
+mods.types.mcp=MCP
+mods.types.nonfabric=NonFabric
+mods.path=Selected mod path
+mods.type=Mod type
+
+settings.self=General Settings
+settings.memory.max=Maximum Memory (MB)
+settings.memory.min=Minimum Memory (MB)
+settings.background.change=Change launcher background
+settings.background.reset=Reset launcher background
+settings.openfolder=Open launcher folder
+
+process.self=Process Info
+process.buttons.restart=Restart Minecraft
+process.buttons.kill=Kill Minecraft
+process.buttons.clearlog=Clear Log
+process.log.max=Maximum Log Lines

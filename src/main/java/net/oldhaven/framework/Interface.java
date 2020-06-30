@@ -1,6 +1,6 @@
 package net.oldhaven.framework;
 
-import net.oldhaven.Main;
+import net.oldhaven.BBLauncher;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -16,7 +16,7 @@ public class Interface {
 
     public static void changeScene(String newScene) {
         try{
-            Stage stage = Main.getPrimaryStage();
+            Stage stage = BBLauncher.getPrimaryStage();
 
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(Interface.class.getResource(newScene));

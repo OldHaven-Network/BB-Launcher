@@ -1,0 +1,60 @@
+language.name=Español
+language.translator=alfonsojon
+language.region=ES
+language.code=es_ES
+language.self=Language
+language.unknown=Unknown key %1% in lang file %2%
+
+brand.name=OldHaven Network
+
+os.unknown=Está ejecutando un sistema operativo desconocido.
+os.supported=Los sistemas operativos compatibles incluyen Windows, Mac OS X y Linux.
+
+console.megamod.none=No se encontraron nuevas versiones de MegaMod
+console.megamod.latest=Última versión de MegaMod: %1%
+
+alert.types.error=Error
+alert.types.warning=Advertencia
+alert.mcrunning.header=alert.types.warning
+alert.mcrunning.footer=¡Necesitas cerrar Minecraft antes de lanzarlo!
+alert.buttons.cancel=Cancelar
+alert.buttons.yes=Sí
+alert.buttons.no=No
+alert.buttons.ok=OK
+
+login.self=Iniciar sesión
+login.text=Inicia sesión con tu cuenta de Mojang
+login.field.username=Nombre de usuario / Email
+login.field.password=Contraseña
+login.savedacc=Elige una cuenta guardadat...
+login.remember=Recuérdame
+login.error=¡Credenciales no válidas!
+
+main.self=Main
+main.login=Has iniciado sesión como
+main.version.selected=Versión seleccionada
+main.version.manager=Abre el administrador de versiones
+main.launch=Ejecutar
+
+mods.self=Gerente de Modificación
+mods.buttons.add=Agregar Modificación...
+mods.buttons.remove=Eliminar Modificación...
+mods.types.modloader=ModLoader
+mods.types.fabric=Fabric
+mods.types.mcp=MCP
+mods.types.nonfabric=NonFabric
+mods.path=Directorio de mod seleccionado
+mods.type=Tipo de mod
+
+settings.self=Configuración Generalt
+settings.memory.max=Memoria Máxima (MB)
+settings.memory.min=Memoria Mínima (MB)
+settings.background.change=Cambiar fondo del iniciador
+settings.background.reset=Restablecer fondo del iniciador
+settings.openfolder=Abrir el directorio de inicio
+
+process.self=Process Info
+process.buttons.restart=Reiniciar Minecraft
+process.buttons.kill=Terminar Minecraft
+process.buttons.clearlog=Borrar Registro
+process.log.max=Máximo de Líneas de Registro

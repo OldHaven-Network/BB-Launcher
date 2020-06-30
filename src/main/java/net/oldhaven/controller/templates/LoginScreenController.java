@@ -1,4 +1,4 @@
-package net.oldhaven.controller;
+package net.oldhaven.controller.templates;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -9,14 +9,13 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import net.chris54721.openmcauthenticator.OpenMCAuthenticator;
@@ -26,10 +25,10 @@ import net.chris54721.openmcauthenticator.exceptions.RequestException;
 import net.chris54721.openmcauthenticator.exceptions.UserMigratedException;
 import net.chris54721.openmcauthenticator.responses.AuthenticationResponse;
 import net.chris54721.openmcauthenticator.responses.RefreshResponse;
-import net.oldhaven.Main;
 import net.oldhaven.framework.Install;
 import net.oldhaven.utility.UserInfo;
-import net.oldhaven.utility.enums.Scenes;
+import net.oldhaven.utility.enums.Scene;
+import net.oldhaven.utility.lang.Lang;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
@@ -44,14 +43,15 @@ import java.util.*;
 public class LoginScreenController implements Initializable {
     double offset_x;
     double offset_y;
+
     @FXML public ImageView background;
+    @FXML private Label close_button, mojang, error_label;
+    @FXML public Text self;
     @FXML private Button login_button;
-    @FXML private Label close_button;
     @FXML private Hyperlink noaccount_link;
     @FXML public Stage primaryStage;
     @FXML public TextField username_input;
     @FXML public PasswordField password_input;
-    @FXML public Label error_label;
     @FXML public TextArea news_box;
     @FXML public ComboBox<String> account_choice;
     @FXML public CheckBox rememberaccount_checkbox;
@@ -60,16 +60,13 @@ public class LoginScreenController implements Initializable {
     public String savedUsername;
 
     public void initialize(URL url, ResourceBundle bundle) {
-        Main.setCurrentController(this);
-        File[] fileArray = new File(Install.getMainPath()).listFiles();
-        assert fileArray != null;
-        for(File file : fileArray) {
-            if(file.getAbsolutePath().contains("launcherbg")) {
-                Image image = new Image(file.toURI().toString());
-                background.setImage(image);
-                background.fitWidthProperty().bind(clipPane.widthProperty());
-            }
-        }
+        self.setText(Lang.LOGIN_SELF.translate());
+        mojang.setText(Lang.LOGIN_TEXT.translate());
+        username_input.setPromptText(Lang.LOGIN_FIELD_USERNAME.translate());
+        password_input.setPromptText(Lang.LOGIN_FIELD_PASSWORD.translate());
+        rememberaccount_checkbox.setText(Lang.LOGIN_REMEMBER.translate());
+        login_button.setText(Lang.LOGIN_SELF.translate());
+        account_choice.setPromptText(Lang.LOGIN_SAVEDACC.translate());
 
         final KeyFrame kf1 = new KeyFrame(Duration.seconds(0.1), e -> {
 
@@ -148,21 +145,6 @@ public class LoginScreenController implements Initializable {
     }
 
     @FXML
-    private void movableWindow(){
-        Scene scene = close_button.getScene();
-        Stage stage = (Stage) close_button.getScene().getWindow();
-        scene.setOnMousePressed(event -> {
-            offset_x = event.getSceneX();
-            offset_y = event.getSceneY();
-        });
-
-        scene.setOnMouseDragged(event -> {
-            stage.setX(event.getScreenX() - offset_x);
-            stage.setY(event.getScreenY() - offset_y);
-        });
-    }
-
-    @FXML
     private void close(MouseEvent event){
         System.exit(0);
     }
@@ -192,7 +174,7 @@ public class LoginScreenController implements Initializable {
                 file.delete();
         }
 
-        Scenes.MainMenu.changeTo();
+        Scene.MainMenu.changeTo();
     }
 
     @FXML

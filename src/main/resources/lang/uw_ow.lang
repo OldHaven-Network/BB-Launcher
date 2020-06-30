@@ -1,0 +1,60 @@
+language.name=UwU
+language.translator=cutezyash and portalsam
+language.region=UW
+language.code=ow_UW
+language.self=Wanguage
+language.unknown=Unknown key %1% in lang file %2%
+
+brand.name=OldHaven Network
+
+os.unknown=Uwu awe wunning an unknown opewating system.
+os.supported=Suppowted opewating systems incwude windows, mac os x awnd winux.
+
+console.megamod.none=No new vewsions of MegaMod found
+console.megamod.latest=Watest MegaMod vewsion: %1%
+
+alert.types.error=Eworr
+alert.types.warning=Wawning
+alert.mcrunning.header=alert.types.warning
+alert.mcrunning.footer=Uwu need tuwu cwose minecwaft befowe waunching!
+alert.buttons.cancel=Cancew
+alert.buttons.yes=Yes
+alert.buttons.no=No
+alert.buttons.ok=OK
+
+login.self=Wogin
+login.text=Wogin with youw Mojang account
+login.field.username=Usewname / E-maiw
+login.field.password=Passwowd
+login.savedacc=Choose saved account...
+login.remember=Wemembew my account
+login.error=Invawid cwedentiaws!
+
+main.self=Main
+main.login=Wogged in as
+main.version.selected=Sewected vewsion
+main.version.manager=Open vewsion managew
+main.launch=Waunch
+
+mods.self=Mod managew
+mods.buttons.add=Awdd Mod...
+mods.buttons.remove=Wemove Mod...
+mods.types.modloader=ModWoader
+mods.types.fabric=Fabwic
+mods.types.mcp=MSweP
+mods.types.nonfabric=NonFabwic
+mods.path=Sewected mod pawth
+mods.type=Mod twype
+
+settings.self=Genewal Settings
+settings.memory.max=Maximum Memowy (MB)
+settings.memory.min=Minimum Memowy (MB)
+settings.background.change=Change lawncher backwound
+settings.background.reset=Reset lawncher backwound
+settings.openfolder=Open lawncher foldwer
+
+process.self=Powcess Info
+process.buttons.restart=Restawt Minecwaft
+process.buttons.kill=Kiww Minecwaft
+process.buttons.clearlog=Cwear wog
+process.log.max=Maximum Wog Wines

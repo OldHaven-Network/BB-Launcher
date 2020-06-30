@@ -10,7 +10,7 @@ import net.lingala.zip4j.model.FileHeader;
 import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.model.enums.CompressionLevel;
 import net.oldhaven.framework.Install;
-import net.oldhaven.utility.enums.Scenes;
+import net.oldhaven.utility.enums.Scene;
 import net.oldhaven.utility.enums.Versions;
 import net.oldhaven.utility.mod.Mod;
 import net.oldhaven.utility.mod.ModType;
@@ -93,7 +93,7 @@ public class Launcher {
             System.setProperty("java.libs.path", Install.getNativesPath());
             new JavaProcess(System.getProperty("java.home"), args).exec(KnotClient.class);
 
-            Scenes.ProcessInfo.changeTo();
+            Scene.ProcessInfo.changeTo();
         } catch(IOException e) {
             if(e.getMessage().startsWith("Unable to delete file")) {
                 Alert alert = new Alert(Alert.AlertType.WARNING, "You need to close Minecraft before launching!", ButtonType.OK);

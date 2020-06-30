@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane fx:id="pain" prefHeight="303.0" prefWidth="575.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.oldhaven.controller.templates.LoginScreenController">
+   <AnchorPane layoutX="346.0" prefHeight="324.0" prefWidth="290.0" style="-fx-background-color: #ffffff;">
+      <Text fx:id="self" layoutX="5.0" layoutY="49.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold; -fx-font-size: 32; -fx-font-family: 'Helvetica', Arial, sans-serif;" text="Login" textAlignment="CENTER" underline="true" wrappingWidth="281.99999472498894">
+         <font>
+            <Font name="Arial" size="12.0" />
+         </font>
+      </Text>
+      <Label fx:id="mojang" alignment="CENTER" layoutX="3.0" layoutY="64.0" prefHeight="17.0" prefWidth="282.0" style="-fx-font-family: Open Sans; -fx-font-weight: 100px;" text="Log in with your Mojang account" />
+      <TextField id="username_input" fx:id="username_input" layoutX="41.0" layoutY="93.0" prefHeight="26.0" prefWidth="208.0" promptText="Username / E-mail" />
+      <PasswordField id="password_input" fx:id="password_input" layoutX="41.0" layoutY="129.0" prefHeight="26.0" prefWidth="208.0" promptText="Password" />
+      <ComboBox id="account_choice" fx:id="account_choice" layoutX="42.0" layoutY="162.0" prefHeight="26.0" prefWidth="208.0" promptText="Choose saved account..." />
+      <CheckBox id="rememberaccount_checkbox" fx:id="rememberaccount_checkbox" contentDisplay="CENTER" layoutX="41.0" layoutY="212.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="208.0" style="-fx-font-family: Open Sans;" text="Remember my account" textOverrun="CLIP" />
+      <Button id="login_button" fx:id="login_button" layoutX="41.0" layoutY="248.0" mnemonicParsing="false" onMouseClicked="#handleLogin" prefHeight="51.0" prefWidth="208.0" style="-fx-font-family: Open Sans; -fx-font-size: 18; -fx-font-weight: bold;" text="LOG IN " />
+      <Hyperlink id="noaccount_link" fx:id="noaccount_link" layoutX="51.0" layoutY="299.0" onMouseClicked="#noAccountInfoClick" text="Don't have a Mojang account?" visible="false" />
+      <Label id="error_label" fx:id="error_label" alignment="CENTER" layoutX="130.0" layoutY="195.0" nodeOrientation="LEFT_TO_RIGHT" textFill="RED" />
+   </AnchorPane>
+   <AnchorPane id="news_pane" fx:id="news_pane" prefHeight="324.0" prefWidth="346.0" style="-fx-background-color: rgba(0,0,0,0.5);">
+      <Pane prefHeight="51.0" prefWidth="346.0" style="-fx-background-color: #FFFFFF;">
+         <Label layoutX="66.0" layoutY="11.0" style="-fx-font-family: Open Sans; -fx-font-weight: bold; -fx-font-size: 20;" text="OLDHAVEN NETWORK" />
+      </Pane>
+      <TextArea id="news_box" fx:id="news_box" editable="false" layoutX="9.0" layoutY="59.0" prefHeight="258.0" prefWidth="328.0" text="News file could not be retrieved&#10;&#10;(check your Internet connection)" wrapText="true">
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </TextArea>
+   </AnchorPane>
+</AnchorPane>
