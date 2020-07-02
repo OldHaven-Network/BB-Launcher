@@ -1,0 +1,60 @@
+language.name=Polski
+language.translator=Zetar99
+language.region=PL
+language.code=pl_PL
+language.self=Język
+language.unknown=Nieznany ciąg %1% w pliku językowym %2%
+
+brand.name=OldHaven Network
+
+os.unknown=Korzystasz z nieznanego systemu operacyjnego.
+os.supported=Wspierane systemy operacyjne: Windows, Mac OS X, Linux.
+
+console.megamod.none=Brak nowych wersji MegaMod'a
+console.megamod.latest=Najnowsza wersja MegaMod'a: %1%
+
+alert.types.error=Błąd
+alert.types.warning=Ostrzeżenie
+alert.mcrunning.header=alert.types.warning
+alert.mcrunning.footer=Zamknij grę przed uruchomieniem!
+alert.buttons.cancel=Anuluj
+alert.buttons.yes=Tak
+alert.buttons.no=Nie
+alert.buttons.ok=OK
+
+login.self=Logowanie
+login.text=Zaloguj się za pomocą swojego konta Mojang
+login.field.username=Nazwa użytkownika / adres E-mail
+login.field.password=Hasło
+login.savedacc=Wybierz zapisane konto...
+login.remember=Zapamiętaj moje konto
+login.error=Niewłaściwe dane!
+
+main.self=Okno główne
+main.login=Zalogowano jako
+main.version.selected=Wybrana wersja gry
+main.version.manager=Otwórz menadżer wersji
+main.launch=Uruchom
+
+mods.self=Menadżer modów
+mods.buttons.add=Dodaj moda...
+mods.buttons.remove=Usuń mod...
+mods.types.modloader=ModLoader
+mods.types.fabric=Fabric
+mods.types.mcp=MCP
+mods.types.nonfabric=NonFabric
+mods.path=Wybrana ścieżka moda
+mods.type=Typ moda
+
+settings.self=Ustawienia główne
+settings.memory.max=Maks. przydzielona pamięć (MB)
+settings.memory.min=Min. przydzielona pamięć (MB)
+settings.background.change=Zmień tło launchera
+settings.background.reset=Zresetuj tło launchera
+settings.openfolder=Otwórz folder launchera
+
+process.self=Informacje o procesie
+process.buttons.restart=Zrestartuj grę
+process.buttons.kill=Wymuś zatrzymanie
+process.buttons.clearlog=Wyczyść logi
+process.log.max=Maks. ilość linijek logów

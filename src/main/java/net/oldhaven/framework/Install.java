@@ -37,6 +37,10 @@ public class Install {
 
     private static String name = "OHLauncher";
 
+    public static enum OS {
+        Windows, Linux, Mac, Unknown;
+    }
+
     private static boolean isLinux(String os) {
         return os.contains("nix") || os.contains("nux") || os.contains("aix");
     }
@@ -47,21 +51,23 @@ public class Install {
         return !os.contains("win") && !os.contains("mac") && !isLinux(os);
     }
 
-    public static String getOS(){
+    public static OS getOS(){
         String os = System.getProperty("os.name").toLowerCase();
         if(os.contains("win"))
-            return "Windows";
+            return OS.Windows;
         if(os.contains("mac"))
-            return "Mac OS";
-        return "Linux";
+            return OS.Mac;
+        if(isLinux(os))
+            return OS.Linux;
+        return OS.Unknown;
     }
 
     public static String getMainPath(){
         switch(getOS()){
-            case "Windows":
+            case Windows:
                 return (System.getProperty("user.home") + "/AppData/Roaming/."+name+"/").replaceAll("/", "\\\\");
-            case "Mac OS":
-                return System.getProperty("user.home") + "/Library/Application%20Support/"+name+"/";
+            case Mac:
+                return System.getProperty("user.home") + "/Library/Application Support/"+name+"/";
             default:
                 String linuxMainPath = (System.getProperty("user.home") + "/."+name+"/");
                 String linuxUser = System.getenv("USER");
@@ -78,7 +84,7 @@ public class Install {
 
     public static String getMinecraftPath() {
         String path;
-        if ("Windows".equals(getOS()))
+        if (getOS() == OS.Windows)
             path = getVersionPath() + Versions.selectedVersion.getName() +  "\\";
         else
             path = getVersionPath() + Versions.selectedVersion.getName() + "/";
@@ -90,7 +96,7 @@ public class Install {
 
     public static String getVersionPath() {
         String path;
-        if ("Windows".equals(getOS()))
+        if (getOS() == OS.Windows)
             path = getMainPath() + "versions\\";
         else
             path = getMainPath() + "versions/";
@@ -148,29 +154,27 @@ public class Install {
     }
 
     public static String getFabricPath() {
-        if ("Windows".equals(getOS()))
+        if (getOS() == OS.Windows)
             return getMinecraftPath() + "bin\\fabric\\";
         return getMinecraftPath() + "bin/fabric/";
 
     }
     public static String getBinPath(){
-        if ("Windows".equals(getOS())) {
+        if (getOS() == OS.Windows)
             return getMinecraftPath() + "bin\\";
-        }
         return getMinecraftPath() + "bin/";
     }
 
     public static String getLogsPath(){
-        if ("Windows".equals(getOS())) {
+        if (getOS() == OS.Windows)
             return getMainPath() + "logs\\";
-        }
         return getMainPath() + "logs/";
     }
 
-    public static String getNativesPath(){
-        if ("Windows".equals(getOS())) {
+    public static String getNativesPath() {
+        System.out.println(getOS().name());
+        if (getOS() == OS.Windows)
             return getMinecraftPath() + "bin\\natives\\";
-        }
         return getMinecraftPath() + "bin/natives/";
     }
 
@@ -209,6 +213,8 @@ public class Install {
         System.out.println(" ");
         GitHubAPI gitHubAPI = GitHubAPI.openURL("https://api.github.com/repos/OldHaven-Network/MegaMod-Mixins/releases");
         final String tag = gitHubAPI.getTag();
+        if(tag == null)
+            return;
         System.out.println("  Latest MegaMod version: " + tag);
         File modDir = new File(modsFolder);
         if (!modDir.exists())
@@ -367,14 +373,24 @@ public class Install {
         return url;
     }
 
+
     private static Gson gson = new Gson();
+    private static void copyNewLibs(File toDir, File libFolderOS) {
+        if(!libFolderOS.exists() || !libFolderOS.isDirectory())
+            return;
+        /* shouldn't even be saying "this might be null when two lines above
+           it literally asks the compiler if it exists. -_- */
+        for(File file : Objects.requireNonNull(libFolderOS.listFiles())) {
+            System.out.println(file.getName());
+        }
+    }
     public static void installMinecraft(Versions versions) {
         try {
             if(!Files.exists(Paths.get(Install.getMainPath() + "mods/non-fabric/")))
                 Files.createDirectories(Paths.get(Install.getMinecraftPath() + "mods/non-fabric/"));
             if(!Files.exists(Paths.get(Install.getBinPath() + "lwjgl.jar"))) {
-                URL binZipURL = new URL("https://www.oldhaven.net/resources/launcher/bin.zip");
-                File binZipFile = new File(Install.getMainPath() + "temp/bin.zip");
+                URL binZipURL = new URL("https://www.oldhaven.net/resources/launcher/bin_new.zip");
+                File binZipFile = new File(Install.getMainPath() + "temp/bin_new.zip");
                 getFileFromURL(binZipURL, binZipFile.toString());
                 ZipFile binZip = new ZipFile(binZipFile);
                 binZip.extractAll(Install.getBinPath());
@@ -382,6 +398,10 @@ public class Install {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        File natives = new File(getNativesPath());
+        String OS = getOS().name().toLowerCase();
+        copyNewLibs(natives, new File(natives, OS+"/"));
+
         String bin = Install.getBinPath() + "fabric/";
         if(!Files.exists(Paths.get(bin)) || !Files.isDirectory(Paths.get(bin))) {
             try {

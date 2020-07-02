@@ -27,6 +27,7 @@ public enum Scene {
         try {
             return FXMLLoader.<Parent>load(getClass().getResource(scene));
         } catch(IOException e) {
+            e.printStackTrace();
             return null;
         }
     }

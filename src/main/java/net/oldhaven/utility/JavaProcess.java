@@ -3,6 +3,7 @@ package net.oldhaven.utility;
 import com.google.gson.JsonArray;
 import net.oldhaven.framework.Arguments;
 import net.oldhaven.framework.Install;
+import net.oldhaven.utility.settings.LaunchSettings;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -37,17 +38,8 @@ public final class JavaProcess {
 
         String username = UserInfo.getUsername();
 
-        File settingsFile = new File(Install.getMainPath() + "settings.txt");
-        String maxmem = null;
-        String minmem = null;
-        try {
-            BufferedReader settingsReader = new BufferedReader(new FileReader(settingsFile));
-            maxmem = settingsReader.readLine();
-            minmem = settingsReader.readLine();
-            settingsReader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String maxmem = LaunchSettings.MEMORY_MAX.getAsString().split("\\.")[0];
+        String minmem = LaunchSettings.MEMORY_MIN.getAsString().split("\\.")[0];
 
         //ProcessBuilder builder = new ProcessBuilder(javaBin, "-Xms"+minmem+"m", "-Xms"+maxmem+"m",
         //        "-Djava.library.path="+libsPath, "-cp", classpath, className, username);

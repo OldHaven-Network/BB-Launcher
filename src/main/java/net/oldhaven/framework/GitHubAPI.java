@@ -30,7 +30,7 @@ public class GitHubAPI {
             gitHubAPI.downloadSize = (Integer)assets.get("size");
             System.out.println(json.toString());
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println(e.getMessage());
         }
         return gitHubAPI;
     }

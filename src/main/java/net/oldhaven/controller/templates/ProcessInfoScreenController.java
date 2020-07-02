@@ -55,18 +55,22 @@ public class ProcessInfoScreenController implements Initializable {
         * I found a memory leak on this runnable
          */
         BBLauncher.createRunnableWithScene(Scene.ProcessInfo, () -> {
-            String text;
-            if (!(text = LogOutput.getLogOutput()).isEmpty()) {
-                process_text.appendText(text);
-                process_text.scrollYBy(process_text.getLength());
-            }
-            String textInArea = process_text.getText();
-            String[] lines = textInArea.split("\n", -1);
-            if (lines.length > loglines.get()) {
-                process_text.appendText(Lang.PROCESS_LOG_MAX.translateArgs(loglines.get()));
-                executor.shutdownNow();
-            }
-        }, 0, 250, TimeUnit.MILLISECONDS);
+            final String textInArea = process_text.getText();
+            final String[] lines = textInArea.split("\n", -1);
+            Platform.runLater(() -> {
+                String text;
+                if (!(text = LogOutput.getLogOutput()).isEmpty()) {
+                    process_text.appendText(text);
+                    process_text.scrollYBy(process_text.getLength());
+                }
+                if (lines.length > loglines.get()) {
+                    process_text.appendText(Lang.PROCESS_LOG_MAX.translateArgs(loglines.get()));
+                    Thread.currentThread().interrupt();
+                }
+            });
+            if (lines.length > loglines.get())
+                Thread.currentThread().interrupt();
+        }, 250, TimeUnit.MILLISECONDS);
     }
 
     @FXML

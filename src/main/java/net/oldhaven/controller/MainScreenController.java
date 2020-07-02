@@ -47,7 +47,8 @@ public class MainScreenController implements Initializable {
 
     @FXML private ImageView background;
     @FXML private Label close_button, main_button, settings_button, processInfo_button, logout_button, language_button;
-    @FXML public Pane topbar, content, clipPane;
+    @FXML public GridPane topbar;
+    @FXML public Pane content, clipPane;
     @FXML private Line line_main, line_settings, line_processInfo;
 
     private static final Text testText;
@@ -72,33 +73,32 @@ public class MainScreenController implements Initializable {
             logout_button.setVisible(true);
             topbar.toFront();
         }
+        line_main.setVisible(false);
+        line_settings.setVisible(false);
+        line_processInfo.setVisible(false);
         switch(scene) {
             case MainMenu:
                 line_main.setVisible(true);
-                line_settings.setVisible(false);
-                line_processInfo.setVisible(false);
-                line_main.setEndX(main_button.widthProperty().get());
+                line_main.setEndX(-100+main_button.getWidth());
                 break;
             case Settings:
-                line_main.setVisible(false);
                 line_settings.setVisible(true);
-                line_processInfo.setVisible(false);
-                line_settings.setEndX(settings_button.widthProperty().get());
+                line_settings.setEndX(-100+settings_button.getWidth());
                 break;
             case ProcessInfo:
-                line_main.setVisible(false);
-                line_settings.setVisible(false);
                 line_processInfo.setVisible(true);
-                line_processInfo.setEndX(processInfo_button.widthProperty().get());
+                line_processInfo.setEndX(-100+processInfo_button.getWidth());
                 break;
-            default:
-                line_main.setVisible(false);
-                line_settings.setVisible(false);
-                line_processInfo.setVisible(false);
-                break;
+            default: break;
         }
-        this.content.getChildren().removeAll();
-        this.content.getChildren().setAll(scene.load());
+        try {
+            if(this.content.getChildren().size() > 0)
+                this.content.getChildren().removeAll();
+            this.content.getChildren().setAll(scene.load());
+        } catch(NullPointerException e) {
+            System.err.println("Failed to set to scene " + scene.name());
+            e.printStackTrace();
+        }
         if(lastScene != null)
             BBLauncher.cancelRunnablesWithScene(lastScene);
         lastScene = scene;

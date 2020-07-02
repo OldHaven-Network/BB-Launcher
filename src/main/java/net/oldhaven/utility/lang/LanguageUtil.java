@@ -1,5 +1,7 @@
 package net.oldhaven.utility.lang;
 
+import net.oldhaven.BBLauncher;
+
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,16 +9,15 @@ import java.util.Map;
 public class LanguageUtil {
     private static String langName = "English";
     private static String langSelf = "Language";
-    private static String langRegion = "US";
-    private static String langCode = "en_us";
-    private static Map<String/*key*/, String/*lang*/> lang = loadLang("ru_ru");
+    private static String langRegion = "??";
+    private static String langCode = "??_??";
+    private static String langTranslator = "N/A";
+    private static Map<String/*key*/, String/*lang*/> lang = loadLang("de_de");
     public static Map<String, String> loadLang(String name) {
-        File file = new File(LanguageUtil.class.getResource("/lang/" + name + ".lang").getFile());
-        FileInputStream fstream = null;
         Map<String, String> map = new HashMap<>();
         try {
-            fstream = new FileInputStream(file);
-            BufferedReader br = new BufferedReader(new InputStreamReader(fstream, "utf-8"));
+            InputStream is = BBLauncher.class.getResourceAsStream("/lang/" + name + ".lang");
+            BufferedReader br = new BufferedReader(new InputStreamReader(is, "utf-8"));
             String line;
             while ((line = br.readLine()) != null) {
                 if(!line.isEmpty()) {
@@ -34,13 +35,15 @@ public class LanguageUtil {
                                 langSelf = split[1];break;
                             case "code":
                                 langCode = split[1];break;
+                            case "":
+
                         }
                     } else
                         map.put(split[0], split[1]);
                 }
             }
             br.close();
-            fstream.close();
+            is.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

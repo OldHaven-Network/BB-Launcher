@@ -18,12 +18,8 @@ import org.apache.commons.io.FileUtils;
 
 import java.awt.*;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class BBLauncher extends Application {
@@ -54,7 +50,7 @@ public class BBLauncher extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        if(Install.isOSUnknown()){
+        if(Install.getOS() == Install.OS.Unknown){
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle(Lang.ALERT_TYPES_ERROR.translate());
             alert.setHeaderText(Lang.OS_UNKNOWN.translate());
@@ -105,16 +101,48 @@ public class BBLauncher extends Application {
         this.loadFXML(primaryStage);
     }
 
-    private static Map<Scene, ScheduledExecutorService> sceneExecutors = new HashMap<>();
-    public static void createRunnableWithScene(Scene scene, Runnable runnable, long initalDelay, long period, TimeUnit timeUnit) {
-        if(!sceneExecutors.containsKey(scene))
-            sceneExecutors.put(scene, Executors.newScheduledThreadPool(1));
-        sceneExecutors.get(scene).scheduleAtFixedRate(runnable, initalDelay, period, timeUnit);
+    private static void createRunnableSwap() {
+        Thread thread = new Thread(() -> {
+            while(true) {
+                try {
+                    switch (timeUnit) {
+                        case HOURS:
+                            Thread.sleep((long)(period / 3.6e+6));
+                            break;
+                        case MINUTES:
+                            Thread.sleep(period / 60000);
+                        case SECONDS:
+                            Thread.sleep(period / 1000);
+                            break;
+                        case MILLISECONDS:
+                            Thread.sleep(period);
+                            break;
+                        case MICROSECONDS:
+                        case NANOSECONDS:
+                        default:
+                            throw new InterruptedException("Invalid TimeUnit or too long of a unit");
+                    }
+                } catch(InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    return;
+                }
+                runnable.run();
+            }
+        });
+    }
+
+    private static Map<Scene, Thread> scenedThreads = new HashMap<>();
+    public static void createRunnableWithScene(final Scene scene, final Runnable runnable, long period, TimeUnit timeUnit) {
+        scenedThreads.put(scene, thread);
+        thread.start();
     }
     public static void cancelRunnablesWithScene(Scene scene) {
-        if(!sceneExecutors.containsKey(scene))
+        if(!scenedThreads.containsKey(scene))
             return;
-        sceneExecutors.get(scene).shutdown();
+        System.out.println("Shutting down tasks from " + scene.name());
+        Thread thread = scenedThreads.get(scene);
+        if(thread.isAlive() || !thread.isInterrupted())
+            scenedThreads.get(scene).interrupt();
     }
 
     private void loadFXML(Stage primaryStage) {

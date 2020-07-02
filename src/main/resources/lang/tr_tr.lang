@@ -1,0 +1,60 @@
+language.name=Türkçe
+language.translator=StrangeAlien0
+language.region=TR
+language.code=tr_TR
+language.self=Dil
+language.unknown=Unknown key %1% in lang file %2%
+
+brand.name=OldHaven Network
+
+os.unknown=Bilinmeyen bir işletim sistemi kullanıyorsunuz.
+os.supported= Desteklenen işletim sistemleri Windows, Mac OS X ve Linux.
+
+console.megamod.none=Yeni MegaMod versiyonu bulunamadı.
+console.megamod.latest=Latest MegaMod version: %1%
+
+alert.types.error=Erör
+alert.types.warning=Dikkat
+alert.mcrunning.header=alert.types.warning
+alert.mcrunning.footer=Açmadan önce Minecraft'ı kapamalısın!
+alert.buttons.cancel=İptal
+alert.buttons.yes=Evet
+alert.buttons.no=Hayır
+alert.buttons.ok=Tamam
+
+login.self=Bağlan
+login.text=Mojang Hesabınla bağlan
+login.field.username=Kullanıcı Adı / E-mail
+login.field.password=Şifre
+login.savedacc=Kaydedilen Hesabı seç...
+login.remember=Hesabımı Hatırla
+login.error=Geçersiz Kimlik!
+
+main.self=Ana Menü
+main.login=Bağlandı
+main.version.selected=Seçilen version
+main.version.manager=Versiyon Yöneticisini aç
+main.launch=Başlat
+
+mods.self=Mod Yöneticisi
+mods.buttons.add=Mod Ekle...
+mods.buttons.remove=Mod Sil...
+mods.types.modloader=ModYükleyici
+mods.types.fabric=Fabric
+mods.types.mcp=MCP
+mods.types.nonfabric=FabricOlmayan
+mods.path=Seçilen Mod yolu
+mods.type=Mod tipi
+
+settings.self=Genel Ayarlar
+settings.memory.max=Maksimum Bellek (MB)
+settings.memory.min=Minimum Bellek (MB)
+settings.background.change=Başlatıcı Arka fonunu değiştir
+settings.background.reset=Başlatıcı Arka fonunu Sıfırla
+settings.openfolder=Başlatıcının Dosyalarını aç
+
+process.self=İşlem Bilgisi
+process.buttons.restart=Minecraft'ı Yeniden Başlat
+process.buttons.kill=Minecraft'ı Sonlandır
+process.buttons.clearlog=Log dosyalarını Temizle
+process.log.max=Maksimum Log Satırları

@@ -1,0 +1,60 @@
+language.name=Slovak
+language.translator=Pert
+language.region=SK
+language.code=sk_SK
+language.self=Jazyk
+language.unknown=Neznámy kľúč %1% v jazykovom súbore %2%
+
+brand.name=OldHaven Network
+
+os.unknown=Používáš neznámy operačný systém.
+os.supported=Podporované systémy sú Windows, Mac OS X a Linux.
+
+console.megamod.none=Nebola nájdená nová verzia MegaMod
+console.megamod.latest=Najaktuálnejšia verzia MegaMod: %1%
+
+alert.types.error=Chyba
+alert.types.warning=Varovanie
+alert.mcrunning.header=alert.types.warning
+alert.mcrunning.footer=Pred spusteným musíš vypnúť Minecraft!
+alert.buttons.cancel=Zrušiť
+alert.buttons.yes=Áno
+alert.buttons.no=Nie
+alert.buttons.ok=OK
+
+login.self=Prihlásenie
+login.text=Prihlás sa s Mojang účtom
+login.field.username=Meno / E-mail
+login.field.password=Heslo
+login.savedacc=Vybrať uložený účet...
+login.remember=Zapamätať účet
+login.error=Chybné prihlasovacie údaje!
+
+main.self=Hlavné
+main.login=Prihlásený ako
+main.version.selected=Vybraná verzia
+main.version.manager=Otvoriť správcu verzí
+main.launch=Spustiť
+
+mods.self=Správca módov
+mods.buttons.add=Pridať mód...
+mods.buttons.remove=Odstrániť mód...
+mods.types.modloader=ModLoader
+mods.types.fabric=Fabric
+mods.types.mcp=MCP
+mods.types.nonfabric=NonFabric
+mods.path=Cesta vybraného módu
+mods.type=Typ módu
+
+settings.self=Obecné nastavenia
+settings.memory.max=Maximálná pamäť (MB)
+settings.memory.min=Minimálná pamäť (MB)
+settings.background.change=Zmeniť pozadie launcheru
+settings.background.reset=Resetovať pozadie launcheru
+settings.openfolder=Otvoriť zložku launcheru
+
+process.self=Informácee procesu
+process.buttons.restart=Reštartovať Minecraft
+process.buttons.kill=Zabiť Minecraft
+process.buttons.clearlog=Vyčistiť záznam
+process.log.max=Maximálný počet riadkov záznamu

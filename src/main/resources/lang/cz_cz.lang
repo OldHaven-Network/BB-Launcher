@@ -1,0 +1,60 @@
+language.name=Czech
+language.translator=Dejf
+language.region=CZ
+language.code=cs_CZ
+language.self=Jazyk
+language.unknown=Neznámý klíč %1% v jazykovém souboru %2%
+
+brand.name=OldHaven Network
+
+os.unknown=Používáš neznámý operační systém.
+os.supported=Podporované systémy jsou Windows, Mac OS X a Linux.
+
+console.megamod.none=Nebyla nalezena nová verze MegaMod
+console.megamod.latest=Nejaktuálnější verze MegaMod: %1%
+
+alert.types.error=Chyba
+alert.types.warning=Varování
+alert.mcrunning.header=alert.types.warning
+alert.mcrunning.footer=Před spuštěním musíš vypnout Minecraft!
+alert.buttons.cancel=Zrušit
+alert.buttons.yes=Ano
+alert.buttons.no=Ne
+alert.buttons.ok=OK
+
+login.self=Přihlášení
+login.text=Přihlaš se s Mojang účtem
+login.field.username=Jméno / E-mail
+login.field.password=Heslo
+login.savedacc=Vybrat uložený účet...
+login.remember=Zapamatovat účet
+login.error=Chybné přihlašovací údaje!
+
+main.self=Hlavní
+main.login=Přihlášen jako
+main.version.selected=Vybraná verze
+main.version.manager=Otevřít správce verzí
+main.launch=Spustit
+
+mods.self=Správce módů
+mods.buttons.add=Přidat mód...
+mods.buttons.remove=Odstranit mód...
+mods.types.modloader=ModLoader
+mods.types.fabric=Fabric
+mods.types.mcp=MCP
+mods.types.nonfabric=NonFabric
+mods.path=Cesta vybraného módu
+mods.type=Typ módu
+
+settings.self=Obecné nastevení
+settings.memory.max=Maximální paměť (MB)
+settings.memory.min=Minimální paměť (MB)
+settings.background.change=Změnit pozadí launcheru
+settings.background.reset=Resetovat pozadí launcheru
+settings.openfolder=Otevřít složku launcheru
+
+process.self=Informace procesu
+process.buttons.restart=Restartovat Minecraft
+process.buttons.kill=Zabít Minecraft
+process.buttons.clearlog=Vyčistit záznam
+process.log.max=Maximální počet řádků záznamu

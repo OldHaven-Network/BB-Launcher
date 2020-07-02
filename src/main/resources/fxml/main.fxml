@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
@@ -16,16 +17,38 @@
       <Label id="logout_button" fx:id="language_button" layoutX="34.0" layoutY="9.0" onMouseClicked="#languageButton_onClick" onMouseEntered="#logoutButton_mouseOver" onMouseExited="#logoutButton_mouseOver" style="-fx-font-family: Open Sans; -fx-font-weight: normal; -fx-font-size: 12;" text="Language" textFill="WHITE" />
     </Pane>
     <AnchorPane layoutX="34.0" layoutY="38.0" prefHeight="324.0" prefWidth="635.0" style="-fx-background-color: rgba(0,0,0,0.5)">
-        <Pane fx:id="topbar" prefHeight="50.0" prefWidth="635.0" style="-fx-background-color: #FFFFFF;">
-            <Label id="main_button" fx:id="main_button" layoutX="27.0" layoutY="10.0" onMouseClicked="#clickMainButton" onMouseEntered="#mainButtonMouseover" onMouseExited="#mainButtonMouseover" style="-fx-font-family: Open Sans; -fx-font-weight: bold; -fx-font-size: 20;" text="MAIN" />
-            <Label fx:id="settings_button" layoutX="117.0" layoutY="10.0" onMouseClicked="#clickSettingsButton" onMouseEntered="#settingsButtonMouseover" onMouseExited="#settingsButtonMouseover" style="-fx-font-family: Open Sans; -fx-font-weight: bold; -fx-font-size: 20;" text="SETTINGS" />
-            <Line fx:id="line_processInfo" endX="38.27734375" layoutX="582.0" layoutY="40.0" startX="-100.0" strokeWidth="2.0" />
-            <Label fx:id="processInfo_button" layoutX="481.0" layoutY="10.0" onMouseClicked="#clickProcessInfoButton" onMouseEntered="#processInfoButtonMouseover" onMouseExited="#processInfoButtonMouseover" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-font-family: Open Sans;" text="PROCESS INFO" />
-         <Line fx:id="line_settings" endX="-8.138671875" layoutX="218.0" layoutY="40.0" startX="-100.0" strokeWidth="2.0" />
-         <Line fx:id="line_main" endX="-45.658203125" layoutX="128.0" layoutY="40.0" startX="-100.0" strokeWidth="2.0" />
-        </Pane>
-        <Pane fx:id="content">
-        </Pane>
+      <Pane fx:id="content" prefHeight="324.0" prefWidth="635.0" />
+      <GridPane fx:id="topbar" prefHeight="50.0" prefWidth="635.0" style="-fx-background-color: #ffffff;">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+               <Label id="main_button" fx:id="main_button" onMouseClicked="#clickMainButton" onMouseEntered="#mainButtonMouseover" onMouseExited="#mainButtonMouseover" style="-fx-font-family: Open Sans; -fx-font-weight: bold; -fx-font-size: 20;" text="MAIN" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+            <Line fx:id="line_main" endX="-89.0" startX="-100.0" strokeWidth="2.0" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
+               <GridPane.margin>
+                  <Insets bottom="10.0" />
+               </GridPane.margin>
+            </Line>
+               <Label fx:id="settings_button" onMouseClicked="#clickSettingsButton" onMouseEntered="#settingsButtonMouseover" onMouseExited="#settingsButtonMouseover" style="-fx-font-family: Open Sans; -fx-font-weight: bold; -fx-font-size: 20;" text="SETTINGS" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+               <Line fx:id="line_processInfo" endX="-70.0" startX="-100.0" strokeWidth="2.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
+               <GridPane.margin>
+                  <Insets bottom="10.0" />
+               </GridPane.margin>
+            </Line>
+               <Label fx:id="processInfo_button" alignment="CENTER" contentDisplay="CENTER" onMouseClicked="#clickProcessInfoButton" onMouseEntered="#processInfoButtonMouseover" onMouseExited="#processInfoButtonMouseover" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-font-family: Open Sans;" text="PROCESS INFO" textAlignment="CENTER" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+            <Line fx:id="line_settings" endX="-66.0" startX="-100.0" strokeWidth="2.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
+               <GridPane.margin>
+                  <Insets bottom="10.0" />
+               </GridPane.margin>
+            </Line>
+         </children>
+      </GridPane>
     </AnchorPane>
     <Label id="close_button" fx:id="close_button" layoutX="678.0" layoutY="4.0" onMouseClicked="#close" onMouseEntered="#closeButtonMouseover" onMouseExited="#closeButtonMouseover" style="-fx-font-weight: bold; -fx-font-size: 16;" text="✕" textFill="WHITE" />
 </AnchorPane>
